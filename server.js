@@ -1,5 +1,4 @@
 ﻿var http = require('http');
-var url = require('url');
 
 var Options = {
     Port: 80
@@ -16,7 +15,7 @@ function Start(handle, route) {
 }
 
 function process_request(request, response, handle, route) {
-    route(handle, url.parse(request.url).pathname, response);
+    route(handle, request, response);
 }
 
 

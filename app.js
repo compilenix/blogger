@@ -4,8 +4,10 @@ var requestHandlers = require("./requestHandlers.js");
 
 server.Options.Port = 8000;
 
+var root = "/blog/";
 var handle = {}
-handle["/blog/"] = requestHandlers.Index;
+handle[root] = requestHandlers.Index;
+handle[root + "post/"] = requestHandlers.Post;
 handle["/favicon.ico"] = requestHandlers.Favicon;
 
 server.Start(handle, router.Route);

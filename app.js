@@ -9,5 +9,7 @@ var handle = {}
 handle[root] = requestHandlers.Index;
 handle[root + "post/"] = requestHandlers.Post;
 handle["/favicon.ico"] = requestHandlers.Favicon;
+handle[requestHandlers.Fonts["Regular_path"]] = requestHandlers.Fonts["Regular"];
+handle[requestHandlers.Fonts["Bold_path"]] = requestHandlers.Fonts["Bold"];
 
 server.Start(handle, router.Route);

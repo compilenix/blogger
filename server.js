@@ -11,7 +11,7 @@ function Start(handle, route) {
     }
 
     http.createServer(onRequest).listen(Options.Port);
-    console.log("Server has started and listening on port " + Options.Port);
+    console.log("Server has started and listening on port: " + Options.Port);
 }
 
 function process_request(request, response, handle, route) {

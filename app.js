@@ -5,7 +5,7 @@ var requestHandlers = require("./requestHandlers.js");
 server.Options.Port = 8000;
 
 var root = "/blog/";
-var handle = {}
+var handle = {};
 handle[root] = requestHandlers.Index;
 handle[root + "post/"] = requestHandlers.Post;
 handle["/favicon.ico"] = requestHandlers.Favicon;

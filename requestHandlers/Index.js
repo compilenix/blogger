@@ -12,7 +12,7 @@ var Options = {
 }
 
 function Index(request, response) {
-    response.writeHead(200, { "Content-Type": "text/html", "Server": "node.js/" + process.version });
+    _writeHead["_200"](response);
 
     fs.readFile(Options.FileHeader, 'utf8', function (error, data) {
         index(error, data, request, response);

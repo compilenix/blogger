@@ -24,16 +24,14 @@ function post(error, data, request, response) {
 
     if(query !== undefined && query !== null && query.match(letters)) {
         if (fs.existsSync(Options.DirectoryPosts + '/' + query + ".html.asc")) {
-            response.writeHead(200, { "Content-Type": "text/html", "Server": "node.js/" + process.version });
+            _writeHead["_200"](response);
             response.write(data);
             response.write(fs.readFileSync(Options.DirectoryPosts + '/' + query + '.html', 'utf8'));
         } else {
-            response.writeHead(404, { "Content-Type": "text/html", "Server": "node.js/" + process.version });
-            response.write('<html><head><title>404 Not Found</title></head><body bgcolor="white"><center><h1>404 Not Found</h1></center><hr><center>node.js/' + process.version + '</center></body></html>');
+            _writeHead["_404"](response);
         }
     } else {
-        response.writeHead(404, { "Content-Type": "text/html", "Server": "node.js/" + process.version });
-        response.write('<html><head><title>404 Not Found</title></head><body bgcolor="white"><center><h1>404 Not Found</h1></center><hr><center>node.js/' + process.version + '</center></body></html>');
+        _writeHead["_404"](response);
     }
 
     response.end();

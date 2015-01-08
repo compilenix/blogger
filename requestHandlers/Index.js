@@ -1,6 +1,3 @@
-var fs = require('fs');
-var querystring = require('querystring');
-var url = require('url');
 
 var Options = {
     FileHeader: "header.html",
@@ -14,7 +11,7 @@ var Options = {
 function Index(request, response) {
     _writeHead["_200"](response);
 
-    fs.readFile(Options.FileHeader, 'utf8', function (error, data) {
+    _fs.readFile(Options.FileHeader, 'utf8', function (error, data) {
         index(error, data, request, response);
     });
 }
@@ -25,9 +22,9 @@ function index(error, data, request, response) {
     }
     response.write(data);
 
-    var posts = fs.readdirSync(Options.DirectoryPosts).reverse();
+    var posts = _fs.readdirSync(Options.DirectoryPosts).reverse();
     var counter = 0;
-    var queryOffset = offset = parseInt(querystring.parse(url.parse(request.url).query)["offset"], 10);
+    var queryOffset = offset = parseInt(_querystring.parse(_url.parse(request.url).query)["offset"], 10);
     var foundSomeThing = false;
     var printEndMessage = false;
 
@@ -41,14 +38,14 @@ function index(error, data, request, response) {
 
         if (counter < Options.CountPosts) {
 
-            if (fs.existsSync(Options.DirectoryPosts + '/' + posts[i] + ".asc")) {
+            if (_fs.existsSync(Options.DirectoryPosts + '/' + posts[i] + ".asc")) {
 
                 if (queryOffset > 0) {
                     queryOffset--;
                 } else {
                     response.write('<li>');
                     response.write('[<a href="post/?p=' + posts[i].replace(".html", '') + '">post</a>] ');
-                    response.write(replaceAll('\n', '', fs.readFileSync(Options.DirectoryPosts + '/' + posts[i], 'utf8')));
+                    response.write(replaceAll('\n', '', _fs.readFileSync(Options.DirectoryPosts + '/' + posts[i], 'utf8')));
                     response.write('</li>\n');
                     counter++;
                     foundSomeThing = true;
@@ -101,10 +98,6 @@ function index(error, data, request, response) {
     response.write('</div>\n</body>\n');
 
     response.end();
-}
-
-function replaceAll(find, replace, str) {
-  return str.replace(new RegExp(find.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&'), 'g'), replace);
 }
 
 

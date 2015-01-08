@@ -1,5 +1,7 @@
-﻿var http = require('http');
-
+﻿_http = require('http');
+_url = require('url');
+_querystring = require('querystring');
+_fs = require('fs');
 _writeHead = require('./writeHead.js');
 
 var Options = {
@@ -12,7 +14,7 @@ function Start(handle, route) {
         process_request(request, response, handle, route);
     }
 
-    http.createServer(onRequest).listen(Options.Port);
+    _http.createServer(onRequest).listen(Options.Port);
     console.log("Server has started and listening on port: " + Options.Port);
 }
 

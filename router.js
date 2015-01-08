@@ -1,7 +1,6 @@
-﻿var url = require('url');
-
+﻿
 function Route(handle, request, response) {
-	var pathname = url.parse(request.url).pathname;
+	var pathname = _url.parse(request.url).pathname;
 
     if (typeof handle[pathname] === 'function') {
         handle[pathname](request, response);

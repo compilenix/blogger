@@ -47,7 +47,7 @@ function index(error, data, request, response) {
                     queryOffset--;
                 } else {
                     response.write('<li>');
-                    response.write('[<a href="post/?q=' + posts[i].replace(".html", '') + '">post</a>] ');
+                    response.write('[<a href="post/?p=' + posts[i].replace(".html", '') + '">post</a>] ');
                     response.write(replaceAll('\n', '', fs.readFileSync(Options.DirectoryPosts + '/' + posts[i], 'utf8')));
                     response.write('</li>\n');
                     counter++;

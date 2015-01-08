@@ -19,7 +19,7 @@ function post(error, data, request, response) {
     }
 
     var posts = fs.readdirSync(Options.DirectoryPosts).reverse();
-    var query = querystring.parse(url.parse(request.url).query)["q"];
+    var query = querystring.parse(url.parse(request.url).query)["p"];
     var letters = new RegExp('^[A-Za-z0-9]+$');
 
     if(query !== undefined && query !== null && query.match(letters)) {

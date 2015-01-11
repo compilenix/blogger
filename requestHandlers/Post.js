@@ -9,9 +9,6 @@ function Post(request, response) {
 }
 
 function post(error, data, request, response) {
-    if (error) {
-        //console.log(error);
-    }
 
     var posts = _fs.readdirSync(DirectoryPosts).reverse();
     var query = _querystring.parse(_url.parse(request.url).query)["p"];

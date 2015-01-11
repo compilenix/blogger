@@ -24,6 +24,6 @@ function _404(response, object) {
 }
 
 
-exports._writeHead = _writeHead;
 exports._200 = _200;
 exports._404 = _404;
+exports._writeHead = _writeHead;

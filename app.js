@@ -10,35 +10,6 @@ _writeHead = require('./writeHead.js');
 var router = require('./router.js');
 var requestHandlers = require("./requestHandlers.js");
 
-if (_Cluster.isMaster) {
-
-    for (var i = _Config.threads; i > 0; i--) {
-        _Cluster.fork();
-    };
-
-    _Cluster.on('fork', function(worker) {
-        console.log('worker #%d forked. (pid %d)', worker.id, worker.process.pid);
-    });
-
-    _Cluster.on('disconnect', function(worker, code, signal) {
-        console.log('worker #%d (pid %d) disconnected (code %s).', worker.id, worker.process.pid, signal || code || 0);
-    });
-
-    _Cluster.on('exit', function(worker, code, signal) {
-        console.log('worker #%d (pid %d) died (code %s). restarting...', worker.id, worker.process.pid, signal || code || 0);
-        _Cluster.fork();
-    });
-} else {
-
-    var domain = require('domain').create();
-
-    domain.on('error', function(e) {
-        console.error('error', er.stack);
-    });
-
-    domain.run(Init);
-}
-
 function Init() {
 
     var handle = {};
@@ -51,4 +22,33 @@ function Init() {
     handle["/" + requestHandlers.Fonts["Bold_path"]] = requestHandlers.Fonts["Bold"];
 
     server.Start(handle, router.Route, domain);
+}
+
+if (_Cluster.isMaster) {
+
+    for (var i = _Config.threads; i > 0; i--) {
+        _Cluster.fork();
+    };
+
+    _Cluster.on('fork', function(worker) {
+        console.log('worker #%d forked. (pid %d)', worker.id, worker.process.pid);
+    });
+
+    _Cluster.on('disconnect', function(worker, code, signal) {
+        console.log('worker #%d (pid %d) disconnected (returned %s).', worker.id, worker.process.pid, signal || code || "undefined");
+    });
+
+    _Cluster.on('exit', function(worker, code, signal) {
+        console.log('worker #%d (pid %d) died (returned %s). restarting...', worker.id, worker.process.pid, signal || code || "undefined");
+        _Cluster.fork();
+    });
+} else if (_Cluster.isWorker) {
+
+    var domain = require('domain').create();
+
+    domain.on('error', function(e) {
+        console.error('error', er.stack);
+    });
+
+    domain.run(Init);
 }

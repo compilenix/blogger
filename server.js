@@ -6,9 +6,7 @@ function Start(handle, route) {
     }
 
     function onErr(e) {
-        if (e.code == 'EADDRINUSE') {
-            console.error('Address in use: %d', _Config.server.port || 80);
-        }
+        console.error(e);
     }
 
     var server = _http.createServer(onRequest);

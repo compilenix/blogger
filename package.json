@@ -1,8 +1,8 @@
 {
   "name": "blogger",
   "version": "0.1.2",
-  "description": "A simple, minimalisic and high performance blogging web application",
-  "author": "Compilenix <Compilenix@dharma.no-trust.org>",
+  "description": "A simple, minimalistic and high performance blogging web application",
+  "author": "Compilenix <Compilenix@compilenix.org>",
   "main": "app.js",
   "license": "GPLv3"
 }

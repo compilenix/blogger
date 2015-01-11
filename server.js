@@ -1,21 +1,19 @@
-﻿_http = require('http');
-_url = require('url');
-_querystring = require('querystring');
-_fs = require('fs');
-_writeHead = require('./writeHead.js');
-
-var Options = {
-    Port: 80
-}
-
+﻿
 function Start(handle, route) {
 
     function onRequest(request, response) {
         process_request(request, response, handle, route);
     }
 
-    _http.createServer(onRequest).listen(Options.Port);
-    console.log("Server has started and listening on port: " + Options.Port);
+    function onErr(e) {
+        if (e.code == 'EADDRINUSE') {
+            console.error('Address in use: %d', _Config.server.port || 80);
+        }
+    }
+
+    var server = _http.createServer(onRequest);
+    server.on('error', onErr);
+    server.listen(_Config.server.port || 80);
 }
 
 function process_request(request, response, handle, route) {
@@ -24,4 +22,3 @@ function process_request(request, response, handle, route) {
 
 
 exports.Start = Start;
-exports.Options = Options;

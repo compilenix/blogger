@@ -1,12 +1,8 @@
 
-var version = "0.80";
-var Regular_path = 'cdn/fonts/ubuntu-font-family-' + version + '/Ubuntu-R.ttf';
-var Bold_path = 'cdn/fonts/ubuntu-font-family-' + version + '/Ubuntu-B.ttf';
-
 function Regular(request, response) {
     _writeHead["_200"](response, { "Content-Type": "application/octet-stream", "Server": "node.js/" + process.version });
 
-    _fs.readFile(Regular_path, function (error, data) {
+    _fs.readFile(_Config.fonts.Regular_path, function (error, data) {
         if (error) {
             //console.log(error);
         }
@@ -17,7 +13,7 @@ function Regular(request, response) {
 function Bold(request, response) {
     _writeHead["_200"](response, { "Content-Type": "application/octet-stream", "Server": "node.js/" + process.version });
 
-    _fs.readFile(Bold_path, function (error, data) {
+    _fs.readFile(_Config.fonts.Bold_path, function (error, data) {
         if (error) {
             //console.log(error);
         }
@@ -26,7 +22,4 @@ function Bold(request, response) {
 }
 
 exports.Regular = Regular;
-exports.Regular_path = Regular_path;
-
 exports.Bold = Bold;
-exports.Bold_path = Bold_path;

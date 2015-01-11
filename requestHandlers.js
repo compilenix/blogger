@@ -2,9 +2,9 @@ var fonts = require('./requestHandlers/Fonts.js');
 
 var Fonts = {};
 Fonts["Regular"] = fonts.Regular;
-Fonts["Regular_path"] = fonts.Regular_path;
+Fonts["Regular_path"] = _Config.fonts.Regular_path;
 Fonts["Bold"] = fonts.Bold;
-Fonts["Regular_path"] = fonts.Regular_path;
+Fonts["Regular_path"] = _Config.fonts.Regular_path;
 
 replaceAll = function (find, replace, str) {
   return str.replace(new RegExp(find.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&'), 'g'), replace);

@@ -35,6 +35,8 @@ function post(error, data, request, response) {
         // _writeHead["_404"](response);
     }
 
+    dataToSend += "</body>\n";
+    
     // response.writeHead(htmlCode, { "Content-Type": "text/html", "Server": "node.js/" + process.version });
     response.writeHead(htmlCode, { "Content-Type": "text/html", "Content-Length": dataToSend.length, "Server": "node.js/" + process.version});
     response.end(dataToSend);

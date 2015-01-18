@@ -39,7 +39,8 @@ function index(error, data, request, response) {
                 } else {
                     response.write('<li>');
                     response.write('[<a href="post/?p=' + posts[i].replace(".html", '') + '">post</a>] ');
-                    response.write(replaceAll('\n', '', _fs.readFileSync(DirectoryPosts + '/' + posts[i], 'utf8')));
+                    //response.write(replaceAll('\n', '', _fs.readFileSync(DirectoryPosts + '/' + posts[i], 'utf8')));
+                    response.write(_fs.readFileSync(DirectoryPosts + '/' + posts[i], 'utf8'));
                     response.write('</li>\n');
                     counter++;
                     foundSomeThing = true;

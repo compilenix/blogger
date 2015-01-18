@@ -9,7 +9,7 @@ var Config = {
         FileHeader: "header.html",
         DirectoryPosts: "posts",
         DeliverPgpSignatures: true, // if available
-        CountPosts: 3,
+        CountPosts: 5,
         MessageNextPage: "Next",
         MessageLastPage: "Prev",
         MessageEnd: "The end."

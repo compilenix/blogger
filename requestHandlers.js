@@ -12,6 +12,6 @@ replaceAll = function (find, replace, str) {
 
 exports.Index = require('./requestHandlers/Index.js').Index;
 exports.Post = require('./requestHandlers/Post.js').Post;
-exports.RSS = require('./requestHandlers/rss.js').RSS;
+exports.RSS = require('./requestHandlers/RSS.js').RSS;
 exports.Favicon = require('./requestHandlers/Favicon.js').Favicon;
 exports.Fonts = Fonts;

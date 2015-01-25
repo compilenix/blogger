@@ -6,6 +6,7 @@ _querystring = require('querystring');
 _fs = require('fs');
 _Config = require('./Config.js').Config;
 _writeHead = require('./writeHead.js');
+_helper = require('./helper.js');
 ﻿var server = require('./server.js');
 var router = require('./router.js');
 var requestHandlers = require("./requestHandlers.js");
@@ -15,6 +16,7 @@ function Init() {
     var handle = {};
     handle[_Config.root] = requestHandlers.Index;
     handle[_Config.root + "post/"] = requestHandlers.Post;
+    handle[_Config.root + "rss.xml"] = requestHandlers.RSS;
 
     // static content
     handle["/favicon.ico"] = requestHandlers.Favicon;
@@ -23,6 +25,9 @@ function Init() {
 
     server.Start(handle, router.Route, domain);
 }
+
+
+
 
 if (_Cluster.isMaster) {
 

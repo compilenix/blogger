@@ -2,6 +2,10 @@ var fonts_version = "0.80";
 
 var Config = {
     root: "/",
+    language: "en",
+    author: "Compilenix",
+    authorMail: "Compilenix@compilenix.org",
+    Link: "http://127.0.0.1",
     server: {
         port: 8000
     },
@@ -13,6 +17,15 @@ var Config = {
         MessageNextPage: "Next",
         MessageLastPage: "Prev",
         MessageEnd: "The end."
+    },
+    rss: {
+        CountPosts: 30,
+        Description: "We do what we must, because we can!",
+        Encoding: "UTF-8",
+        skipHours: [0, 1, 2, 3, 4, 5, 6, 7],
+        Title: "Compilenix's Blog",
+        ttl: 60, // minutes
+        webMaster: "Compilenix@compilenix.org"
     },
     area: {
         internal: [

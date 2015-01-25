@@ -13,10 +13,10 @@ function Index(request, response) {
     });
 }
 
-function index(error, data, request, response) {
-    response.write(data);
+function index(error, header, request, response) {
+    response.write(header);
 
-    var posts = _fs.readdirSync(DirectoryPosts).reverse();
+    var posts = _helper.getPosts();
     var counter = 0;
     var queryOffset = offset = parseInt(_querystring.parse(_url.parse(request.url).query)["offset"], 10);
     var foundSomeThing = false;
@@ -31,21 +31,16 @@ function index(error, data, request, response) {
     for (var i = 0; i < posts.length; i++) {
 
         if (counter < CountPosts) {
-
-            if (_fs.existsSync(DirectoryPosts + '/' + posts[i] + ".asc")) {
-
                 if (queryOffset > 0) {
                     queryOffset--;
                 } else {
                     response.write('<li>');
-                    response.write('[<a href="post/?p=' + posts[i].replace(".html", '') + '">post</a>] ');
-                    //response.write(replaceAll('\n', '', _fs.readFileSync(DirectoryPosts + '/' + posts[i], 'utf8')));
-                    response.write(_fs.readFileSync(DirectoryPosts + '/' + posts[i], 'utf8'));
+                    response.write('[<a href="post/?p=' + posts[i] + '">post</a>] ');
+                    response.write(_helper.getPost(posts[i]));
                     response.write('</li>\n');
                     counter++;
                     foundSomeThing = true;
                 }
-            }
 
         } else {
             break;

@@ -1,3 +1,4 @@
-posts/
+posts
+parts/
 *.log
 node_modules

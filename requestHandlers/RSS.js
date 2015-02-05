@@ -26,13 +26,13 @@ function RSS(request, response) {
         if (counter < CountPosts) {
             if ((data = _helper.getPost(posts[i])) !== '') {
                 dataToSend += "<item>\n";
-                data = replaceAll('\n', '', data.replace(/(<([^>]+)>)/ig, '')); // strip html tags and line breaks
+                dataStriped = replaceAll('\n', '', data.replace(/(<([^>]+)>)/ig, '')); // strip html tags and line breaks
 
                 // title
-                if (data.length > 59) { // 64 chars: 60 from the post plus 4 chars: ...
-                    dataToSend += '<title>' + data.substring(0, 60) + ' ...</title>\n';
+                if (dataStriped.length > 59) { // 64 chars: 60 from the post plus 4 chars: ...
+                    dataToSend += '<title>' + dataStriped.substring(0, 60) + ' ...</title>\n';
                 } else {
-                    dataToSend += '<title>' + data + ' ...</title>\n';
+                    dataToSend += '<title>' + dataStriped + ' ...</title>\n';
                 }
 
                 // author
@@ -43,6 +43,8 @@ function RSS(request, response) {
                 dataToSend += "<guid>" + posts[i] + "</guid>\n";
                 // date
                 dataToSend += "<pubDate>" + new Date(parseInt(posts[i], 16) * 1000) + "</pubDate>\n";
+                // content (html)
+                dataToSend += "<description><![CDATA[" + data + "]]></description>\n"
 
                 dataToSend += "</item>\n\n";
                 counter++;

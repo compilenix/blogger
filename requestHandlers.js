@@ -4,7 +4,7 @@ var Fonts = {};
 Fonts["Regular"] = fonts.Regular;
 Fonts["Regular_path"] = _Config.fonts.Regular_path;
 Fonts["Bold"] = fonts.Bold;
-Fonts["Regular_path"] = _Config.fonts.Regular_path;
+Fonts["Bold_path"] = _Config.fonts.Bold_path;
 
 replaceAll = function (find, replace, str) {
   return str.replace(new RegExp(find.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&'), 'g'), replace);

@@ -2,3 +2,4 @@ posts
 parts/
 *.log
 node_modules
+/Config.js

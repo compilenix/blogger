@@ -61,7 +61,7 @@ if (_Cluster.isMaster) {
     var domain = require('domain').create();
 
     domain.on('error', function(e) {
-        console.error('error', er.stack);
+        console.error('error', e.stack);
     });
 
     domain.run(Init);

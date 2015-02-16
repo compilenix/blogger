@@ -1,5 +1,7 @@
 posts
 parts/
 *.log
+*.gz
+*.bz2
 node_modules
 /Config.js

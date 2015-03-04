@@ -31,8 +31,8 @@ function post(error, header, request, response) {
     }
 
     dataToSend += "</body>\n";
-    
-    response.writeHead(htmlCode, { "Content-Type": "text/html", "Content-Length": dataToSend.length, "Server": "node.js/" + process.version});
+
+    response.writeHead(htmlCode, { "Content-Type": "text/html", "Content-Length": Buffer.byteLength(dataToSend, 'utf8'), "Server": "node.js/" + process.version});
     response.end(dataToSend);
 }
 

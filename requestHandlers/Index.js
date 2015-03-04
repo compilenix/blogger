@@ -90,8 +90,8 @@ function index(error, header, request, response) {
     // -----------------------------
 
     dataToSend += "</div>\n</body>\n";
-    
-    response.writeHead(htmlCode, { "Content-Type": "text/html", "Content-Length": dataToSend.length, "Server": "node.js/" + process.version});
+
+    response.writeHead(htmlCode, { "Content-Type": "text/html", "Content-Length": Buffer.byteLength(dataToSend, 'utf8'), "Server": "node.js/" + process.version});
     response.end(dataToSend);
 }
 

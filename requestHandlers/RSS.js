@@ -56,7 +56,7 @@ function RSS(request, response) {
     dataToSend += '</channel>\n';
     dataToSend += '</rss>\n';
 
-    response.writeHead(htmlCode, { "Content-Type": "application/xml", "Content-Length": dataToSend.length, "Server": "node.js/" + process.version});
+    response.writeHead(htmlCode, { "Content-Type": "application/rss+xml", "Content-Length": Buffer.byteLength(dataToSend, 'utf8'), "Server": "node.js/" + process.version});
     response.end(dataToSend);
 }
 

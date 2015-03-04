@@ -10,7 +10,8 @@ var root = _Config.root || "/";
 var skipHours = _Config.rss.skipHours || [0, 1, 2, 3, 4, 5];
 var Title = _Config.rss.Title || "Blog";
 var ttl = _Config.rss.ttl || 60;
-var webMaster = _Config.rss.webMaster || "foobar@foo.bar";
+var webMasterMail = _Config.rss.webMasterMail || "foobar@foo.bar";
+var webMaster = _Config.rss.webMaster || "Admin";
 
 function RSS(request, response) {
     var htmlCode = 200;
@@ -36,7 +37,7 @@ function RSS(request, response) {
                 }
 
                 // author
-                dataToSend += "<author>" + author + " &lt;" + authorMail + "&gt;</author>\n";
+                dataToSend += "<author>" + authorMail + " (" + author + ")</author>\n";
                 // link
                 dataToSend += "<link>" + Link + root + "post/?p=" + posts[i] + "</link>\n";
                 // guid
@@ -74,7 +75,7 @@ function generateRssHeader() {
     data += '<generator>' + 'node.js/' + process.version + '</generator>\n';
     data += '<ttl>' + ttl + '</ttl>\n';
     if (skipHoursString !== "") { data += '<skipHours>\n' + skipHoursString + '</skipHours>\n'; }
-    data += '<webMaster>' + webMaster + '</webMaster>\n';
+    data += "<webMaster>" + webMasterMail + " (" + webMaster + ")</webMaster>\n";
     data += '<language>' + language + '</language>\n\n';
 
     return data;

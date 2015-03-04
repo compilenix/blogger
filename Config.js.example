@@ -25,7 +25,8 @@ var Config = {
         skipHours: [0, 1, 2, 3, 4, 5, 6, 7],
         Title: "Some Title",
         ttl: 60, // minutes
-        webMaster: "admin@domain.tld"
+        webMaster: "Admin",
+        webMasterMail: "admin@domain.tld"
     },
     area: {
         internal: [

@@ -67,10 +67,11 @@ function generateRssHeader() {
     }
 
     var data = '<?xml version="1.0" encoding="' + Encoding + '"?>\n';
-    data += '<rss version="2.0">\n';
+    data += '<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">\n';
     data += '<channel>\n';
     data += '<title>' + Title + '</title>\n';
     data += '<link>' + Link + root +'</link>\n';
+    data += '<atom:link href="' + Link + '/rss.xml" rel="self" type="application/rss+xml" />\n';
     data += '<description>' + Description + '</description>\n';
     data += '<generator>' + 'node.js/' + process.version + '</generator>\n';
     data += '<ttl>' + ttl + '</ttl>\n';

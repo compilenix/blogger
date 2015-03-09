@@ -15,7 +15,11 @@ function Start(handle, route) {
 }
 
 function process_request(request, response, handle, route) {
-    route(handle, request, response);
+    if (_fscache.has(request)) {
+        _fscache.send(request, response);
+    } else {
+        route(handle, request, response);
+    }
 }
 
 

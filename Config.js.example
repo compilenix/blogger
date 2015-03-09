@@ -6,6 +6,7 @@ var Config = {
     author: "user",
     authorMail: "user@domain.tld",
     Link: "http://127.0.0.1",
+    DirectoryCache: "cache",
     server: {
         port: 8000
     },

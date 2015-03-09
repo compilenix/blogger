@@ -4,6 +4,7 @@ _http = require('http');
 _url = require('url');
 _querystring = require('querystring');
 _fs = require('fs');
+_crypto = require('crypto');
 
 _rfc822Date = require('rfc822-date');
 
@@ -16,10 +17,12 @@ if (_fs.existsSync("./Config.js")) {
 _Config = require(_ConfigFile).Config;
 
 _writeHead = require('./writeHead.js');
+_fscache = require('./fsCache.js');
 _helper = require('./helper.js');
 ﻿var server = require('./server.js');
 var router = require('./router.js');
 var requestHandlers = require("./requestHandlers.js");
+
 
 
 function Init() {

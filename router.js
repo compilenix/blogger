@@ -6,7 +6,7 @@ function Route(handle, request, response) {
 		return handle[pathname](request, response);
 	} else {
 		console.log("No request handler found for: " + pathname);
-		response.setResponsCode(404);
+		response.setResponseCode(404);
 		return response;
 	}
 }

@@ -19,11 +19,12 @@ function Start(handle, route) {
 function process_request(request, response, handle, route) {
 	if (_fscache.has(request)) {
 		response = _fscache.send(request, response);
+		response.send();
 	} else {
 		response = route(handle, request, response);
-		_fscache.add(request, response.getContent());
+		_fscache.add(request, response.getContent(), response.getContentType(), response.getResponseCode());
+		response.send();
 	}
-	response.send();
 }
 
 

@@ -69,6 +69,7 @@ function page(header, request, response, index) {
 		}
 
 	dataToSend += "</div>\n</body>\n";
+	response.setResponseCode(200);
 	response.setContent(dataToSend);
 	return response;
 }

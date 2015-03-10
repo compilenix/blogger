@@ -55,6 +55,8 @@ function RSS(request, response) {
 
 	dataToSend += '</channel>\n';
 	dataToSend += '</rss>\n';
+	response.setResponseCode(200);
+	response.setContentType('application/rss+xml');
 	response.setContent(dataToSend);
 	return response;
 }

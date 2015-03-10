@@ -28,6 +28,7 @@ function Init() {
     var handle = {};
     handle[_Config.root] = requestHandlers.Index;
     handle[_Config.root + "post/"] = requestHandlers.Post;
+    handle[_Config.root + "page/"] = requestHandlers.Page;
     handle[_Config.root + "rss.xml"] = requestHandlers.RSS;
 
     // static content

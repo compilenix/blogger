@@ -12,8 +12,16 @@ _responseWrapper.prototype.setContent = function (content) {
 	this.updateLength();
 }
 
-_responseWrapper.prototype.getContent = function (content) {
+_responseWrapper.prototype.getContent = function () {
 	return this.data;
+}
+
+_responseWrapper.prototype.getResponseCode = function () {
+	return this.responseCode;
+}
+
+_responseWrapper.prototype.getContentType = function () {
+	return this.contentType;
 }
 
 

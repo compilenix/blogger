@@ -6,8 +6,8 @@ function Route(handle, request, response) {
 		return handle[pathname](request, response);
 	} else {
 		console.log("No request handler found for: " + pathname);
-		_writeHead["_404"](response);
-		response.end();
+		response.setResponsCode(404);
+		return response;
 	}
 }
 

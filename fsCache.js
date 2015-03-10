@@ -39,7 +39,7 @@ function _hash(req) {
 }
 
 function _path(req) {
-	return DirectoryCache + '/' + _hash(req);
+	return DirectoryCache + '/' + _hash(req) + ".json";
 }
 
 exports.send = send;

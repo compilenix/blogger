@@ -3,5 +3,6 @@ parts/
 *.log
 *.gz
 *.bz2
+cache/
 node_modules
 /Config.js

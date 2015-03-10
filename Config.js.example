@@ -8,6 +8,7 @@ var Config = {
     Link: "http://127.0.0.1",
     DirectoryCache: "cache",
     ClearCacheOnStart: true,
+    HandleCacheControl: true,
     DefaultContentType: "text/html",
     ServerVersion: "node.js/" + process.version,
     server: {

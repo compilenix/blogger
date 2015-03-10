@@ -1,4 +1,5 @@
 ﻿var Port = _Config.server.port || 80;
+var HandleCacheControl = _Config.HandleCacheControl || true;
 
 function Start(handle, route) {
 
@@ -17,7 +18,12 @@ function Start(handle, route) {
 }
 
 function process_request(request, response, handle, route) {
-	if (_fscache.has(request)) {
+	var use_cache = true;
+	if (HandleCacheControl && request.headers["cache-control"] === 'no-cache') {
+		use_cache = false;
+	}
+
+	if (use_cache && _fscache.has(request)) {
 		response = _fscache.send(request, response);
 	} else {
 		response = route(handle, request, response);

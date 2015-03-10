@@ -1,4 +1,5 @@
-﻿
+﻿var Port = _Config.server.port || 80;
+
 function Start(handle, route) {
 
     function onRequest(request, response) {
@@ -12,7 +13,7 @@ function Start(handle, route) {
 
     var server = _http.createServer(onRequest);
     server.on('error', onErr);
-    server.listen(_Config.server.port || 80);
+    server.listen(Port);
 }
 
 function process_request(request, response, handle, route) {

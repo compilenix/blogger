@@ -1,10 +1,10 @@
 function _responseWrapper(response) {
     this.response = response;
     this.data = '';
-    this.responseCode = 200;
+    this.responseCode = 404;
     this.contentLength = 0;
-    this.contentType = "text/html";
-    this.serverVersion = "node.js/" + process.version;
+    this.contentType = _Config.DefaultContentType || "text/html";
+    this.serverVersion = _Config.ServerVersion || "node.js/" + process.version;
 }
 
 _responseWrapper.prototype.setContent = function (content) {

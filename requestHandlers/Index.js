@@ -7,12 +7,10 @@ var MessageLastPage = _Config.post.MessageLastPage || "Prev";
 var MessageEnd = _Config.post.MessageEnd || "The end.";
 
 function Index(request, response) {
-    _fs.readFile(FileHeader, 'utf8', function (error, data) {
-        index(error, data, request, response);
-    });
+    return index(_fs.readFileSync(FileHeader, 'utf8'), request, response);
 }
 
-function index(error, header, request, response) {
+function index(header, request, response) {
 
     var htmlCode = 200;
     var dataToSend = header;
@@ -90,9 +88,8 @@ function index(error, header, request, response) {
     // -----------------------------
 
     dataToSend += "</div>\n</body>\n";
-    _fscache.add(request, dataToSend);
-    response.writeHead(htmlCode, { "Content-Type": "text/html", "Content-Length": Buffer.byteLength(dataToSend, 'utf8'), "Server": "node.js/" + process.version});
-    response.end(dataToSend);
+    response.setContent(dataToSend);
+    return response;
 }
 
 

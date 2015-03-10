@@ -3,12 +3,10 @@ var FileHeader = _Config.post.FileHeader || "header.html";
 var DirectoryPosts = _Config.post.DirectoryPosts || "posts";
 
 function Post(request, response) {
-    _fs.readFile(FileHeader, 'utf8', function (error, data) {
-        post(error, data, request, response);
-    });
+    return post(_fs.readFileSync(FileHeader, 'utf8'), request, response);
 }
 
-function post(error, header, request, response) {
+function post(header, request, response) {
 
     var htmlCode = 404;
     var dataToSend = "";
@@ -31,9 +29,8 @@ function post(error, header, request, response) {
     }
 
     dataToSend += "</body>\n";
-
-    response.writeHead(htmlCode, { "Content-Type": "text/html", "Content-Length": Buffer.byteLength(dataToSend, 'utf8'), "Server": "node.js/" + process.version});
-    response.end(dataToSend);
+    response.setContent(dataToSend);
+    return response;
 }
 
 

@@ -2,6 +2,7 @@
 function Start(handle, route) {
 
     function onRequest(request, response) {
+        var response = new responseWrapper(response);
         process_request(request, response, handle, route);
     }
 
@@ -16,10 +17,12 @@ function Start(handle, route) {
 
 function process_request(request, response, handle, route) {
     if (_fscache.has(request)) {
-        _fscache.send(request, response);
+        response = _fscache.send(request, response);
     } else {
-        route(handle, request, response);
+        response = route(handle, request, response);
+        _fscache.add(request, response.getContent());
     }
+    response.send();
 }
 
 

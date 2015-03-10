@@ -15,7 +15,7 @@ if (_fs.existsSync("./Config.js")) {
     _ConfigFile = "./Config.js.example";
 }
 _Config = require(_ConfigFile).Config;
-
+responseWrapper = require('./responseWrapper.js').responseWrapper;
 _writeHead = require('./writeHead.js');
 _fscache = require('./fsCache.js');
 _helper = require('./helper.js');
@@ -24,9 +24,7 @@ var router = require('./router.js');
 var requestHandlers = require("./requestHandlers.js");
 
 
-
 function Init() {
-
     var handle = {};
     handle[_Config.root] = requestHandlers.Index;
     handle[_Config.root + "post/"] = requestHandlers.Post;

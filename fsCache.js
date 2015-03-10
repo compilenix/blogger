@@ -12,6 +12,15 @@ function send(req, res) {
 	}
 }
 
+function clear() {
+	var cacheFileList = _fs.readdirSync(DirectoryCache);
+
+	for (var i = 0; i < cacheFileList.length; i++) {
+		console.log("Remove cache file: " + DirectoryCache + "/" + cacheFileList[i]);
+		_fs.unlinkSync(DirectoryCache + "/" + cacheFileList[i]);
+	}
+}
+
 function add(req, cont) {
 	_fs.writeFileSync(_path(req), cont);
 }
@@ -28,4 +37,5 @@ function _path(req) {
 
 exports.send = send;
 exports.add = add;
+exports.clear = clear;
 exports.has = has;

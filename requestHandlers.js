@@ -7,7 +7,7 @@ Fonts["Bold"] = fonts.Bold;
 Fonts["Bold_path"] = _Config.fonts.Bold_path;
 
 replaceAll = function (find, replace, str) {
-  return str.replace(new RegExp(find.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&'), 'g'), replace);
+	return str.replace(new RegExp(find.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&'), 'g'), replace);
 };
 
 exports.Index = require('./requestHandlers/Page.js').Index;

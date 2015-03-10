@@ -31,11 +31,6 @@ function Init() {
 	handle[_Config.root + "page/"] = requestHandlers.Page;
 	handle[_Config.root + "rss.xml"] = requestHandlers.RSS;
 
-	// static content
-	handle["/favicon.ico"] = requestHandlers.Favicon;
-	handle["/" + requestHandlers.Fonts["Regular_path"]] = requestHandlers.Fonts["Regular"];
-	handle["/" + requestHandlers.Fonts["Bold_path"]] = requestHandlers.Fonts["Bold"];
-
 	server.Start(handle, router.Route, domain);
 }
 

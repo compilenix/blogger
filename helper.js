@@ -1,8 +1,12 @@
 var DirectoryPosts = _Config.post.DirectoryPosts || "posts";
 
-function getPosts() {
+function getPosts(noreverse) {
     var data = [];
-    var posts = _fs.readdirSync(DirectoryPosts).reverse();
+    if (noreverse) {
+        var posts = _fs.readdirSync(DirectoryPosts);
+    } else {
+        var posts = _fs.readdirSync(DirectoryPosts).reverse();
+    }
 
     for (var i = 0; i < posts.length; i++) {
         if (_fs.existsSync(DirectoryPosts + '/' + posts[i] + ".asc")) {

@@ -17,8 +17,8 @@ var Config = {
 		DirectoryPosts: "posts",
 		DeliverPgpSignatures: true, // if available
 		CountPosts: 5,
-		MessageNextPage: "Next",
-		MessageLastPage: "Prev",
+		MessageOlderPage: "Older",
+		MessageNewerPage: "Newer",
 		MessageEnd: "The end."
 	},
 	rss: {

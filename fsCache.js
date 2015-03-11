@@ -10,6 +10,7 @@ function send(req, res) {
 		res.setResponseCode(data.response_code);
 		res.setContentType(data.mime_type);
 		res.setLastModified(_rfc822Date(new Date(_fs.statSync(_path(req)).mtime)));
+		res.setETag(getETag(req));
 		res.setContent(data.content);
 		return res;
 	}
@@ -21,6 +22,10 @@ function getLastModified(req) {
 	} else {
 		return false;
 	}
+}
+
+function getETag(req) {
+	return _hash(req);
 }
 
 function clear() {
@@ -63,5 +68,6 @@ function _init() {
 exports.send = send;
 exports.add = add;
 exports.getLastModified = getLastModified;
+exports.getETag = getETag;
 exports.clear = clear;
 exports.has = has;

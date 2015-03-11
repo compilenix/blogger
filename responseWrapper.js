@@ -8,6 +8,7 @@ function _responseWrapper(response) {
 	this.expires = _Config.HeaderExpires || 60000 * 10; // 10 Minutes
 	this.cacheControl = _Config.HeaderCacheControl || "public";
 	this.lastModified = _rfc822Date(new Date(Date.now()));
+	this.eTag = '';
 }
 
 _responseWrapper.prototype.setContent = function (content) {
@@ -31,6 +32,10 @@ _responseWrapper.prototype.setLastModified = function (rfc822Date) {
 	this.lastModified = rfc822Date;
 }
 
+_responseWrapper.prototype.setETag = function (sha1sum) {
+	this.eTag = sha1sum;
+}
+
 _responseWrapper.prototype.setContentType = function (type) {
 	this.contentType = type;
 }
@@ -50,7 +55,8 @@ _responseWrapper.prototype.send = function () {
 		"Server": this.serverVersion,
 		"Cache-Control": "max-age=" + this.expires,
 		"Last-Modified": this.lastModified,
-		"Expires": _rfc822Date(new Date(Date.now() + this.expires))
+		"Expires": _rfc822Date(new Date(Date.now() + this.expires)),
+		"ETag": this.eTag
 	});
 	this.response.end(this.data);
 }

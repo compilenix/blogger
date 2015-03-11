@@ -19,10 +19,13 @@ function Start(handle, route) {
 
 function process_request(request, response, handle, route) {
 	var mtime = _fscache.getLastModified(request);
-	if (request.headers["if-modified-since"] === mtime) {
+	var eTag = _fscache.getETag(request);
+	response.setETag(eTag);
+	if ((request.headers["if-modified-since"] === mtime)
+		&& (request.headers["if-none-match"] === eTag)) {
+
 		response.setResponseCode(304);
 		response.setLastModified(mtime);
-		console.log(response);
 	} else {
 
 		var use_cache = true;

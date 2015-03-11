@@ -14,7 +14,6 @@ var webMasterMail = _Config.rss.webMasterMail || "foobar@foo.bar";
 var webMaster = _Config.rss.webMaster || "Admin";
 
 function RSS(request, response) {
-	var htmlCode = 200;
 	var posts = _helper.getPosts();
 	var counter = 0;
 	var data = "";

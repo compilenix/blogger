@@ -9,8 +9,17 @@ function send(req, res) {
 		var data = JSON.parse(_fs.readFileSync(_path(req), 'utf8'));
 		res.setResponseCode(data.response_code);
 		res.setContentType(data.mime_type);
+		res.setLastModified(_rfc822Date(new Date(_fs.statSync(_path(req)).mtime)));
 		res.setContent(data.content);
 		return res;
+	}
+}
+
+function getLastModified(req) {
+	if (has(req)) {
+		return _rfc822Date(new Date(_fs.statSync(_path(req)).mtime));
+	} else {
+		return false;
 	}
 }
 
@@ -31,6 +40,7 @@ function add(req, cont, mime, code) {
 		mime_type: mime,
 		response_code:code
 	});
+	console.log("Add cache file: " + _path(req));
 	_fs.writeFileSync(_path(req), data);
 }
 
@@ -52,5 +62,6 @@ function _init() {
 
 exports.send = send;
 exports.add = add;
+exports.getLastModified = getLastModified;
 exports.clear = clear;
 exports.has = has;

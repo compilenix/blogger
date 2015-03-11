@@ -18,19 +18,26 @@ function Start(handle, route) {
 }
 
 function process_request(request, response, handle, route) {
-	var use_cache = true;
-	if (HandleCacheControl && request.headers["cache-control"] === 'no-cache') {
-		use_cache = false;
-	}
-
-	if (use_cache && _fscache.has(request)) {
-		response = _fscache.send(request, response);
-		response.send();
+	var mtime = _fscache.getLastModified(request);
+	if (request.headers["if-modified-since"] === mtime) {
+		response.setResponseCode(304);
+		response.setLastModified(mtime);
+		console.log(response);
 	} else {
-		response = route(handle, request, response);
-		_fscache.add(request, response.getContent(), response.getContentType(), response.getResponseCode());
-		response.send();
+
+		var use_cache = true;
+		if (HandleCacheControl && request.headers["cache-control"] === 'no-cache') {
+			use_cache = false;
+		}
+
+		if (use_cache && _fscache.has(request)) {
+			response = _fscache.send(request, response);
+		} else {
+			response = route(handle, request, response);
+			_fscache.add(request, response.getContent(), response.getContentType(), response.getResponseCode());
+		}
 	}
+	response.send();
 }
 
 

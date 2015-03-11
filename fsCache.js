@@ -15,6 +15,7 @@ function send(req, res) {
 }
 
 function clear() {
+	_init();
 	var cacheFileList = _fs.readdirSync(DirectoryCache);
 
 	for (var i = 0; i < cacheFileList.length; i++) {
@@ -24,6 +25,7 @@ function clear() {
 }
 
 function add(req, cont, mime, code) {
+	_init();
             var data = JSON.stringify({
                 content: cont,
                 mime_type: mime,
@@ -40,6 +42,12 @@ function _hash(req) {
 
 function _path(req) {
 	return DirectoryCache + '/' + _hash(req) + ".json";
+}
+
+function _init() {
+	if (! _fs.existsSync(DirectoryCache)) {
+		_fs.mkdirSync(DirectoryCache);
+	}
 }
 
 exports.send = send;

@@ -29,6 +29,7 @@ function Init() {
 	handle[_Config.root] = {callback: requestHandlers.Index, cache: true};
 	handle[_Config.root + "post/"] = {callback: requestHandlers.Post, cache: true};
 	handle[_Config.root + "page/"] = {callback: requestHandlers.Page, cache: true};
+    handle[_Config.root + "ajax"] = {callback: requestHandlers.Ajax, cache: false};
 	handle[_Config.root + "rss.xml"] = {callback: requestHandlers.RSS, cache: true};
 
 

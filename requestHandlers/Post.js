@@ -3,7 +3,7 @@ var FileHeader = _Config.post.FileHeader || "header.html";
 var DirectoryPosts = _Config.post.DirectoryPosts || "posts";
 
 function Post(request, response, write_cache) {
-	return post(_fs.readFileSync(FileHeader, 'utf8'), request, response);
+	return post(_fs.readFileSync(FileHeader, 'utf8'), request, response, write_cache);
 }
 
 function post(header, request, response, write_cache) {
@@ -33,6 +33,7 @@ function post(header, request, response, write_cache) {
 	response.setContent(dataToSend);
 	if (write_cache) {
 		_fscache.add(request, response.getContent(), response.getContentType(), response.getResponseCode());
+		response.setLastModified(_fscache.getLastModified(request));
 	}
 	response.send();
 	return true;

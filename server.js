@@ -4,7 +4,6 @@ var HandleCacheControl = _Config.HandleCacheControl || true;
 function Start(handle, route) {
 
 	function onRequest(request, response) {
-		console.log(request)
 		var response = new responseWrapper(response);
 		process_request(request, response, handle, route);
 	}
@@ -19,16 +18,12 @@ function Start(handle, route) {
 }
 
 function process_request(request, response, handle, route) {
-	var mtime = _fscache.getLastModified(request);
-	var eTag = _fscache.getETag(request);
 
-	if ((request.headers["if-modified-since"] === mtime) && (request.headers["if-none-match"] === eTag)) {
-		response.setETag(eTag);
+	if (_fscache.has(request) && request.headers["if-modified-since"] === _fscache.getLastModified(request)) {
 		response.setResponseCode(304);
-		response.setLastModified(mtime);
+		response.setLastModified(_fscache.getLastModified(request));
 		response.send();
 	} else {
-		var use_cache = true;
 		var pathname = _url.parse(request.url).pathname;
 		var callback = handle[pathname].callback;
 
@@ -36,7 +31,9 @@ function process_request(request, response, handle, route) {
 		var write_cache = handle[pathname].cache;
 
 		if (deliver_cache && _fscache.has(request)) {
+			response.setLastModified(_fscache.getLastModified(request));
 			_fscache.send(request, response);
+			return false;
 		}
 
 		route(callback, request, response, write_cache);

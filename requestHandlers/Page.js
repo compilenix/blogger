@@ -73,6 +73,7 @@ function page(header, request, response, index, write_cache) {
 	response.setContent(dataToSend);
 	if (write_cache) {
 		_fscache.add(request, response.getContent(), response.getContentType(), response.getResponseCode());
+		response.setLastModified(_fscache.getLastModified(request));
 	}
 	response.send();
 	return true;

@@ -1,4 +1,4 @@
-function Ajax(request, response) {
+function Ajax(request, response, write_cache) {
 
 	if (request.method == 'POST') {
 		var body = '';

@@ -2,8 +2,8 @@
 var FileHeader = _Config.post.FileHeader || "header.html";
 var DirectoryPosts = _Config.post.DirectoryPosts || "posts";
 var CountPosts = _Config.post.CountPosts || 10;
-var MessageNextPage = _Config.post.MessageNextPage || "Next";
-var MessageLastPage = _Config.post.MessageLastPage || "Prev";
+var MessageOlderPage = _Config.post.MessageOlderPage || "Older";
+var MessageNewerPage = _Config.post.MessageNewerPage || "Newer";
 var MessageEnd = _Config.post.MessageEnd || "The end.";
 
 function Page(request, response, write_cache) {
@@ -61,12 +61,12 @@ function page(header, request, response, index, write_cache) {
 	dataToSend += '<div style="text-align:center">';
 
 	if (p < pageCount) {
-		dataToSend += '<a href="/page/?p=' + (p + 1)  + '">Newer</a>';
+		dataToSend += '<a href="/page/?p=' + (p + 1)  + '">' + MessageNewerPage + '</a>';
 	}
 
-		if (p > 1) {
-			dataToSend += '<a href="/page/?p=' + (p - 1)  + '">Older</a>';
-		}
+	if (p > 1) {
+		dataToSend += '<a href="/page/?p=' + (p - 1)  + '">' + MessageOlderPage + '</a>';
+	}
 
 	dataToSend += "</div>\n</body>\n";
 	response.setResponseCode(200);

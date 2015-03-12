@@ -13,8 +13,7 @@ var ttl = _Config.rss.ttl || 60;
 var webMasterMail = _Config.rss.webMasterMail || "foobar@foo.bar";
 var webMaster = _Config.rss.webMaster || "Admin";
 
-function RSS(request, response, write_cache) {
-	var htmlCode = 200;
+function RSS(request, response) {
 	var posts = _helper.getPosts();
 	var counter = 0;
 	var data = "";

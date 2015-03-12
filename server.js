@@ -19,18 +19,28 @@ function Start(handle, route) {
 }
 
 function process_request(request, response, handle, route) {
-	var use_cache = true;
-	var pathname = _url.parse(request.url).pathname;
-	var callback = handle[pathname].callback;
+	var mtime = _fscache.getLastModified(request);
+	var eTag = _fscache.getETag(request);
 
-	var deliver_cache = !(HandleCacheControl && request.headers["cache-control"] === 'no-cache');
-	var write_cache = handle[pathname].cache;
+	if ((request.headers["if-modified-since"] === mtime) && (request.headers["if-none-match"] === eTag)) {
+		response.setETag(eTag);
+		response.setResponseCode(304);
+		response.setLastModified(mtime);
+		response.send();
+	} else {
+		var use_cache = true;
+		var pathname = _url.parse(request.url).pathname;
+		var callback = handle[pathname].callback;
 
-	if (deliver_cache && _fscache.has(request)) {
-		_fscache.send(request, response);
+		var deliver_cache = !(HandleCacheControl && request.headers["cache-control"] === 'no-cache');
+		var write_cache = handle[pathname].cache;
+
+		if (deliver_cache && _fscache.has(request)) {
+			_fscache.send(request, response);
+		}
+
+		route(callback, request, response, write_cache);
 	}
-
-	route(callback, request, response, write_cache);
 
 	return false;
 }

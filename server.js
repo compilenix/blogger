@@ -3,6 +3,8 @@ var HandleCacheControl = _Config.HandleCacheControl || true;
 
 function Start(handle, route) {
 
+	var handle = handle;
+
 	function onRequest(request, response) {
 		var response = new responseWrapper(response);
 		process_request(request, response, handle, route);

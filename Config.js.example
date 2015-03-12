@@ -10,6 +10,7 @@ var Config = {
 	HandleCacheControl: true,
 	DefaultContentType: "text/html",
 	ServerVersion: "node.js/" + process.version,
+	APIKey: 'ggg',
 	server: {
 		port: 8000
 	},

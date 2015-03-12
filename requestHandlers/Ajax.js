@@ -1,3 +1,5 @@
+
+
 function Ajax(request, response, write_cache) {
 
 	if (request.method == 'POST') {
@@ -6,7 +8,7 @@ function Ajax(request, response, write_cache) {
             body += data;
         });
         request.on('end', function () {
-            var post = qs.parse(body);
+            var post = _querystring.parse(body);
 
             if (!checkApiKey(post.apikey)) {
             	response.setContent('{}');
@@ -16,16 +18,18 @@ function Ajax(request, response, write_cache) {
 				return false;
             }
 
+
+
 			var ret = '{}';
-			switch (action) {
+			switch (post.action) {
 				case 'postlist':
-					ret = postList(request);
+					ret = postList();
 				break;
 				case 'getpost':
-					ret = getPost(request);
+					ret = getPost(post);
 				break;
 				case 'writepost':
-					ret = writePost(request);
+					ret = writePost(post);
 				break;
 				default:
 					ret = '{}';
@@ -46,16 +50,24 @@ function Ajax(request, response, write_cache) {
 	return true;
 }
 
-function postList(request) {
-
+function postList() {
+	return JSON.stringify(_helper.getPosts());
 }
 
-function getPost(request) {
-
+function getPost(post) {
+	if (post.postid) {
+		return JSON.stringify({id: post.postid, content: _helper.getPost(post.postid)});
+	} else {
+		return '{}';
+	}
 }
 
 function writePost(request) {
 
+}
+
+function checkApiKey(key) {
+	return key === _Config.APIKey;
 }
 
 exports.Ajax = Ajax;

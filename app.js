@@ -26,10 +26,11 @@ var requestHandlers = require("./requestHandlers.js");
 
 function Init() {
 	var handle = {};
-	handle[_Config.root] = requestHandlers.Index;
-	handle[_Config.root + "post/"] = requestHandlers.Post;
-	handle[_Config.root + "page/"] = requestHandlers.Page;
-	handle[_Config.root + "rss.xml"] = requestHandlers.RSS;
+	handle[_Config.root] = {callback: requestHandlers.Index, cache: true};
+	handle[_Config.root + "post/"] = {callback: requestHandlers.Post, cache: true};
+	handle[_Config.root + "page/"] = {callback: requestHandlers.Page, cache: true};
+	handle[_Config.root + "rss.xml"] = {callback: requestHandlers.RSS, cache: true};
+
 
 	server.Start(handle, router.Route, domain);
 }

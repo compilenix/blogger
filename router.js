@@ -1,9 +1,7 @@
-﻿
-function Route(handle, request, response) {
-	var pathname = _url.parse(request.url).pathname;
+﻿function Route(callback, request, response) {
 
-	if (typeof handle[pathname] === 'function') {
-		return handle[pathname](request, response);
+	if (typeof callback === 'function') {
+		return callback(request, response);
 	} else {
 		console.log("No request handler found for: " + pathname);
 		response.setResponseCode(404);

@@ -6,15 +6,15 @@ var MessageNextPage = _Config.post.MessageNextPage || "Next";
 var MessageLastPage = _Config.post.MessageLastPage || "Prev";
 var MessageEnd = _Config.post.MessageEnd || "The end.";
 
-function Page(request, response) {
-	return page(_fs.readFileSync(FileHeader, 'utf8'), request, response);
+function Page(request, response, write_cache) {
+	return page(_fs.readFileSync(FileHeader, 'utf8'), request, response, false, write_cache);
 }
 
-function Index(request, response) {
-	return page(_fs.readFileSync(FileHeader, 'utf8'), request, response, true);
+function Index(request, response, write_cache) {
+	return page(_fs.readFileSync(FileHeader, 'utf8'), request, response, true, write_cache);
 }
 
-function page(header, request, response, index) {
+function page(header, request, response, index, write_cache) {
 
 	var dataToSend = header;
 
@@ -71,7 +71,11 @@ function page(header, request, response, index) {
 	dataToSend += "</div>\n</body>\n";
 	response.setResponseCode(200);
 	response.setContent(dataToSend);
-	return response;
+	if (write_cache) {
+		_fscache.add(request, response.getContent(), response.getContentType(), response.getResponseCode());
+	}
+	response.send();
+	return true;
 }
 
 

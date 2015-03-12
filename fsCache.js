@@ -7,10 +7,10 @@ function has(req) {
 function send(req, res) {
 	if (has(req)) {
 		var data = JSON.parse(_fs.readFileSync(_path(req), 'utf8'));
-                        res.setResponseCode(data.response_code);
-                        res.setContentType(data.mime_type);
+        res.setResponseCode(data.response_code);
+        res.setContentType(data.mime_type);
 		res.setContent(data.content);
-		return res;
+		res.send();
 	}
 }
 

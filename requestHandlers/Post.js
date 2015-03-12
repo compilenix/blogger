@@ -2,11 +2,11 @@
 var FileHeader = _Config.post.FileHeader || "header.html";
 var DirectoryPosts = _Config.post.DirectoryPosts || "posts";
 
-function Post(request, response) {
+function Post(request, response, write_cache) {
 	return post(_fs.readFileSync(FileHeader, 'utf8'), request, response);
 }
 
-function post(header, request, response) {
+function post(header, request, response, write_cache) {
 
 	var htmlCode = 404;
 	var dataToSend = "";
@@ -31,7 +31,11 @@ function post(header, request, response) {
 	dataToSend += "</body>\n";
 	response.setResponseCode(htmlCode);
 	response.setContent(dataToSend);
-	return response;
+	if (write_cache) {
+		_fscache.add(request, response.getContent(), response.getContentType(), response.getResponseCode());
+	}
+	response.send();
+	return true;
 }
 
 

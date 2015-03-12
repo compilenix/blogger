@@ -4,6 +4,7 @@ var HandleCacheControl = _Config.HandleCacheControl || true;
 function Start(handle, route) {
 
 	function onRequest(request, response) {
+		console.log(request)
 		var response = new responseWrapper(response);
 		process_request(request, response, handle, route);
 	}
@@ -26,18 +27,12 @@ function process_request(request, response, handle, route) {
 	var write_cache = handle[pathname].cache;
 
 	if (deliver_cache && _fscache.has(request)) {
-		response = _fscache.send(request, response);
-		response.send();
-		return null;
+		_fscache.send(request, response);
 	}
 
-	var response = route(callback, request, response);
+	route(callback, request, response, write_cache);
 
-	if (write_cache) {
-		_fscache.add(request, response.getContent(), response.getContentType(), response.getResponseCode());
-	}
-
-	response.send();
+	return false;
 }
 
 

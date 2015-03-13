@@ -29,19 +29,19 @@ function process_request(request, response, handle, route) {
 		return false;
 	}
 
-	if (_fscache.has(request) && request.headers["if-modified-since"] === _fscache.getLastModified(request)) {
+	if (_cache && _cache.has(request) && request.headers["if-modified-since"] === _cache.getLastModified(request)) {
 		response.setResponseCode(304);
-		response.setLastModified(_fscache.getLastModified(request));
+		response.setLastModified(_cache.getLastModified(request));
 		response.send();
 	} else {
 		var callback = handle[pathname].callback;
 
 		var deliver_cache = !(HandleCacheControl && request.headers["cache-control"] === 'no-cache');
-		var write_cache = handle[pathname].cache;
+		var write_cache = _cache && handle[pathname].cache;
 
-		if (deliver_cache && _fscache.has(request)) {
-			response.setLastModified(_fscache.getLastModified(request));
-			_fscache.send(request, response);
+		if (_cache && deliver_cache && _cache.has(request)) {
+			response.setLastModified(_cache.getLastModified(request));
+			_cache.send(request, response);
 			return false;
 		}
 

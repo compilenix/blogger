@@ -5,7 +5,6 @@ _url = require('url');
 _querystring = require('querystring');
 _fs = require('fs');
 _crypto = require('crypto');
-
 _rfc822Date = require('rfc822-date');
 
 _ConfigFile = undefined;
@@ -17,12 +16,10 @@ if (_fs.existsSync("./Config.js")) {
 _Config = require(_ConfigFile).Config;
 responseWrapper = require('./responseWrapper.js').responseWrapper;
 _writeHead = require('./writeHead.js');
-_fscache = require('./fsCache.js');
 _helper = require('./helper.js');
 ﻿var server = require('./server.js');
 var router = require('./router.js');
 var requestHandlers = require("./requestHandlers.js");
-
 
 function Init() {
 	var handle = {};
@@ -36,13 +33,33 @@ function Init() {
 	server.Start(handle, router.Route, domain);
 }
 
+_cache = {};
+
+switch (_Config.cache) {
+case 'fsCache':
+	console.log('using fsCache module for caching');
+	_cache = require('./fsCache.js');
+	break;
+case 'memCache':
+	console.log('using memCache module for caching');
+	var c = require('./memCache.js');
+	_cache = new c.memCache();
+	break;
+case 'none':
+default:
+	console.log('using no cache');
+	_cache = false;
+	break;
+}
+
+
 
 
 
 if (_Cluster.isMaster) {
 
-	if (_Config.ClearCacheOnStart) {
-		_fscache.clear();
+	if (_cache && _Config.ClearCacheOnStart) {
+		_cache.clear();
 	}
 
 	for (var i = _Config.threads; i > 0; i--) {
@@ -62,6 +79,7 @@ if (_Cluster.isMaster) {
 		_Cluster.fork();
 	});
 } else if (_Cluster.isWorker) {
+
 
 	var domain = require('domain').create();
 

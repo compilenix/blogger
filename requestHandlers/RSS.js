@@ -58,8 +58,8 @@ function RSS(request, response, write_cache) {
 	response.setContentType('application/rss+xml');
 	response.setContent(dataToSend);
 	if (write_cache) {
-		_fscache.add(request, response.getContent(), response.getContentType(), response.getResponseCode());
-		response.setLastModified(_fscache.getLastModified(request));
+		_cache.add(request, response.getContent(), response.getContentType(), response.getResponseCode());
+		response.setLastModified(_cache.getLastModified(request));
 	}
 	response.send();
 }

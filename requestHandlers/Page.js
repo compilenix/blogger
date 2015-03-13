@@ -71,8 +71,8 @@ function page(request, response, index, write_cache) {
 	response.setResponseCode(200);
 	response.setContent(dataToSend);
 	if (write_cache) {
-		_fscache.add(request, response.getContent(), response.getContentType(), response.getResponseCode());
-		response.setLastModified(_fscache.getLastModified(request));
+		_cache.add(request, response.getContent(), response.getContentType(), response.getResponseCode());
+		response.setLastModified(_cache.getLastModified(request));
 	}
 	response.send();
 	return true;

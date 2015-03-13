@@ -25,6 +25,13 @@ function getPost(id) {
 	}
 }
 
+function getPage(content) {
+	var header = _fs.readFileSync((_Config.post.FileHeader || "header.html"), 'utf8');
+	var footer = _fs.readFileSync((_Config.post.FileFooter || "footer.html"), 'utf8');
+	return header + content + footer;
+}
+
 
 exports.getPost = getPost;
 exports.getPosts = getPosts;
+exports.getPage = getPage;

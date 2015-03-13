@@ -7,20 +7,16 @@ var MessageNewerPage = _Config.post.MessageNewerPage || "Newer";
 var MessageEnd = _Config.post.MessageEnd || "The end.";
 
 function Page(request, response, write_cache) {
-	return page(_fs.readFileSync(FileHeader, 'utf8'), request, response, false, write_cache);
+	return page(request, response, false, write_cache);
 }
 
 function Index(request, response, write_cache) {
-	return page(_fs.readFileSync(FileHeader, 'utf8'), request, response, true, write_cache);
+	return page(request, response, true, write_cache);
 }
 
-function page(header, request, response, index, write_cache) {
-
-	var dataToSend = header;
+function page(request, response, index, write_cache) {
 
 	var posts = _helper.getPosts(true);
-
-
 	var pageCount = Math.ceil(posts.length / CountPosts);
 
 	if (!index) {
@@ -38,37 +34,40 @@ function page(header, request, response, index, write_cache) {
 	}
 
 
-	dataToSend += '<ul>\n';
+	var content = '<ul>\n';
 
 	var lastPost = p * CountPosts;
 	var firstPost = lastPost - CountPosts;
 
 	for (var i = lastPost; i > firstPost; i--) {
 		if (posts[i - 1]) {
-			dataToSend += '<li>';
-			dataToSend += '[<a href="/post/?p=' + posts[i - 1] + '">post</a>] ';
-			dataToSend += _helper.getPost(posts[i - 1]);
-			dataToSend += '</li>\n';
+			content += '<li>';
+			content += '[<a href="/post/?p=' + posts[i - 1] + '">post</a>] ';
+			content += _helper.getPost(posts[i - 1]);
+			content += '</li>\n';
 		}
 	}
 
-	dataToSend += '</ul>\n\n';
+	content += '</ul>\n\n';
 
 	if (p == 1) {
-		dataToSend += '<div style="text-align:center"><h2>' + MessageEnd + '</h2></div>';
+		content += '<div style="text-align:center"><h2>' + MessageEnd + '</h2></div>';
 	}
 
-	dataToSend += '<div style="text-align:center">';
+	content += '<div style="text-align:center">';
 
 	if (p < pageCount) {
-		dataToSend += '<a href="/page/?p=' + (p + 1)  + '">' + MessageNewerPage + '</a>';
+		content += '<a href="/page/?p=' + (p + 1)  + '">' + MessageNewerPage + '</a>';
 	}
 
 	if (p > 1) {
-		dataToSend += '<a href="/page/?p=' + (p - 1)  + '">' + MessageOlderPage + '</a>';
+		content += '<a href="/page/?p=' + (p - 1)  + '">' + MessageOlderPage + '</a>';
 	}
 
-	dataToSend += "</div>\n</body>\n";
+	content += "</div>\n";
+
+	var dataToSend = _helper.getPage(content);
+
 	response.setResponseCode(200);
 	response.setContent(dataToSend);
 	if (write_cache) {

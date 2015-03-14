@@ -15,7 +15,7 @@ if (_fs.existsSync("./Config.js")) {
 }
 _Config = require(_ConfigFile).Config;
 responseWrapper = require('./responseWrapper.js').responseWrapper;
-_writeHead = require('./writeHead.js');
+_responseCodeMessage = require('./responseCodeMessage.js');
 _helper = require('./helper.js');
 ﻿var server = require('./server.js');
 var router = require('./router.js');
@@ -26,7 +26,7 @@ function Init() {
 	handle[_Config.root] = {callback: requestHandlers.Index, cache: true};
 	handle[_Config.root + "post/"] = {callback: requestHandlers.Post, cache: true};
 	handle[_Config.root + "page/"] = {callback: requestHandlers.Page, cache: true};
-    handle[_Config.root + "ajax/"] = {callback: requestHandlers.Ajax, cache: false};
+	handle[_Config.root + "ajax/"] = {callback: requestHandlers.Ajax, cache: false};
 	handle[_Config.root + "rss.xml"] = {callback: requestHandlers.RSS, cache: true};
 
 
@@ -61,6 +61,8 @@ if (_Cluster.isMaster) {
 	if (_cache && _Config.ClearCacheOnStart) {
 		_cache.clear();
 	}
+
+	if (_Config.threads <= 1) { _Config.threads = 1; }
 
 	for (var i = _Config.threads; i > 0; i--) {
 		_Cluster.fork();

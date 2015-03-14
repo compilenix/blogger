@@ -20,7 +20,7 @@ memCache.prototype.send = function(req, res) {
 
 memCache.prototype.getLastModified = function(req) {
 	if (this.has(req)) {
-		return _rfc822Date(this.cache[this._hash(req)].time);
+		return (this.cache[this._hash(req)].time).toUTCString();
 	} else {
 		return false;
 	}
@@ -38,7 +38,7 @@ memCache.prototype.add = function(req, cont, mime, code) {
 		response_code: code,
 		time: new Date()
 	}
-	console.log("Add mem cache" + this._hash(req));
+	console.log("Add mem cache " + this._hash(req));
 	this.cache[this._hash(req)] = data;
 }
 

@@ -7,7 +7,7 @@ function _responseWrapper(response) {
 	this.serverVersion = _Config.ServerVersion || "node.js/" + process.version;
 	this.expires = _Config.HeaderExpires || 60000 * 10; // 10 Minutes
 	this.cacheControl = _Config.HeaderCacheControl || "public";
-	this.lastModified = _rfc822Date(new Date(Date.now()));
+	this.lastModified = new Date(Date.now()).toUTCString();
 }
 
 _responseWrapper.prototype.setContent = function (content) {
@@ -27,8 +27,8 @@ _responseWrapper.prototype.getContentType = function () {
 	return this.contentType;
 }
 
-_responseWrapper.prototype.setLastModified = function (rfc822Date) {
-	this.lastModified = rfc822Date;
+_responseWrapper.prototype.setLastModified = function (rfc1123Date) {
+	this.lastModified = rfc1123Date;
 }
 
 _responseWrapper.prototype.setContentType = function (type) {
@@ -50,7 +50,7 @@ _responseWrapper.prototype.send = function () {
 		"Server": this.serverVersion,
 		"Cache-Control": "max-age=" + this.expires,
 		"Last-Modified": this.lastModified,
-		"Expires": _rfc822Date(new Date(Date.now() + this.expires))
+		"Expires": new Date(Date.now() + this.expires).toUTCString()
 	});
 	this.response.end(this.data);
 }

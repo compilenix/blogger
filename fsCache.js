@@ -9,7 +9,7 @@ function send(req, res) {
 		var data = JSON.parse(_fs.readFileSync(_path(req), 'utf8'));
 		res.setResponseCode(data.response_code);
 		res.setContentType(data.mime_type);
-		res.setLastModified(_rfc822Date(new Date(_fs.statSync(_path(req)).mtime)));
+		res.setLastModified(new Date(_fs.statSync(_path(req)).mtime).toUTCString());
 		res.setContent(data.content);
 		res.send();
 	}
@@ -17,7 +17,7 @@ function send(req, res) {
 
 function getLastModified(req) {
 	if (has(req)) {
-		return _rfc822Date(new Date(_fs.statSync(_path(req)).mtime));
+		return new Date(_fs.statSync(_path(req)).mtime).toUTCString();
 	} else {
 		return false;
 	}

@@ -17,6 +17,7 @@ var Config = {
 	},
 	post: {
 		FileHeader: "header.html",
+		FileFooter: "footer.html",
 		DirectoryPosts: "posts",
 		DeliverPgpSignatures: true, // if available
 		CountPosts: 5,

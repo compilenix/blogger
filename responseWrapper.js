@@ -8,7 +8,6 @@ function _responseWrapper(response) {
 	this.expires = _Config.HeaderExpires || 60000 * 10; // 10 Minutes
 	this.cacheControl = _Config.HeaderCacheControl || "public";
 	this.lastModified = _rfc822Date(new Date(Date.now()));
-	this.eTag = '';
 }
 
 _responseWrapper.prototype.setContent = function (content) {
@@ -30,10 +29,6 @@ _responseWrapper.prototype.getContentType = function () {
 
 _responseWrapper.prototype.setLastModified = function (rfc822Date) {
 	this.lastModified = rfc822Date;
-}
-
-_responseWrapper.prototype.setETag = function (sha1sum) {
-	this.eTag = sha1sum;
 }
 
 _responseWrapper.prototype.setContentType = function (type) {

@@ -22,7 +22,7 @@ var Config = {
 		CountPosts: 5,
 		MessageOlderPage: "Older",
 		MessageNewerPage: "Newer",
-		MessageEnd: "The end."
+		MessageEnd: '<a href="/code/?c=797">The end.</a>'
 	},
 	rss: {
 		CountPosts: 30,

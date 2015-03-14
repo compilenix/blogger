@@ -29,6 +29,7 @@ function Init() {
 	handle[_Config.root + "ajax/"] = {callback: requestHandlers.Ajax, cache: false};
 	handle[_Config.root + "rss.xml"] = {callback: requestHandlers.RSS, cache: true};
 	handle[_Config.root + "edit"] = {callback: requestHandlers.Edit, cache: true};
+	handle[_Config.root + "code/"] = {callback: requestHandlers.Code, cache: false};
 
 	server.Start(handle, router.Route, domain);
 }

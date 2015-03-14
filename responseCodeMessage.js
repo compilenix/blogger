@@ -11,7 +11,6 @@ function responseCodeMessage(response, diffrentMessage) {
 	}
 
 	response.setContent(content);
-	response.send();
 }
 
 function generateContent(code, message) {
@@ -179,7 +178,7 @@ function getDefaultMessage(code) {
 		case 792:m="Climate change driven catastrophic weather event";break;
 		case 793:m="Zombie Apocalypse";break;
 		case 794:m="Someone let PG near a REPL";break;
-		case 795:m="#heartbleed (see 705)";break;
+		case 795:m="#heartbleed";break;
 		case 797:m="This is the last page of the Internet. Go back";break;
 		case 799:m="End of the world";break;
 

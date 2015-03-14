@@ -20,11 +20,6 @@ function Start(handle, route) {
 }
 
 function process_request(request, response, handle, route) {
-
-	// response.setResponseCode(parseInt(_querystring.parse(_url.parse(request.url).query)["code"]));
-	// _responseCodeMessage.responseCodeMessage(response);
-	// return false;
-
 	var pathname = _url.parse(request.url).pathname;
 
 	if (!handle[pathname]) {

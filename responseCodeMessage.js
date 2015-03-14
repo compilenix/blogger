@@ -26,7 +26,7 @@ function getDefaultMessage(code) {
 		case 101:m="Switching Protocols";break;
 		case 102:m="Processing";break;
 
-		case 200:m="OK 💩";break;
+		case 200:m="OK";break;
 		case 201:m="Created";break;
 		case 202:m="Accepted";break;
 		case 203:m="Non-Authoritative Information";break;
@@ -101,6 +101,87 @@ function getDefaultMessage(code) {
 		case 511:m="Network Authentication Required";break;
 		case 598:m="Network read timeout error";break;
 		case 599:m="Network connect timeout error";break;
+
+		// RFC for the 7XX Range of HTTP Status codes - Developer Errors
+		// see: https://github.com/joho/7XX-rfc
+		// version f916a3f6f5c8ed32b4cf2bcdad43ff0e89da00d3
+		case 701:m="Meh";break;
+		case 702:m="Emacs";break;
+		case 703:m="Explosion";break;
+		case 704:m="Goto Fail";break;
+		case 705:m="I wrote the code and missed the necessary validation by an oversight";break;
+		case 710:m="PHP";break;
+		case 711:m="Convenience Store";break;
+		case 712:m="NoSQL";break;
+		case 719:m="I am not a teapot";break;
+		case 720:m="Unpossible";break;
+		case 721:m="Known Unknowns";break;
+		case 722:m="Unknown Unknowns";break;
+		case 723:m="Tricky";break;
+		case 724:m="This line should be unreachable";break;
+		case 725:m="It works on my machine";break;
+		case 726:m="It's a feature, not a bug";break;
+		case 727:m="32 bits is plenty";break;
+		case 730:m="Fucking Bower";break;
+		case 731:m="Fucking Rubygems";break;
+		case 732:m="Fucking Unic💩de";break;
+		case 733:m="Fucking Deadlocks";break;
+		case 734:m="Fucking Deferreds";break;
+		case 735:m="Fucking IE";break;
+		case 736:m="Fucking Race Conditions";break;
+		case 737:m="FuckThreadsing";break;
+		case 738:m="Fucking Bundler";break;
+		case 739:m="Fucking Windows";break;
+		case 740:m="Computer says no";break;
+		case 741:m="Compiling";break;
+		case 742:m="A kitten dies";break;
+		case 743:m="I thought I knew regular expressions";break;
+		case 744:m="Y U NO write integration tests?";break;
+		case 745:m="I don't always test my code, but when I do I do it in production";break;
+		case 746:m="Missed Ballmer Peak";break;
+		case 747:m="Motherfucking Snakes on the Motherfucking Plane";break;
+		case 748:m="Confounded by Ponies";break;
+		case 749:m="Reserved for Chuck Norris";break;
+		case 750:m="Didn't bother to compile it";break;
+		case 753:m="Syntax Error";break;
+		case 754:m="Too many semi-colons";break;
+		case 755:m="Not enough semi-colons";break;
+		case 756:m="Insufficiently polite";break;
+		case 757:m="Excessively polite";break;
+		case 759:m="Unexpected T_PAAMAYIM_NEKUDOTAYIM";break;
+		case 761:m="Hungover";break;
+		case 762:m="Stoned";break;
+		case 763:m="Under-Caffeinated";break;
+		case 764:m="Over-Caffeinated";break;
+		case 765:m="Railscamp";break;
+		case 766:m="Sober";break;
+		case 767:m="Drunk";break;
+		case 768:m="Accidentally Took Sleeping Pills Instead Of Migraine Pills During Crunch Week";break;
+		case 769:m="Questionable Maturity Level";break;
+		case 771:m="Cached for too long";break;
+		case 772:m="Not cached long enough";break;
+		case 773:m="Not cached at all";break;
+		case 774:m="Why was this cached?";break;
+		case 776:m="Error on the Exception";break;
+		case 777:m="Coincidence";break;
+		case 778:m="Off By One Error";break;
+		case 779:m="Off By Too Many To Count Error";break;
+		case 780:m="Project owner not responding";break;
+		case 781:m="Operations";break;
+		case 782:m="QA";break;
+		case 783:m="It was a customer request, honestly";break;
+		case 784:m="Management, obviously";break;
+		case 785:m="TPS Cover Sheet not attached";break;
+		case 786:m="Try it now";break;
+		case 787:m="Further Funding Required";break;
+		case 788:m="Designer's final designs weren't";break;
+		case 791:m="The Internet shut down due to copyright restrictions.";break;
+		case 792:m="Climate change driven catastrophic weather event";break;
+		case 793:m="Zombie Apocalypse";break;
+		case 794:m="Someone let PG near a REPL";break;
+		case 795:m="#heartbleed (see 705)";break;
+		case 797:m="This is the last page of the Internet. Go back";break;
+		case 799:m="End of the world";break;
 
 		default:m="Not Implemented";
 	}

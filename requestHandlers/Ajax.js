@@ -24,20 +24,27 @@ function Ajax(request, response, write_cache) {
 			switch (post.action) {
 				case 'postlist':
 					ret = postList();
+					response.setContentType('application/json');
 				break;
 				case 'getpost':
 					ret = getPost(post);
+					response.setContentType('application/json');
 				break;
 				case 'writepost':
 					ret = writePost(post);
+					response.setContentType('application/json');
+				break;
+				case 'previewpost':
+					ret = previewPost(post);
+					response.setContentType('text/html');
 				break;
 				default:
 					ret = '{}';
+					response.setContentType('application/json');
 				break;
 			}
 
 			response.setContent(ret);
-			response.setContentType('application/json');
 			response.setResponseCode(200);
 			response.send()
         });
@@ -62,8 +69,15 @@ function getPost(post) {
 	}
 }
 
-function writePost(request) {
+function writePost(post) {
 
+}
+
+function previewPost(post) {
+	if (post.content) {
+		return _helper.getPage(post.content);
+	}
+	return '';
 }
 
 function checkApiKey(key) {

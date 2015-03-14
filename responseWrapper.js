@@ -55,8 +55,7 @@ _responseWrapper.prototype.send = function () {
 		"Server": this.serverVersion,
 		"Cache-Control": "max-age=" + this.expires,
 		"Last-Modified": this.lastModified,
-		"Expires": _rfc822Date(new Date(Date.now() + this.expires)),
-		"ETag": this.eTag
+		"Expires": _rfc822Date(new Date(Date.now() + this.expires))
 	});
 	this.response.end(this.data);
 }

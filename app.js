@@ -28,7 +28,7 @@ function Init() {
 	handle[_Config.root + "page/"] = {callback: requestHandlers.Page, cache: true};
     handle[_Config.root + "ajax/"] = {callback: requestHandlers.Ajax, cache: false};
 	handle[_Config.root + "rss.xml"] = {callback: requestHandlers.RSS, cache: true};
-
+	handle[_Config.root + "edit"] = {callback: requestHandlers.Edit, cache: true};
 
 	server.Start(handle, router.Route, domain);
 }
@@ -51,10 +51,6 @@ default:
 	_cache = false;
 	break;
 }
-
-
-
-
 
 if (_Cluster.isMaster) {
 

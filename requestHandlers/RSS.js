@@ -42,7 +42,7 @@ function RSS(request, response, write_cache) {
 				// guid
 				dataToSend += "<guid>" + Link + root + "post/?p=" + posts[i] + "</guid>\n";
 				// date
-				dataToSend += "<pubDate>" + _rfc822Date(new Date(parseInt(posts[i], 16) * 1000)) + "</pubDate>\n";
+				dataToSend += "<pubDate>" + new Date(parseInt(posts[i], 16) * 1000).toUTCString() + "</pubDate>\n";
 				// content (html)
 				dataToSend += "<description><![CDATA[" + data + "]]></description>\n"
 

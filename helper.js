@@ -17,6 +17,11 @@ function getPosts(noreverse) {
 	return data;
 }
 
+function writePost(id, content) {
+	_fs.writeFileSync(DirectoryPosts + '/' + id + ".html", content, 'utf8');
+	_fs.writeFileSync(DirectoryPosts + '/' + id + ".html.asc", '', 'utf8');
+}
+
 function getPost(id) {
 	if (_fs.existsSync(DirectoryPosts + '/' + id + ".html.asc")) {
 		return _fs.readFileSync(DirectoryPosts + '/' + id + '.html', 'utf8');
@@ -35,3 +40,4 @@ function getPage(content) {
 exports.getPost = getPost;
 exports.getPosts = getPosts;
 exports.getPage = getPage;
+exports.writePost = writePost;

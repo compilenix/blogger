@@ -4,14 +4,11 @@
 <meta name="description" content="Compilenix's Blog"/>
 <meta name="author" content="Compilenix"/>
 <script type="text/javascript" src="//cdn.compilenix.org/ace-builds/src-min/ace.js"></script>
+<script type="text/javascript" src="//cdn.compilenix.org/jquery.js"></script>
 
 <title>Compilenix's Blog</title>
 
 <style>
-* {
-	transition: 133.7ms;
-}
-
 a {
 	text-decoration: none;
 }
@@ -20,24 +17,174 @@ a:hover, a:focus {
 	color: #0AF;
 }
 
+#tabs {
+	padding-left: 50px;
+    position: absolute;
+    top: 0;
+    right: 0;
+    left: 20%;
+    height: 30px;
+    background-color: #161713;
+}
+
+#tabs div {
+	display:inline;
+	position: relative;
+	float:left;
+	height: 24px;
+	color:#c1c1bf;
+	padding-left:20px;
+	padding-right:30px;
+	padding-top: 5px;
+	background-color: #3d3d3b;
+	border: 1px solid #666664;
+	border-bottom:0px;
+	-webkit-border-top-left-radius: 30px;
+	-webkit-border-top-right-radius: 30px;
+	-moz-border-radius-topleft: 30px;
+	-moz-border-radius-topright: 30px;
+	border-top-left-radius: 30px;
+	border-top-right-radius: 30px;
+	margin-right:-10px;
+	z-index: 1;
+
+}
+
+#tabs div.active {
+	background-color: #272822;
+	z-index: 2;
+}
+
 #edit {
-	position: absolute;
-	top: 0;
-	right: 0;
-	bottom: 0;
-	left: 0;
+    position: absolute;
+    top: 30px;
+    right: 0;
+    bottom: 0;
+    left: 20%;
+}
+#postlist {
+    position: absolute;
+    background-color: #e6e6e6;
+    top: 0;
+    right: 80%;
+    bottom: 0;
+    left: 0;
 }
 </style>
 </head>
 
-<h1><a href="/" style="color:black">Compilenix's Blog</a></h1>
-<div id='edit'>
-	test
-</div>
+<body>
+<div id="postlist"></div>
+<div id="tabs"></div>
+<div id='edit'></div>
 <script type="text/javascript">
-	var editor = ace.edit("edit");
-	editor.setTheme("ace/theme/monokai");
-	editor.getSession().setMode("ace/mode/html");
+
+	window.apikey = 'ggg';
+
+	function editor() {
+		this.postlistContainer = document.getElementById('postlist');
+		this.editorContainer = document.getElementById('edit');
+		this.tabsContainer = document.getElementById('tabs');
+		this.ace = ace.edit("edit");
+		this.ace.setTheme("ace/theme/monokai");
+		this.ace.getSession().setMode("ace/mode/html");
+		this.requestPostlist();
+
+		this.sessions = {};
+
+	}
+
+	editor.prototype.request = function(post) {
+		jQuery.post('/ajax/', post, function(data) {
+			e.handleResponse(data);
+		}, 'json');
+	}
+
+	editor.prototype.handleResponse = function(data) {
+		if (data.type) {
+			switch (data.type) {
+				case 'postlist':
+					this.updatePostList(data.list);
+					break;
+				case 'post':
+					this.loadPost(data);
+					break;
+				default:
+					alert('unknown response type')
+					break;
+			}
+		}
+	}
+
+	editor.prototype.loadPost = function(data) {
+		this.newSession(data.id, data.content);
+	}
+
+	editor.prototype.updatePostList = function(data) {
+		var ul = document.createElement('ul');
+		for (var i = 0; i < data.length; i++) {
+			var li = document.createElement('li');
+			li.appendChild(document.createTextNode(data[i]));
+			li.setAttribute('data-postid', data[i]);
+			jQuery(li).on('click', function(ev) {
+				e.showPost(this.getAttribute('data-postid'));
+			});
+			ul.appendChild(li);
+		}
+		this.postlistContainer.innerHTML = '';
+		this.postlistContainer.appendChild(ul);
+	}
+
+	editor.prototype.requestPostlist = function() {
+		this.request({
+			apikey: window.apikey,
+			action: 'postlist'
+		});
+	}
+
+	editor.prototype.requestPost = function(id) {
+		this.request({
+			apikey: window.apikey,
+			postid: id,
+			action: 'getpost'
+		});
+	}
+
+	editor.prototype.showPost = function(id) {
+		if (this.hasSession(id)) {
+			this.openSession(id);
+		} else {
+			this.requestPost(id);
+		}
+	}
+
+	editor.prototype.addTab = function(id) {
+		var tab = document.createElement('div');
+		tab.setAttribute('data-postid', id);
+		jQuery(tab).on('click', function() {
+			e.openSession(this.getAttribute('data-postid'));
+			$('#tabs div').removeClass('active');
+			$(this).addClass('active');
+		});
+		tab.appendChild(document.createTextNode(id));
+		this.tabsContainer.appendChild(tab);
+	}
+
+	editor.prototype.hasSession = function(id) {
+		return typeof this.sessions[id] !== 'undefined';
+	}
+
+	editor.prototype.newSession = function(id, content) {
+		this.addTab(id);
+		this.sessions[id] = ace.createEditSession(content || '', "ace/mode/html");
+		this.openSession(id);
+	}
+
+	editor.prototype.openSession = function(id) {
+		this.ace.setSession(this.sessions[id]);
+	}
+
+	window.e = new editor();
 </script>
 </body>
 </html>

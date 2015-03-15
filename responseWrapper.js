@@ -5,8 +5,10 @@ function _responseWrapper(response) {
 	this.contentLength = 0;
 	this.contentType = _Config.DefaultContentType || "text/html";
 	this.serverVersion = _Config.ServerVersion || "node.js/" + process.version;
-	this.expires = _Config.HeaderExpires || 60000 * 10; // 10 Minutes
-	this.cacheControl = _Config.HeaderCacheControl || "public";
+	if (_cache) {
+		this.expires = _Config.HeaderExpires || 60000 * 10; // 10 Minutes
+		this.cacheControl = _Config.HeaderCacheControl || "public";
+	}
 	this.lastModified = new Date(Date.now()).toUTCString();
 }
 

@@ -58,19 +58,20 @@ function Ajax(request, response, write_cache) {
 }
 
 function postList() {
-	return JSON.stringify(_helper.getPosts());
+	return JSON.stringify({type: 'postlist', list: _helper.getPosts()});
 }
 
 function getPost(post) {
 	if (post.postid) {
-		return JSON.stringify({id: post.postid, content: _helper.getPost(post.postid)});
+		return JSON.stringify({type: 'post', id: post.postid, content: _helper.getPost(post.postid)});
 	} else {
 		return '{}';
 	}
 }
 
 function writePost(post) {
-
+	_helper.writePost(post.postid, post.content);
+	return JSON.stringify({type: 'postsaved', id: post.postid});
 }
 
 function previewPost(post) {

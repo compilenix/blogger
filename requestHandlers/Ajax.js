@@ -70,7 +70,8 @@ function getPost(post) {
 }
 
 function writePost(post) {
-
+	_helper.writePost(post.postid, post.content);
+	return JSON.stringify({type: 'postsaved', id: post.postid});
 }
 
 function previewPost(post) {

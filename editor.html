@@ -28,6 +28,7 @@ a:hover, a:focus {
 }
 
 #tabs div {
+	cursor:default;
 	display:inline;
 	position: relative;
 	float:left;
@@ -50,6 +51,10 @@ a:hover, a:focus {
 
 }
 
+#tabs div.changed {
+	color: #ffa035;
+}
+
 #tabs div.active {
 	background-color: #272822;
 	z-index: 2;
@@ -63,6 +68,7 @@ a:hover, a:focus {
     left: 20%;
 }
 #postlist {
+	cursor:default;
     position: absolute;
     background-color: #e6e6e6;
     top: 0;
@@ -79,8 +85,6 @@ a:hover, a:focus {
 <div id='edit'></div>
 <script type="text/javascript">
 
-	window.apikey = 'ggg';
-
 	function editor() {
 		this.postlistContainer = document.getElementById('postlist');
 		this.editorContainer = document.getElementById('edit');
@@ -88,16 +92,40 @@ a:hover, a:focus {
 		this.ace = ace.edit("edit");
 		this.ace.setTheme("ace/theme/monokai");
 		this.ace.getSession().setMode("ace/mode/html");
+
+		this.apikey = this.loadApiKey();
+
+		if (!this.apikey) {
+			this.askForKey();
+		}
+
 		this.requestPostlist();
 
 		this.sessions = {};
+
+		document.addEventListener('keydown', function(event) {
+			if (event.keyCode == 83 && event.ctrlKey) {
+			    if ($('#tabs div.active')[0]) {
+			    	e.save($($('#tabs div.active')[0]).attr('data-postid'));
+			    }
+			} else if (event.keyCode == 78 && event.ctrlKey) {
+				var name = Math.floor(new Date().getTime() / 1000).toString(16);
+			    e.newSession(name, '', true);
+			} else {
+				return true;
+			}
+		    event.preventDefault();
+		    return false;
+		});
 
 	}
 
 	editor.prototype.request = function(post) {
 		jQuery.post('/ajax/', post, function(data) {
 			e.handleResponse(data);
-		}, 'json');
+		}, 'json').fail(function(d) {
+			e.askForKey();
+		});
 	}
 
 	editor.prototype.handleResponse = function(data) {
@@ -109,6 +137,9 @@ a:hover, a:focus {
 				case 'post':
 					this.loadPost(data);
 					break;
+				case 'postsaved':
+					this.postSaved(data.id);
+					break;
 				default:
 					alert('unknown response type')
 					break;
@@ -116,8 +147,27 @@ a:hover, a:focus {
 		}
 	}
 
+	editor.prototype.askForKey = function() {
+		var key = prompt('please enter your apy key');
+		this.apikey = key;
+		this.storeApiKey(key);
+	}
+
+	editor.prototype.loadApiKey = function() {
+		return localStorage.apikey;
+	}
+
+	editor.prototype.storeApiKey = function(apikey) {
+		localStorage.setItem('apikey', apikey);
+	}
+
 	editor.prototype.loadPost = function(data) {
 		this.newSession(data.id, data.content);
+	}
+
+	editor.prototype.postSaved = function(id) {
+		$(this.tabsContainer).find('div[data-postid=' + id + ']').removeClass('changed');
+		this.requestPostlist();
 	}
 
 	editor.prototype.updatePostList = function(data) {
@@ -137,17 +187,33 @@ a:hover, a:focus {
 
 	editor.prototype.requestPostlist = function() {
 		this.request({
-			apikey: window.apikey,
+			apikey: this.apikey,
 			action: 'postlist'
 		});
 	}
 
 	editor.prototype.requestPost = function(id) {
 		this.request({
-			apikey: window.apikey,
+			apikey: this.apikey,
 			postid: id,
 			action: 'getpost'
 		});
+	}
+
+	editor.prototype.requestSavePost = function(id, content) {
+		this.request({
+			apikey: this.apikey,
+			postid: id,
+			content: content,
+			action: 'writepost'
+		});
+	}
+
+	editor.prototype.save = function(id) {
+		id = prompt('Save as:', id);
+		if (id) {
+			this.requestSavePost(id, this.ace.getValue());
+		}
 	}
 
 	editor.prototype.showPost = function(id) {
@@ -158,30 +224,39 @@ a:hover, a:focus {
 		}
 	}
 
-	editor.prototype.addTab = function(id) {
+	editor.prototype.addTab = function(id, isnew) {
 		var tab = document.createElement('div');
 		tab.setAttribute('data-postid', id);
 		jQuery(tab).on('click', function() {
 			e.openSession(this.getAttribute('data-postid'));
-			$('#tabs div').removeClass('active');
-			$(this).addClass('active');
 		});
-		tab.appendChild(document.createTextNode(id));
+		tab.appendChild(document.createTextNode(isnew ? id + ' <new>': id));
 		this.tabsContainer.appendChild(tab);
+		return tab;
+	}
+
+	editor.prototype.activateTab = function(id) {
+		$('#tabs div').removeClass('active');
+		$(this.tabsContainer).find('div[data-postid=' + id + ']').addClass('active');
 	}
 
 	editor.prototype.hasSession = function(id) {
 		return typeof this.sessions[id] !== 'undefined';
 	}
 
-	editor.prototype.newSession = function(id, content) {
-		this.addTab(id);
+	editor.prototype.newSession = function(id, content, isnew) {
+		var tab = this.addTab(id, isnew);
 		this.sessions[id] = ace.createEditSession(content || '', "ace/mode/html");
+		this.sessions[id].on('change', function(e) {
+			$(tab).addClass('changed');
+		})
 		this.openSession(id);
 	}
 
 	editor.prototype.openSession = function(id) {
+		this.activateTab(id);
 		this.ace.setSession(this.sessions[id]);
+		this.ace.focus();
 	}
 
 	window.e = new editor();

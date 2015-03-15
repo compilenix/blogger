@@ -27,36 +27,63 @@ a:hover, a:focus {
     background-color: #161713;
 }
 
-#tabs div {
+#tabs > div {
+	transition: 200ms;
+	background-image: url(//cdn.compilenix.org/blogger/inactivel.png), url(//cdn.compilenix.org/blogger/inactiver.png);
+	background-position: left, right;
+	background-repeat: no-repeat, no-repeat;
 	cursor:default;
 	display:inline;
 	position: relative;
 	float:left;
-	height: 24px;
+	height: 31px;
 	color:#c1c1bf;
-	padding-left:20px;
-	padding-right:30px;
-	padding-top: 5px;
-	background-color: #3d3d3b;
-	border: 1px solid #666664;
-	border-bottom:0px;
-	-webkit-border-top-left-radius: 30px;
-	-webkit-border-top-right-radius: 30px;
-	-moz-border-radius-topleft: 30px;
-	-moz-border-radius-topright: 30px;
-	border-top-left-radius: 30px;
-	border-top-right-radius: 30px;
-	margin-right:-10px;
+	padding-left:19px;
+	padding-right: 19px;
+  	padding-top: 3px;
+	margin-right:-12px;
 	z-index: 1;
+}
+
+#tabs > div > div {
+	height: 31px;
+	background-image: url(//cdn.compilenix.org/blogger/inactivec.png);
+	background-repeat: repeat-x;
 
 }
 
-#tabs div.changed {
+#tabs > div.active > div {
+
+	background-image: url(//cdn.compilenix.org/blogger/activec.png);
+	background-repeat: repeat-x;
+
+}
+
+#tabs > div > div > div.wrapper {
+	position: relative;
+	padding-right:20px;
+	padding-top: 5px;
+}
+
+#tabs div.button {
+	position: absolute;
+	right:3px;
+	top: 10px;
+	height: 8px;
+	width: 7px;
+	background-image: url(//cdn.compilenix.org/blogger/inactiveclose.png);
+}
+
+#tabs > div.active div.button {
+	background-image: url(//cdn.compilenix.org/blogger/activeclose.png);
+}
+
+#tabs > div.changed {
 	color: #ffa035;
 }
 
-#tabs div.active {
-	background-color: #272822;
+#tabs > div.active {
+	background-image: url(//cdn.compilenix.org/blogger/activel.png), url(//cdn.compilenix.org/blogger/activer.png);
 	z-index: 2;
 }
 
@@ -76,6 +103,19 @@ a:hover, a:focus {
     bottom: 0;
     left: 0;
 }
+
+#postlist ul {
+		list-style-type:none;
+}
+
+#postlist li {
+	background-image: url(//cdn.compilenix.org/blogger/doc.png);
+	background-repeat: no-repeat;
+	background-position: left center;
+	padding-left: 15px;
+	margin: 4px;
+}
+
 </style>
 </head>
 
@@ -102,6 +142,16 @@ a:hover, a:focus {
 		this.requestPostlist();
 
 		this.sessions = {};
+
+		this.sessions['default'] = this.ace.getSession();
+
+		this.sessions['default'].on('change', function(ev) {
+			if (ev.data.action == 'insertText') {
+				var name = Math.floor(new Date().getTime() / 1000).toString(16);
+				e.newSession(name, ev.data.text, true);
+				e.sessions['default'].setValue('');
+			}
+		})
 
 		document.addEventListener('keydown', function(event) {
 			if (event.keyCode == 83 && event.ctrlKey) {
@@ -226,13 +276,47 @@ a:hover, a:focus {
 
 	editor.prototype.addTab = function(id, isnew) {
 		var tab = document.createElement('div');
+		var inner = document.createElement('div');
+		var wrapper = document.createElement('div');
+		var closebutton = document.createElement('div');
+		closebutton.setAttribute('data-postid', id);
+		$(closebutton).addClass('button');
+		$(wrapper).addClass('wrapper');
 		tab.setAttribute('data-postid', id);
-		jQuery(tab).on('click', function() {
+		jQuery(tab).on('click', function(ev) {
+			ev.preventDefault();
 			e.openSession(this.getAttribute('data-postid'));
+			return false;
 		});
-		tab.appendChild(document.createTextNode(isnew ? id + ' <new>': id));
+		jQuery(closebutton).on('click', function(ev) {
+			ev.preventDefault();
+			e.closeTab(this.getAttribute('data-postid'));
+			return false;
+		});
+		wrapper.appendChild(document.createTextNode(isnew ? id + ' <new>': id));
+		wrapper.appendChild(closebutton);
+		inner.appendChild(wrapper);
+		tab.appendChild(inner);
 		this.tabsContainer.appendChild(tab);
 		return tab;
+	}
+
+	editor.prototype.closeTab = function(id) {
+		if ($(this.tabsContainer).find('div[data-postid=' + id + ']').hasClass('changed')) {
+			if (!confirm('are you sure?')) {
+				return false;
+			}
+		}
+		if ($(this.tabsContainer).find('div[data-postid=' + id + ']')[0].previousSibling) {
+			this.openSession($(this.tabsContainer).find('div[data-postid=' + id + ']')[0].previousSibling.getAttribute('data-postid'));
+		} else if ($(this.tabsContainer).find('div[data-postid=' + id + ']')[0].nextSibling) {
+			this.openSession($(this.tabsContainer).find('div[data-postid=' + id + ']')[0].nextSibling.getAttribute('data-postid'));
+		} else {
+			this.ace.setSession(this.sessions['default']);
+			this.ace.focus();
+		}
+		$(this.tabsContainer).find('div[data-postid=' + id + ']').remove();
+		this.sessions[id] = false;
 	}
 
 	editor.prototype.activateTab = function(id) {
@@ -241,7 +325,7 @@ a:hover, a:focus {
 	}
 
 	editor.prototype.hasSession = function(id) {
-		return typeof this.sessions[id] !== 'undefined';
+		return this.sessions[id];
 	}
 
 	editor.prototype.newSession = function(id, content, isnew) {

@@ -2,7 +2,7 @@ function _responseWrapper(response) {
 	this.response = response;
 	this.data = '';
 	this.responseCode = 404;
-	this.contentLength = 0;
+	this.contentLength = null;
 	this.contentType = _Config.DefaultContentType || "text/html";
 	this.serverVersion = _Config.ServerVersion || "node.js/" + process.version;
 	if (_cache) {
@@ -15,6 +15,16 @@ function _responseWrapper(response) {
 _responseWrapper.prototype.setContent = function (content) {
 	this.data = content;
 	this.updateLength();
+}
+
+_responseWrapper.prototype.sendFileStream = function (fileStream) {
+	var t = this;
+	this.sendHeader();
+	fileStream.pipe(this.response);
+
+	fileStream.on('end', function() {
+	    t.response.end();
+	});
 }
 
 _responseWrapper.prototype.getContent = function () {
@@ -45,15 +55,17 @@ _responseWrapper.prototype.updateLength = function () {
 	this.contentLength = Buffer.byteLength(this.data, 'utf8');
 }
 
+_responseWrapper.prototype.sendHeader = function () {
+	var data = {"Content-Type": this.contentType, "Server": this.serverVersion, "Expires": new Date(Date.now() + this.expires).toUTCString()};
+	if (this.contentLength) data["Content-Length"] = this.contentLength;
+	if (this.expires) data["Cache-Control"] = "max-age=" + this.expires;
+	if (this.lastModified) data["Last-Modified"] = this.lastModified;
+	if (this.contentLength) data["Expires"] = this.contentLength;
+	this.response.writeHead(this.responseCode, data);
+}
+
 _responseWrapper.prototype.send = function () {
-	this.response.writeHead(this.responseCode, {
-		"Content-Type": this.contentType,
-		"Content-Length": this.contentLength,
-		"Server": this.serverVersion,
-		"Cache-Control": "max-age=" + this.expires,
-		"Last-Modified": this.lastModified,
-		"Expires": new Date(Date.now() + this.expires).toUTCString()
-	});
+	this.sendHeader();
 	this.response.end(this.data);
 }
 

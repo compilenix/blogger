@@ -36,7 +36,7 @@ function process_request(request, response, handle, route) {
 		var callback = handle[pathname].callback;
 
 		var deliver_cache = !(HandleCacheControl && request.headers["cache-control"] === 'no-cache');
-		var write_cache = _cache && handle[pathname].cache;
+		var write_cache = _cache && handle[pathname].cache && deliver_cache;
 
 		if (_cache && deliver_cache && _cache.has(request)) {
 			response.setLastModified(_cache.getLastModified(request));

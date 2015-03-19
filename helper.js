@@ -10,7 +10,7 @@ function getPosts(noreverse) {
 
 	for (var i = 0; i < posts.length; i++) {
 		if (_fs.existsSync(DirectoryPosts + '/' + posts[i] + ".asc")) {
-			data.push(posts[i].replace(".html", ''));
+			data.push(posts[i].replace(".json", ''));
 		}
 	}
 
@@ -22,13 +22,13 @@ function writePost(id, content, title) {
 		title : title,
 		contents: content
 	});
-	_fs.writeFileSync(DirectoryPosts + '/' + id + ".html", data, 'utf8');
-	_fs.writeFileSync(DirectoryPosts + '/' + id + ".html.asc", '', 'utf8');
+	_fs.writeFileSync(DirectoryPosts + '/' + id + ".json", data, 'utf8');
+	_fs.writeFileSync(DirectoryPosts + '/' + id + ".json.asc", '', 'utf8');
 }
 
 function getPost(id) {
-	if (_fs.existsSync(DirectoryPosts + '/' + id + ".html.asc")) {
-		return JSON.parse(_fs.readFileSync(DirectoryPosts + '/' + id + '.html', 'utf8'));
+	if (_fs.existsSync(DirectoryPosts + '/' + id + ".json.asc")) {
+		return JSON.parse(_fs.readFileSync(DirectoryPosts + '/' + id + '.json', 'utf8'));
 	} else {
 		return '';
 	}

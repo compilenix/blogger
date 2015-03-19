@@ -211,7 +211,8 @@ a:hover, a:focus {
 	}
 
 	editor.prototype.loadPost = function(data) {
-		this.newSession(data.id, data.content);
+		console.log(data)
+		this.newSession(data.id, data.content.contents);
 	}
 
 	editor.prototype.postSaved = function(id) {
@@ -265,6 +266,7 @@ a:hover, a:focus {
 		if (id && title) {
 			this.requestSavePost(id, title, this.ace.getValue());
 		}
+		return false;
 	}
 
 	editor.prototype.showPost = function(id) {

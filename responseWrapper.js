@@ -52,7 +52,9 @@ _responseWrapper.prototype.setResponseCode = function (code) {
 }
 
 _responseWrapper.prototype.updateLength = function () {
-	this.contentLength = Buffer.byteLength(this.data, 'utf8');
+	if (this.data) {
+		this.contentLength = Buffer.byteLength(this.data, 'utf8');
+	}
 }
 
 _responseWrapper.prototype.sendHeader = function () {

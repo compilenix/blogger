@@ -21,19 +21,19 @@ function Ajax(request, response, write_cache) {
 			var ret = '{}';
 			switch (post.action) {
 				case 'postlist':
-					ret = postList();
+					ret = postList(response);
 					response.setContentType('application/json');
 				break;
 				case 'getpost':
-					ret = getPost(post).contents;
+					ret = getPost(response, post);
 					response.setContentType('application/json');
 				break;
 				case 'writepost':
-					ret = writePost(post);
+					ret = writePost(response, post);
 					response.setContentType('application/json');
 				break;
 				case 'previewpost':
-					ret = previewPost(post);
+					ret = previewPost(response, post);
 					response.setContentType('text/html');
 				break;
 				default:

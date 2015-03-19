@@ -18,8 +18,6 @@ function Ajax(request, response, write_cache) {
 				return false;
             }
 
-
-
 			var ret = '{}';
 			switch (post.action) {
 				case 'postlist':
@@ -27,7 +25,7 @@ function Ajax(request, response, write_cache) {
 					response.setContentType('application/json');
 				break;
 				case 'getpost':
-					ret = getPost(post);
+					ret = getPost(post).contents;
 					response.setContentType('application/json');
 				break;
 				case 'writepost':
@@ -40,44 +38,55 @@ function Ajax(request, response, write_cache) {
 				break;
 				default:
 					ret = '{}';
+					response.setResponseCode(400);
 					response.setContentType('application/json');
 				break;
 			}
 
 			response.setContent(ret);
-			response.setResponseCode(200);
 			response.send()
         });
 	} else {
 		response.setContent('{}');
 		response.setContentType('application/json');
-		response.setResponseCode(200);
+		response.setResponseCode(400);
 		response.send()
 	}
 	return true;
 }
 
-function postList() {
+function postList(response) {
+	response.setResponseCode(200);
 	return JSON.stringify({type: 'postlist', list: _helper.getPosts()});
 }
 
-function getPost(post) {
+function getPost(response, post) {
 	if (post.postid) {
+		response.setResponseCode(200);
 		return JSON.stringify({type: 'post', id: post.postid, content: _helper.getPost(post.postid)});
 	} else {
+		response.setResponseCode(400);
 		return '{}';
 	}
 }
 
-function writePost(post) {
-	_helper.writePost(post.postid, post.content);
-	return JSON.stringify({type: 'postsaved', id: post.postid});
+function writePost(response, post) {
+	if (post && post.content && post.title) {
+		response.setResponseCode(200);
+		_helper.writePost(post.postid, post.content, post.title);
+		return JSON.stringify({type: 'postsaved', id: post.postid});
+	} else {
+		response.setResponseCode(400);
+		return '{}';
+	}
 }
 
-function previewPost(post) {
+function previewPost(response, post) {
 	if (post.content) {
-		return _helper.getPage(post.content);
+		response.setResponseCode(200);
+		return _helper.getPage(post.contents);
 	}
+	response.setResponseCode(400);
 	return '';
 }
 

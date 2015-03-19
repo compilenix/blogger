@@ -17,14 +17,18 @@ function getPosts(noreverse) {
 	return data;
 }
 
-function writePost(id, content) {
-	_fs.writeFileSync(DirectoryPosts + '/' + id + ".html", content, 'utf8');
+function writePost(id, content, title) {
+	var data = JSON.stringify({
+		title : title,
+		contents: content
+	});
+	_fs.writeFileSync(DirectoryPosts + '/' + id + ".html", data, 'utf8');
 	_fs.writeFileSync(DirectoryPosts + '/' + id + ".html.asc", '', 'utf8');
 }
 
 function getPost(id) {
 	if (_fs.existsSync(DirectoryPosts + '/' + id + ".html.asc")) {
-		return _fs.readFileSync(DirectoryPosts + '/' + id + '.html', 'utf8');
+		return JSON.parse(_fs.readFileSync(DirectoryPosts + '/' + id + '.html', 'utf8'));
 	} else {
 		return '';
 	}

@@ -249,19 +249,21 @@ a:hover, a:focus {
 		});
 	}
 
-	editor.prototype.requestSavePost = function(id, content) {
+	editor.prototype.requestSavePost = function(id, title, content) {
 		this.request({
 			apikey: this.apikey,
 			postid: id,
+			title: title,
 			content: content,
 			action: 'writepost'
 		});
 	}
 
 	editor.prototype.save = function(id) {
-		id = prompt('Save as:', id);
-		if (id) {
-			this.requestSavePost(id, this.ace.getValue());
+		var id = prompt('Save as:', id);
+		var title = prompt('Enter title:', id);
+		if (id && title) {
+			this.requestSavePost(id, title, this.ace.getValue());
 		}
 	}
 

@@ -41,9 +41,10 @@ function page(request, response, index, write_cache) {
 
 	for (var i = lastPost; i > firstPost; i--) {
 		if (posts[i - 1]) {
+			var data = _helper.getPost(posts[i - 1]);
 			content += '<li>';
-			content += '[<a href="/post/?p=' + posts[i - 1] + '">post</a>] ';
-			content += _helper.getPost(posts[i - 1]);
+			content += '[<a href="/post/?p=' + posts[i - 1] + '">' + data.title + '</a>] <br><br>';
+			content += data.contents;
 			content += '</li>\n';
 		}
 	}

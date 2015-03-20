@@ -6,3 +6,5 @@ parts/
 cache/
 node_modules
 /Config.js
+*.sublime-project
+*.sublime-workspace

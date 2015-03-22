@@ -24,7 +24,7 @@ function RSS(request, response, write_cache) {
 	for (var i = 0; i < posts.length; i++) {
 
 		if (counter < CountPosts) {
-			if ((data = _helper.getPost(posts[i])) !== '') {
+			if ((data = _helper.getPost(posts[i]).contents) !== '') {
 				dataToSend += "<item>\n";
 				dataStriped = replaceAll('\n', '', data.replace(/(<([^>]+)>)/ig, '')); // strip html tags and line breaks
 

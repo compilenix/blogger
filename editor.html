@@ -181,7 +181,7 @@ a:hover, a:focus {
 		if (data.type) {
 			switch (data.type) {
 				case 'postlist':
-					this.updatePostList(data.list);
+					this.updatePostList(data);
 					break;
 				case 'post':
 					this.loadPost(data);
@@ -211,21 +211,23 @@ a:hover, a:focus {
 	}
 
 	editor.prototype.loadPost = function(data) {
-		console.log(data)
-		this.newSession(data.id, data.content.contents);
+		console.log(data);
+		this.newSession(data.id, data.content.contents, false, data.title);
 	}
 
 	editor.prototype.postSaved = function(id) {
 		$(this.tabsContainer).find('div[data-postid=' + id + ']').removeClass('changed');
 		this.requestPostlist();
+		this.closeTab(id);
+		this.showPost(id);
 	}
 
 	editor.prototype.updatePostList = function(data) {
 		var ul = document.createElement('ul');
-		for (var i = 0; i < data.length; i++) {
+		for (var i = 0; i < data.list.length; i++) {
 			var li = document.createElement('li');
-			li.appendChild(document.createTextNode(data[i]));
-			li.setAttribute('data-postid', data[i]);
+			li.appendChild(document.createTextNode(data.titles[i]));
+			li.setAttribute('data-postid', data.list[i]);
 			jQuery(li).on('click', function(ev) {
 				e.showPost(this.getAttribute('data-postid'));
 			});
@@ -261,8 +263,7 @@ a:hover, a:focus {
 	}
 
 	editor.prototype.save = function(id) {
-		var id = prompt('Save as:', id);
-		var title = prompt('Enter title:', id);
+		var title = prompt('Enter title:', (this.ace.getValue()).substring(0, 39));
 		if (id && title) {
 			this.requestSavePost(id, title, this.ace.getValue());
 		}
@@ -277,7 +278,7 @@ a:hover, a:focus {
 		}
 	}
 
-	editor.prototype.addTab = function(id, isnew) {
+	editor.prototype.addTab = function(id, isnew, title) {
 		var tab = document.createElement('div');
 		var inner = document.createElement('div');
 		var wrapper = document.createElement('div');
@@ -296,7 +297,7 @@ a:hover, a:focus {
 			e.closeTab(this.getAttribute('data-postid'));
 			return false;
 		});
-		wrapper.appendChild(document.createTextNode(isnew ? id + ' <new>': id));
+		wrapper.appendChild(document.createTextNode(isnew ? id + ' <new>': title));
 		wrapper.appendChild(closebutton);
 		inner.appendChild(wrapper);
 		tab.appendChild(inner);
@@ -331,8 +332,8 @@ a:hover, a:focus {
 		return this.sessions[id];
 	}
 
-	editor.prototype.newSession = function(id, content, isnew) {
-		var tab = this.addTab(id, isnew);
+	editor.prototype.newSession = function(id, content, isnew, title) {
+		var tab = this.addTab(id, isnew, title);
 		this.sessions[id] = ace.createEditSession(content || '', "ace/mode/html");
 		this.sessions[id].on('change', function(e) {
 			$(tab).addClass('changed');

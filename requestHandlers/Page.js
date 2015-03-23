@@ -1,5 +1,5 @@
-
 var FileHeader = _Config.post.FileHeader || "header.html";
+var FileFooter = _Config.post.FileFooter || "footer.html";
 var DirectoryPosts = _Config.post.DirectoryPosts || "posts";
 var CountPosts = _Config.post.CountPosts || 10;
 var MessageOlderPage = _Config.post.MessageOlderPage || "Older";
@@ -18,6 +18,7 @@ function page(request, response, index, write_cache) {
 
 	var posts = _helper.getPosts(true);
 	var pageCount = Math.ceil(posts.length / CountPosts);
+	var deps = [ FileHeader, FileFooter ];
 
 	if (!index) {
 		var p = parseInt(_querystring.parse(_url.parse(request.url).query)["p"]);
@@ -46,6 +47,7 @@ function page(request, response, index, write_cache) {
 			content += '[<a href="/post/?p=' + posts[i - 1] + '">' + data.title + '</a>] <br><br>';
 			content += data.contents;
 			content += '</li>\n';
+			deps.push(DirectoryPosts + '/' + posts[i - 1] + '.json');
 		}
 	}
 
@@ -58,11 +60,19 @@ function page(request, response, index, write_cache) {
 	content += '<div style="text-align:center">';
 
 	if (p < pageCount) {
-		content += '<a href="/page/?p=' + (p + 1)  + '">' + MessageNewerPage + '</a>';
+		var older = '<a href="/page/?p=' + (p + 1)  + '">' + MessageNewerPage + '</a>';
 	}
 
 	if (p > 1) {
-		content += '<a href="/page/?p=' + (p - 1)  + '">' + MessageOlderPage + '</a>';
+		var newer = '<a href="/page/?p=' + (p - 1)  + '">' + MessageOlderPage + '</a>';
+	}
+
+	if (older && newer) {
+		content += older + " <-> " + newer;
+	} else if (older) {
+		content += older;
+	} else if (newer) {
+		content += newer;
 	}
 
 	content += "</div>\n";
@@ -72,7 +82,7 @@ function page(request, response, index, write_cache) {
 	response.setResponseCode(200);
 	response.setContent(dataToSend);
 	if (write_cache) {
-		_cache.add(request, response.getContent(), response.getContentType(), response.getResponseCode());
+		_cache.add(request, response.getContent(), response.getContentType(), response.getResponseCode(), deps);
 		response.setLastModified(_cache.getLastModified(request));
 	}
 	response.send();

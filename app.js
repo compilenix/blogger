@@ -1,5 +1,6 @@
 _OS = require('os');
 _Cluster = require('cluster');
+_domain = require('domain');
 _http = require('http');
 _url = require('url');
 _querystring = require('querystring');
@@ -28,10 +29,11 @@ function Init() {
 	handle[_Config.root + "page/"] = {callback: requestHandlers.Page, cache: true};
 	handle[_Config.root + "ajax/"] = {callback: requestHandlers.Ajax, cache: false};
 	handle[_Config.root + "rss.xml"] = {callback: requestHandlers.RSS, cache: true};
+	handle[_Config.root + "rss"] = {callback: requestHandlers.RSS, cache: true};
 	handle[_Config.root + "edit"] = {callback: requestHandlers.Edit, cache: true};
 	handle[_Config.root + "code/"] = {callback: requestHandlers.Code, cache: false};
 
-	server.Start(handle, router.Route, domain);
+	server.Start(handle, router.Route);
 }
 
 _cache = {};
@@ -69,22 +71,14 @@ if (_Cluster.isMaster) {
 		console.log('worker #%d forked. (pid %d)', worker.id, worker.process.pid);
 	});
 
-	_Cluster.on('disconnect', function(worker, code, signal) {
-		console.log('worker #%d (pid %d) disconnected (returned %s).', worker.id, worker.process.pid, signal || code || "undefined");
+	_Cluster.on('disconnect', function(worker) {
+		console.log('worker #%d (pid %d) disconnected.', worker.id, worker.process.pid);
 	});
 
 	_Cluster.on('exit', function(worker, code, signal) {
-		console.log('worker #%d (pid %d) died (returned %s). restarting...', worker.id, worker.process.pid, signal || code || "undefined");
+		console.log('worker #%d (pid %d) died (returned code %s; signal %s). restarting...', worker.id, worker.process.pid, code || "undefined", signal || "undefined");
 		_Cluster.fork();
 	});
 } else if (_Cluster.isWorker) {
-
-
-	var domain = require('domain').create();
-
-	domain.on('error', function(e) {
-		console.error('error', e.stack);
-	});
-
-	domain.run(Init);
+	Init();
 }

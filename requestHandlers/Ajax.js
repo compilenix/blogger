@@ -57,13 +57,13 @@ function Ajax(request, response, write_cache) {
 
 function postList(response) {
 	response.setResponseCode(200);
-	return JSON.stringify({type: 'postlist', list: _helper.getPosts()});
+	return JSON.stringify({type: 'postlist', list: _helper.getPosts(), titles: _helper.getTitles(true)});
 }
 
 function getPost(response, post) {
 	if (post.postid) {
 		response.setResponseCode(200);
-		return JSON.stringify({type: 'post', id: post.postid, content: _helper.getPost(post.postid)});
+		return JSON.stringify({type: 'post', id: post.postid, content: _helper.getPost(post.postid), title: _helper.getTitle(post.postid)});
 	} else {
 		response.setResponseCode(400);
 		return '{}';

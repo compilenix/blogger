@@ -58,11 +58,11 @@ _responseWrapper.prototype.updateLength = function () {
 }
 
 _responseWrapper.prototype.sendHeader = function () {
-	var data = {"Content-Type": this.contentType, "Server": this.serverVersion, "Expires": new Date(Date.now() + this.expires).toUTCString()};
-	if (this.contentLength) data["Content-Length"] = this.contentLength;
-	if (this.expires) data["Cache-Control"] = "max-age=" + this.expires;
-	if (this.lastModified) data["Last-Modified"] = this.lastModified;
-	this.response.writeHead(this.responseCode, data);
+	var headers = {"Content-Type": this.contentType, "Server": this.serverVersion, "Expires": new Date(Date.now() + this.expires).toUTCString()};
+	if (this.contentLength) headers["Content-Length"] = this.contentLength;
+	if (this.expires) headers["Cache-Control"] = "max-age=" + this.expires;
+	if (this.lastModified) headers["Last-Modified"] = this.lastModified;
+	this.response.writeHead(this.responseCode, headers);
 }
 
 _responseWrapper.prototype.send = function () {

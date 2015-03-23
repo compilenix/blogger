@@ -23,6 +23,33 @@ function getLastModified(req) {
 	}
 }
 
+function validate(req) {
+	if (has(req) && (cachedDate = (_fs.statSync(_path(req)).mtime).getTime())) {
+		var data = JSON.parse(_fs.readFileSync(_path(req), 'utf8'));
+
+		for (var i = data.dependencies.length - 1; i >= 0; i--) {
+			try {
+				if ((_fs.statSync(data.dependencies[i]).mtime).getTime() > cachedDate) {
+					return false;
+				}
+			} catch (e) {
+				return false;
+			}
+		};
+		return true;
+	} else {
+		return false;
+	}
+}
+
+function del(req) {
+	if (has(req)) {
+		var file = _path(req);
+		console.log("Remove cache file: " + file);
+		_fs.unlinkSync(file);
+	}
+}
+
 function clear() {
 	_init();
 	var cacheFileList = _fs.readdirSync(DirectoryCache);
@@ -33,12 +60,13 @@ function clear() {
 	}
 }
 
-function add(req, cont, mime, code) {
+function add(req, content, mime, code, dependsOn) {
 	_init();
 	var data = JSON.stringify({
-		content: cont,
 		mime_type: mime,
-		response_code:code
+		response_code: code,
+		dependencies: dependsOn,
+		content: content
 	});
 	console.log("Add cache file: " + _path(req));
 	_fs.writeFileSync(_path(req), data);
@@ -65,3 +93,5 @@ exports.add = add;
 exports.getLastModified = getLastModified;
 exports.clear = clear;
 exports.has = has;
+exports.validate = validate;
+exports.del = del;

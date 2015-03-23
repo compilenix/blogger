@@ -17,6 +17,21 @@ function getPosts(noreverse) {
 	return data;
 }
 
+function getTitle(id) {
+	return getPost(id).title;
+}
+
+function getTitles(noreverse) {
+	var data = []
+	var list = getPosts(noreverse);
+
+	for (var i = list.length - 1; i >= 0; i--) {
+		data.push(getTitle(list[i]));
+	};
+
+	return data;
+}
+
 function writePost(id, content, title) {
 	var data = JSON.stringify({
 		title : title,
@@ -40,8 +55,15 @@ function getPage(content) {
 	return header + content + footer;
 }
 
+ function replaceAll(find, replace, str) {
+	return str.replace(new RegExp(find.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&'), 'g'), replace);
+};
+
 
 exports.getPost = getPost;
 exports.getPosts = getPosts;
 exports.getPage = getPage;
 exports.writePost = writePost;
+exports.replaceAll = replaceAll;
+exports.getTitle = getTitle;
+exports.getTitles = getTitles;

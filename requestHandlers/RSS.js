@@ -17,6 +17,7 @@ function RSS(request, response, write_cache) {
 	var posts = _helper.getPosts();
 	var counter = 0;
 	var data = "";
+	var deps = [];
 
 	// add rss header
 	var dataToSend = generateRssHeader();
@@ -24,17 +25,12 @@ function RSS(request, response, write_cache) {
 	for (var i = 0; i < posts.length; i++) {
 
 		if (counter < CountPosts) {
-			if ((data = _helper.getPost(posts[i]).contents) !== '') {
+			data = _helper.getPost(posts[i]);
+			if (data !== '') {
 				dataToSend += "<item>\n";
-				dataStriped = replaceAll('\n', '', data.replace(/(<([^>]+)>)/ig, '')); // strip html tags and line breaks
 
 				// title
-				if (dataStriped.length > 59) { // 64 chars: 60 from the post plus 4 chars: ...
-					dataToSend += '<title>' + dataStriped.substring(0, 60) + ' ...</title>\n';
-				} else {
-					dataToSend += '<title>' + dataStriped + ' ...</title>\n';
-				}
-
+				dataToSend += '<title>' + data.title + '</title>\n';
 				// author
 				dataToSend += "<author>" + authorMail + " (" + author + ")</author>\n";
 				// link
@@ -44,9 +40,10 @@ function RSS(request, response, write_cache) {
 				// date
 				dataToSend += "<pubDate>" + new Date(parseInt(posts[i], 16) * 1000).toUTCString() + "</pubDate>\n";
 				// content (html)
-				dataToSend += "<description><![CDATA[" + data + "]]></description>\n"
+				dataToSend += "<description><![CDATA[" + data.contents + "]]></description>\n"
 
 				dataToSend += "</item>\n\n";
+				deps.push(DirectoryPosts + '/' + posts[i] + '.json');
 				counter++;
 			}
 		}
@@ -58,7 +55,7 @@ function RSS(request, response, write_cache) {
 	response.setContentType('application/rss+xml');
 	response.setContent(dataToSend);
 	if (write_cache) {
-		_cache.add(request, response.getContent(), response.getContentType(), response.getResponseCode());
+		_cache.add(request, response.getContent(), response.getContentType(), response.getResponseCode(), deps);
 		response.setLastModified(_cache.getLastModified(request));
 	}
 	response.send();

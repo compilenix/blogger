@@ -6,8 +6,9 @@ var Config = {
 	Link: "http://127.0.0.1",
 	DirectoryCache: "cache",
 	HeaderExpires: 60000 * 60, // 60 Minutes
-	ClearCacheOnStart: true,
-	HandleCacheControl: true,
+	ClearCacheOnStart: false,
+	DevMode: false,
+	HandleClientCacheControl: true,
 	DefaultContentType: "text/html",
 	ServerVersion: "node.js/" + process.version,
 	cache: 'fsCache', // 'memCache' | 'fsCache' |'none'

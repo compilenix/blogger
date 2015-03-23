@@ -26,17 +26,44 @@ memCache.prototype.getLastModified = function(req) {
 	}
 }
 
+memCache.prototype.validate = function (req) {
+	var cached = this.cache[this._hash(req)] || false;
+	if (this.has(req) && (cachedDate = (cached.time).getTime())) {
+
+		for (var i = cached.dependencies.length - 1; i >= 0; i--) {
+			try {
+				if ((_fs.statSync(cached.dependencies[i]).mtime).getTime() > cachedDate) {
+					return false;
+				}
+			} catch (e) {
+				return false;
+			}
+		};
+		return true;
+	} else {
+		return false;
+	}
+}
+
+memCache.prototype.del = function (req) {
+	if (this.has(req)) {
+		console.log("Remove cache file: " + this._hash(req));
+		this.cache[this._hash(req)] = undefined;
+	}
+}
+
 memCache.prototype.clear = function() {
 	this.cache = {};
 }
 
-memCache.prototype.add = function(req, cont, mime, code) {
+memCache.prototype.add = function(req, cont, mime, code, dependsOn) {
 
 	var data = {
-		content: cont,
 		mime_type: mime,
 		response_code: code,
-		time: new Date()
+		time: new Date(),
+		dependencies: dependsOn,
+		content: cont
 	}
 	console.log("Add mem cache " + this._hash(req));
 	this.cache[this._hash(req)] = data;

@@ -1,22 +1,43 @@
 ﻿var Port = _Config.server.port || 80;
-var HandleCacheControl = _Config.HandleCacheControl || true;
+var HandleClientCacheControl = _Config.HandleClientCacheControl || true;
+var DevMode = _Config.DevMode || false;
 
 function Start(handle, route) {
-
 	var handle = handle;
 
+	if (!DevMode) {
+		var domain = _domain.create();
+		var onErrRes = undefined;
+
+		domain.on('error', onErr);
+	}
+
 	function onRequest(request, response) {
-		var response = new responseWrapper(response);
-		process_request(request, response, handle, route);
+		var res = new responseWrapper(response);
+		if (!DevMode) {
+			onErrRes = res;
+		}
+		process_request(request, res, handle, route);
 	}
 
 	function onErr(e) {
-		console.error(e);
+		console.error('error', e.stack);
+		onErrRes.setResponseCode(500);
+		onErrRes.setContent('');
+		_responseCodeMessage.responseCodeMessage(onErrRes);
+		onErrRes.send();
+		process.exit(1);
 	}
 
-	var server = _http.createServer(onRequest);
-	server.on('error', onErr);
-	server.listen(Port);
+	if (!DevMode) {
+		domain.run(function() {
+			_http.createServer(onRequest).listen(Port);
+		});
+	} else {
+		_http.createServer(onRequest).listen(Port);
+	}
+
+	
 }
 
 function process_request(request, response, handle, route) {
@@ -28,14 +49,17 @@ function process_request(request, response, handle, route) {
 		return false;
 	}
 
+	if (!(_cache.validate(request))) {
+		_cache.del(request);
+	}
+
 	if (_cache && _cache.has(request) && request.headers["if-modified-since"] === _cache.getLastModified(request)) {
 		response.setResponseCode(304);
 		response.setLastModified(_cache.getLastModified(request));
 		response.send();
 	} else {
-		var callback = handle[pathname].callback;
 
-		var deliver_cache = !(HandleCacheControl && request.headers["cache-control"] === 'no-cache');
+		var deliver_cache = !(HandleClientCacheControl && request.headers["cache-control"] === 'no-cache');
 		var write_cache = _cache && handle[pathname].cache && deliver_cache;
 
 		if (_cache && deliver_cache && _cache.has(request)) {
@@ -44,7 +68,7 @@ function process_request(request, response, handle, route) {
 			return false;
 		}
 
-		route(callback, request, response, write_cache);
+		route(handle[pathname].callback, request, response, write_cache);
 	}
 
 	return false;

@@ -364,7 +364,12 @@ a:hover, a:focus {
 		this.ace.focus();
 	}
 
+	editor.prototype.preview = function(content) {
+		window.open("/ajax/?&action=previewpost&content=" + JSON.stringify(this.ace.getValue()));
+	}
+
 	window.e = new editor();
+
 </script>
 </body>
 </html>

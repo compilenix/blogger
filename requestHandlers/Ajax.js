@@ -44,15 +44,22 @@ function Ajax(request, response, write_cache) {
 			}
 
 			response.setContent(ret);
-			response.send()
+			response.send();
         });
-	} else {
+	} else if (request.method == 'GET') {
+		var vars = _querystring.parse(request.url);
+		if (vars && vars['action'] && vars['action'] == 'previewpost') {
+			response.setContentType('text/html');
+			response.setContent(previewPost(response, vars));
+			response.send();
+			return true;
+		}
 		response.setContent('{}');
 		response.setContentType('application/json');
 		response.setResponseCode(400);
 		response.send()
+		return true;
 	}
-	return true;
 }
 
 function postList(response) {
@@ -84,7 +91,8 @@ function writePost(response, post) {
 function previewPost(response, post) {
 	if (post.content) {
 		response.setResponseCode(200);
-		return _helper.getPage(post.contents);
+		var content = JSON.parse(post.content) || post.content || '';
+		return _helper.getPage(content);
 	}
 	response.setResponseCode(400);
 	return '';

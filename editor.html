@@ -17,10 +17,18 @@ a:hover, a:focus {
 	color: #0AF;
 }
 
+#menu {
+	position: absolute;
+	top:0;
+	left:0;
+	right:0;
+	height:30px;
+}
+
 #tabs {
 	padding-left: 50px;
     position: absolute;
-    top: 0;
+    top: 30px;
     right: 0;
     left: 20%;
     height: 30px;
@@ -88,7 +96,7 @@ a:hover, a:focus {
 
 #edit {
     position: absolute;
-    top: 30px;
+    top: 60px;
     right: 0;
     bottom: 0;
     left: 20%;
@@ -97,7 +105,7 @@ a:hover, a:focus {
 	cursor:default;
     position: absolute;
     background-color: #e6e6e6;
-    top: 0;
+    top: 30px;
     right: 80%;
     bottom: 0;
     left: 0;
@@ -119,6 +127,10 @@ a:hover, a:focus {
 </head>
 
 <body>
+<div id="menu">
+	<label  onclick="e.emptyTab();">New</label>
+	<label onclick="e.preview();">Preview</label>
+</div>
 <div id="postlist"></div>
 <div id="tabs"></div>
 <div id='edit'></div>

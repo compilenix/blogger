@@ -290,6 +290,11 @@ a:hover, a:focus {
 		}
 	}
 
+	editor.prototype.emptyTab = function() {
+		var name = Math.floor(new Date().getTime() / 1000).toString(16);
+		e.newSession(name, '', true);
+	}
+
 	editor.prototype.addTab = function(id, isnew, title) {
 		var tab = document.createElement('div');
 		var inner = document.createElement('div');

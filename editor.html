@@ -160,6 +160,7 @@ a:hover, a:focus {
 			if (ev.data.action == 'insertText') {
 				var name = Math.floor(new Date().getTime() / 1000).toString(16);
 				e.newSession(name, ev.data.text, true);
+				e.ace.navigateFileEnd();
 				e.sessions['default'].setValue('');
 			}
 		})

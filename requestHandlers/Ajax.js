@@ -81,6 +81,7 @@ function writePost(response, post) {
 	if (post && post.content && post.title) {
 		response.setResponseCode(200);
 		_helper.writePost(post.postid, post.content, post.title);
+		_cache.clear();
 		return JSON.stringify({type: 'postsaved', id: post.postid});
 	} else {
 		response.setResponseCode(400);

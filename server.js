@@ -37,7 +37,7 @@ function Start(handle, route) {
 		_http.createServer(onRequest).listen(Port);
 	}
 
-	
+
 }
 
 function process_request(request, response, handle, route) {
@@ -49,7 +49,7 @@ function process_request(request, response, handle, route) {
 		return false;
 	}
 
-	if (!(_cache.validate(request))) {
+	if (_cache && !_cache.validate(request)) {
 		_cache.del(request);
 	}
 

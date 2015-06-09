@@ -14,6 +14,11 @@ if (_fs.existsSync("./Config.js")) {
 	_ConfigFile = "./Config.js.example";
 }
 _Config = require(_ConfigFile).Config;
+
+if (! _fs.existsSync(_Config.post.DirectoryPosts)) {
+	_fs.mkdirSync(_Config.post.DirectoryPosts);
+}
+
 responseWrapper = require('./responseWrapper.js').responseWrapper;
 _responseCodeMessage = require('./responseCodeMessage.js');
 _helper = require('./helper.js');

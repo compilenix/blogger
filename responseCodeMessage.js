@@ -11,6 +11,8 @@ function responseCodeMessage(response, diffrentMessage) {
 	}
 
 	response.setContent(content);
+
+	return response;
 }
 
 function generateContent(code, message) {

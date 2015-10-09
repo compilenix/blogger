@@ -59,7 +59,8 @@ case 'memCache':
 case 'none':
 default:
 	console.log('using no cache');
-	_cache = false;
+	var c = require('./nullCache.js');
+	_cache = new c.nullCache();
 	break;
 }
 

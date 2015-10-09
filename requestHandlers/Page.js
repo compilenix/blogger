@@ -6,15 +6,15 @@ var MessageOlderPage = _Config.post.MessageOlderPage || "Older";
 var MessageNewerPage = _Config.post.MessageNewerPage || "Newer";
 var MessageEnd = _Config.post.MessageEnd || "The end.";
 
-function Page(request, response, write_cache) {
+function Page(request) {
 	return page(request, response, false, write_cache);
 }
 
-function Index(request, response, write_cache) {
+function Index(request) {
 	return page(request, response, true, write_cache);
 }
 
-function page(request, response, index, write_cache) {
+function page(request, index) {
 
 	var posts = _helper.getPosts(true);
 	var pageCount = Math.ceil(posts.length / CountPosts);
@@ -33,7 +33,6 @@ function page(request, response, index, write_cache) {
 	} else {
 		p = pageCount;
 	}
-
 
 	var content = '<ul>\n';
 
@@ -77,16 +76,12 @@ function page(request, response, index, write_cache) {
 
 	content += "</div>\n";
 
-	var dataToSend = _helper.getPage(content);
-
-	response.setResponseCode(200);
-	response.setContent(dataToSend);
-	if (write_cache) {
-		_cache.add(request, response.getContent(), response.getContentType(), response.getResponseCode(), deps);
-		response.setLastModified(_cache.getLastModified(request));
+	return {
+		type: 'content',
+		code: 200,
+		content: _helper.getPage(content),
+		mimetype: 'text/html'
 	}
-	response.send();
-	return true;
 }
 
 

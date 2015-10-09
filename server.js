@@ -3,6 +3,7 @@ var HandleClientCacheControl = _Config.HandleClientCacheControl || true;
 var DevMode = _Config.DevMode || false;
 
 var _http = require('http');
+var _domain = require('domain');
 
 function Start(handle, route) {
 	var handle = handle;
@@ -38,8 +39,6 @@ function Start(handle, route) {
 	} else {
 		_http.createServer(onRequest).listen(Port);
 	}
-
-
 }
 
 function process_request(request, response, handle, route) {
@@ -47,30 +46,52 @@ function process_request(request, response, handle, route) {
 
 	if (!handle[pathname]) {
 		response.setResponseCode(404);
+		_responseCodeMessage.responseCodeMessage(response);
 		response.send();
 		return false;
 	}
 
-	if (_cache && !_cache.validate(request)) {
-		_cache.del(request);
-	}
-
-	if (_cache && _cache.has(request) && request.headers["if-modified-since"] === _cache.getLastModified(request)) {
+	if (_cache.has(request) && request.headers["if-modified-since"] === _cache.getLastModified(request)) {
 		response.setResponseCode(304);
 		response.setLastModified(_cache.getLastModified(request));
 		response.send();
 	} else {
 
 		var deliver_cache = !(HandleClientCacheControl && request.headers["cache-control"] === 'no-cache');
-		var write_cache = _cache && handle[pathname].cache && deliver_cache;
+		var write_cache = handle[pathname].cache;
 
-		if (_cache && deliver_cache && _cache.has(request)) {
+		if (deliver_cache && _cache.has(request)) {
 			response.setLastModified(_cache.getLastModified(request));
 			_cache.send(request, response);
 			return false;
 		}
 
-		route(handle[pathname].callback, request, response, write_cache);
+		var data = route(handle[pathname].callback, request);
+
+		if (data.code == 200) {
+			if (write_cache) {
+				_cache.add(request, response.content, response.mimetype, response.code);
+				response.setLastModified(_cache.getLastModified(request));	
+			}
+
+			response.setContentType(data.mimetype);
+			response.setResponseCode(200);
+
+			if (data.type == 'content') {
+				response.setContent(data.content);
+			} else if (data.type == 'file') {
+				var fileStream = _fs.createReadStream(data.content);
+				response.sendFileStream(fileStream);
+				return false;
+			}
+
+
+		} else {
+			response.setResponseCode(data.code);
+			_responseCodeMessage.responseCodeMessage(response);
+		}
+
+		response.send();
 	}
 
 	return false;

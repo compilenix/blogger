@@ -1,42 +1,41 @@
 var DirectoryStatic = _Config.post.DirectoryStatic || "static";
 
-function Static(request, response, write_cache) {
+function Static(request) {
 
 	var file = _querystring.parse(_url.parse(request.url).query)["f"];
 
-	if (!file) {
-		response.setResponseCode(404);
-	} else {
+	var response = {
+		type: 'error',
+		code: 404,
+		content: 'file not found!',
+		mimetype: 'text/plain'
+	}
+
+	if (file) {
 		var fileList = _fs.readdirSync(DirectoryStatic);
 
-		if (fileList.indexOf(file) == -1) {
-			response.setResponseCode(404);
-		} else {
-			response.setResponseCode(200);
+		if (fileList.indexOf(file) != -1) {
+			response.type = file;
+			response.code = 200;
 			var extension = file.split('.').reverse()[0] || '';
 
 			switch (extension) {
 				case 'js':
-					response.setContentType('text/javascript');
+					response.mimetype = 'text/javascript';
 				break;
 				case 'png':
-					response.setContentType('image/png');
+					response.mimetype = 'image/png';
 				break;
 				case 'css':
-					response.setContentType('text/css');
-				break;
-				default:
+					response.mimetype = 'text/css';
 				break;
 			}
-
-			var fileStream = _fs.createReadStream(DirectoryStatic + '/' + file);
-			response.sendFileStream(fileStream);
-
-			return true;
+			
+			response.content = DirectoryStatic + '/' + file;
 		}
 	}
-	response.send();
-	return true;
+
+	return response;
 }
 
 exports.Static = Static;

@@ -15,10 +15,6 @@ class nullCache {
 		return 0;
 	}
 
-	validate(req) {
-		return false;
-	}
-
 	del(req) {
 		return null;
 	}

@@ -51,14 +51,13 @@ function RSS(request, response, write_cache) {
 
 	dataToSend += '</channel>\n';
 	dataToSend += '</rss>\n';
-	response.setResponseCode(200);
-	response.setContentType('application/rss+xml');
-	response.setContent(dataToSend);
-	if (write_cache) {
-		_cache.add(request, response.getContent(), response.getContentType(), response.getResponseCode(), deps);
-		response.setLastModified(_cache.getLastModified(request));
+
+	return {
+		type: 'content',
+		code: 200,
+		content: dataToSend,
+		mimetype: 'application/rss+xml'
 	}
-	response.send();
 }
 
 function generateRssHeader() {

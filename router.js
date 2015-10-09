@@ -1,13 +1,15 @@
-﻿function Route(callback, request, response, write_cache) {
+﻿function Route(callback, request) {
 
 	if (typeof callback === 'function') {
-		return callback(request, response, write_cache);
+		return callback(request);
 	} else {
 		console.log('Request handler found for: "' + _url.parse(request.url).pathname + '" but callback is not a function: "' + callback + '"!');
-		response.setResponseCode(500);
-		response.send();
+		return  {
+			type: 'error',
+			code: 404
+
+		}
 	}
 }
-
 
 exports.Route = Route;

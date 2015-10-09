@@ -1,27 +1,29 @@
-_OS = require('os');
-_Cluster = require('cluster');
-_domain = require('domain');
-_http = require('http');
-_url = require('url');
-_querystring = require('querystring');
-_fs = require('fs');
-_crypto = require('crypto');
+"use strict"
 
-_ConfigFile = undefined;
+var _cluster = require('cluster');
+var _domain = require('domain');
+
+global._querystring = require('querystring');
+global._url = require('url');
+global._fs = require('fs');
+global._crypto = require('crypto');
+
+var _ConfigFile = undefined;
 if (_fs.existsSync("./Config.js")) {
 	_ConfigFile = "./Config.js";
 } else {
 	_ConfigFile = "./Config.js.example";
 }
-_Config = require(_ConfigFile).Config;
+
+global._Config = require(_ConfigFile).Config;
 
 if (! _fs.existsSync(_Config.post.DirectoryPosts)) {
 	_fs.mkdirSync(_Config.post.DirectoryPosts);
 }
 
-responseWrapper = require('./responseWrapper.js').responseWrapper;
-_responseCodeMessage = require('./responseCodeMessage.js');
-_helper = require('./helper.js');
+var responseWrapper = require('./responseWrapper.js').responseWrapper;
+var _responseCodeMessage = require('./responseCodeMessage.js');
+var _helper = require('./helper.js');
 ﻿var server = require('./server.js');
 var router = require('./router.js');
 var requestHandlers = require("./requestHandlers.js");
@@ -41,7 +43,7 @@ function Init() {
 	server.Start(handle, router.Route);
 }
 
-_cache = {};
+var _cache = {};
 
 switch (_Config.cache) {
 case 'fsCache':
@@ -60,7 +62,7 @@ default:
 	break;
 }
 
-if (_Cluster.isMaster) {
+if (_cluster.isMaster) {
 
 	if (_cache && _Config.ClearCacheOnStart) {
 		_cache.clear();
@@ -69,21 +71,21 @@ if (_Cluster.isMaster) {
 	if (_Config.threads <= 1) { _Config.threads = 1; }
 
 	for (var i = _Config.threads; i > 0; i--) {
-		_Cluster.fork();
+		_cluster.fork();
 	};
 
-	_Cluster.on('fork', function(worker) {
+	_cluster.on('fork', function(worker) {
 		console.log('worker #%d forked. (pid %d)', worker.id, worker.process.pid);
 	});
 
-	_Cluster.on('disconnect', function(worker) {
+	_cluster.on('disconnect', function(worker) {
 		console.log('worker #%d (pid %d) disconnected.', worker.id, worker.process.pid);
 	});
 
-	_Cluster.on('exit', function(worker, code, signal) {
+	_cluster.on('exit', function(worker, code, signal) {
 		console.log('worker #%d (pid %d) died (returned code %s; signal %s). restarting...', worker.id, worker.process.pid, code || "undefined", signal || "undefined");
-		_Cluster.fork();
+		_cluster.fork();
 	});
-} else if (_Cluster.isWorker) {
+} else if (_cluster.isWorker) {
 	Init();
 }

@@ -2,6 +2,8 @@
 var HandleClientCacheControl = _Config.HandleClientCacheControl || true;
 var DevMode = _Config.DevMode || false;
 
+var _http = require('http');
+
 function Start(handle, route) {
 	var handle = handle;
 

@@ -6,7 +6,7 @@ function Post(request, response, write_cache) {
 
 	var dataToSend = "";
 	var query = _querystring.parse(_url.parse(request.url).query)["p"];
-
+	var data;
 	if((query && query.match(/^[A-Za-z0-9]+$/)) && (data = _helper.getPost(query).contents) !== undefined) {
 			response.setResponseCode(200);
 			response.setContent(_helper.getPage(data));

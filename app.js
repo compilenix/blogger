@@ -21,9 +21,9 @@ if (! _fs.existsSync(_Config.post.DirectoryPosts)) {
 	_fs.mkdirSync(_Config.post.DirectoryPosts);
 }
 
-var responseWrapper = require('./responseWrapper.js').responseWrapper;
-var _responseCodeMessage = require('./responseCodeMessage.js');
-var _helper = require('./helper.js');
+global.responseWrapper = require('./responseWrapper.js').responseWrapper;
+global._responseCodeMessage = require('./responseCodeMessage.js');
+global._helper = require('./helper.js');
 ﻿var server = require('./server.js');
 var router = require('./router.js');
 var requestHandlers = require("./requestHandlers.js");
@@ -43,12 +43,13 @@ function Init() {
 	server.Start(handle, router.Route);
 }
 
-var _cache = {};
+global._cache = {};
 
 switch (_Config.cache) {
 case 'fsCache':
 	console.log('using fsCache module for caching');
-	_cache = require('./fsCache.js');
+	var c = require('./fsCache.js');
+	_cache = new c.fsCache();
 	break;
 case 'memCache':
 	console.log('using memCache module for caching');

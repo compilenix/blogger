@@ -1,97 +1,94 @@
-var DirectoryCache = _Config.DirectoryCache  || "cache";
+var nullCache = require('./nullCache.js').nullCache;
 
-function has(req) {
-	return _fs.existsSync(_path(req));
-}
+class fsCache extends nullCache {
+	constructor() {
+		super();
 
-function send(req, res) {
-	if (has(req)) {
-		var data = JSON.parse(_fs.readFileSync(_path(req), 'utf8'));
-		res.setResponseCode(data.response_code);
-		res.setContentType(data.mime_type);
-		res.setLastModified(new Date(_fs.statSync(_path(req)).mtime).toUTCString());
-		res.setContent(data.content);
-		res.send();
+		this.DirectoryCache = _Config.DirectoryCache  || "cache";
+		if (! _fs.existsSync(this.DirectoryCache)) {
+			_fs.mkdirSync(this.DirectoryCache);
+		}
 	}
-}
 
-function getLastModified(req) {
-	if (has(req)) {
-		return new Date(_fs.statSync(_path(req)).mtime).toUTCString();
-	} else {
-		return false;
+	has(req) {
+		return _fs.existsSync(this._path(req));
 	}
-}
 
-function validate(req) {
-	if (has(req) && (cachedDate = (_fs.statSync(_path(req)).mtime).getTime())) {
-		var data = JSON.parse(_fs.readFileSync(_path(req), 'utf8'));
+	send(req, res) {
+		if (this.has(req)) {
+			var data = JSON.parse(_fs.readFileSync(this._path(req), 'utf8'));
+			res.setResponseCode(data.response_code);
+			res.setContentType(data.mime_type);
+			res.setLastModified(new Date(_fs.statSync(this._path(req)).mtime).toUTCString());
+			res.setContent(data.content);
+			res.send();
+		}
+	}
 
-		for (var i = data.dependencies.length - 1; i >= 0; i--) {
-			try {
-				if ((_fs.statSync(data.dependencies[i]).mtime).getTime() > cachedDate) {
+	getLastModified(req) {
+		if (this.has(req)) {
+			return new Date(_fs.statSync(this._path(req)).mtime).toUTCString();
+		} else {
+			return false;
+		}
+	}
+
+	validate(req) {
+		var cachedDate;
+		if (this.has(req) && (cachedDate = (_fs.statSync(this._path(req)).mtime).getTime())) {
+			var data = JSON.parse(_fs.readFileSync(this._path(req), 'utf8'));
+
+			for (var i = data.dependencies.length - 1; i >= 0; i--) {
+				try {
+					if ((_fs.statSync(data.dependencies[i]).mtime).getTime() > cachedDate) {
+						return false;
+					}
+				} catch (e) {
 					return false;
 				}
-			} catch (e) {
-				return false;
-			}
-		};
-		return true;
-	} else {
-		return false;
+			};
+			return true;
+		} else {
+			return false;
+		}
+	}
+
+	del(req) {
+		if (this.has(req)) {
+			var file = _path(req);
+			console.log("Remove cache file: " + file);
+			_fs.unlinkSync(file);
+		}
+	}
+
+	clear() {
+		var cacheFileList = _fs.readdirSync(this.DirectoryCache);
+		for (var i = 0; i < cacheFileList.length; i++) {
+			console.log("Remove cache file: " + this.DirectoryCache + "/" + cacheFileList[i]);
+			_fs.unlinkSync(this.DirectoryCache + "/" + cacheFileList[i]);
+		}
+	}
+
+	add(req, cont, mime, code, dependsOn) {
+		var data = JSON.stringify({
+			mime_type: mime,
+			response_code: code,
+			dependencies: dependsOn,
+			content: cont
+		});
+		console.log("Add cache file: " + this._path(req));
+		_fs.writeFileSync(this._path(req), data);
+	}
+
+	_hash(req) {
+		var shasum = _crypto.createHash('sha1');
+		shasum.update(req.url);
+		return shasum.digest('hex');
+	}
+
+	_path(req) {
+		return this.DirectoryCache + '/' + this._hash(req) + ".json";
 	}
 }
 
-function del(req) {
-	if (has(req)) {
-		var file = _path(req);
-		console.log("Remove cache file: " + file);
-		_fs.unlinkSync(file);
-	}
-}
-
-function clear() {
-	_init();
-	var cacheFileList = _fs.readdirSync(DirectoryCache);
-
-	for (var i = 0; i < cacheFileList.length; i++) {
-		console.log("Remove cache file: " + DirectoryCache + "/" + cacheFileList[i]);
-		_fs.unlinkSync(DirectoryCache + "/" + cacheFileList[i]);
-	}
-}
-
-function add(req, content, mime, code, dependsOn) {
-	_init();
-	var data = JSON.stringify({
-		mime_type: mime,
-		response_code: code,
-		dependencies: dependsOn,
-		content: content
-	});
-	console.log("Add cache file: " + _path(req));
-	_fs.writeFileSync(_path(req), data);
-}
-
-function _hash(req) {
-	var shasum = _crypto.createHash('sha1');
-	shasum.update(req.url);
-	return shasum.digest('hex');
-}
-
-function _path(req) {
-	return DirectoryCache + '/' + _hash(req) + ".json";
-}
-
-function _init() {
-	if (! _fs.existsSync(DirectoryCache)) {
-		_fs.mkdirSync(DirectoryCache);
-	}
-}
-
-exports.send = send;
-exports.add = add;
-exports.getLastModified = getLastModified;
-exports.clear = clear;
-exports.has = has;
-exports.validate = validate;
-exports.del = del;
+exports.fsCache = fsCache;

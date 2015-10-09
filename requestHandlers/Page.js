@@ -7,11 +7,11 @@ var MessageNewerPage = _Config.post.MessageNewerPage || "Newer";
 var MessageEnd = _Config.post.MessageEnd || "The end.";
 
 function Page(request) {
-	return page(request, response, false, write_cache);
+	return page(request, false);
 }
 
 function Index(request) {
-	return page(request, response, true, write_cache);
+	return page(request, true);
 }
 
 function page(request, index) {

@@ -29,24 +29,6 @@ class memCache extends nullCache {
 		}
 	}
 
-	validate(req) {
-		var cached = this.cache[this._hash(req)] || false;
-		if (this.has(req) && (cachedDate = (cached.time).getTime())) {z
-			for (var i = cached.dependencies.length - 1; i >= 0; i--) {
-				try {
-					if ((_fs.statSync(cached.dependencies[i]).mtime).getTime() > cachedDate) {
-						return false;
-					}
-				} catch (e) {
-					return false;
-				}
-			};
-			return true;
-		} else {
-			return false;
-		}
-	}
-
 	del(req) {
 		if (this.has(req)) {
 			console.log("Remove cache file: " + this._hash(req));

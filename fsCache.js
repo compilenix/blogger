@@ -33,26 +33,6 @@ class fsCache extends nullCache {
 		}
 	}
 
-	validate(req) {
-		var cachedDate;
-		if (this.has(req) && (cachedDate = (_fs.statSync(this._path(req)).mtime).getTime())) {
-			var data = JSON.parse(_fs.readFileSync(this._path(req), 'utf8'));
-
-			for (var i = data.dependencies.length - 1; i >= 0; i--) {
-				try {
-					if ((_fs.statSync(data.dependencies[i]).mtime).getTime() > cachedDate) {
-						return false;
-					}
-				} catch (e) {
-					return false;
-				}
-			};
-			return true;
-		} else {
-			return false;
-		}
-	}
-
 	del(req) {
 		if (this.has(req)) {
 			var file = this._path(req);
@@ -69,11 +49,10 @@ class fsCache extends nullCache {
 		}
 	}
 
-	add(req, cont, mime, code, dependsOn) {
+	add(req, cont, mime, code) {
 		var data = JSON.stringify({
 			mime_type: mime,
 			response_code: code,
-			dependencies: dependsOn,
 			content: cont
 		});
 		console.log("Add cache file: " + this._path(req));

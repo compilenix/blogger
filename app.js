@@ -17,6 +17,16 @@ if (_fs.existsSync("./Config.js")) {
 
 global._Config = require(_ConfigFile).Config;
 
+process.argv.forEach(function(val, index, array) {
+		switch (val) {
+		case "config":
+			console.log("Loading config from command line!");
+			console.log(process.argv[index + 1]);
+			global._Config = JSON.parse(process.argv[index + 1]);
+			break;
+	}
+});
+
 if (! _fs.existsSync(_Config.post.DirectoryPosts)) {
 	_fs.mkdirSync(_Config.post.DirectoryPosts);
 }

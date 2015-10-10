@@ -39,6 +39,7 @@ function Start(handle, route) {
 	} else {
 		_http.createServer(onRequest).listen(Port);
 	}
+	console.log("Init done.");
 }
 
 function process_request(request, response, handle, route) {

@@ -55,7 +55,7 @@ class fsCache extends nullCache {
 
 	del(req) {
 		if (this.has(req)) {
-			var file = _path(req);
+			var file = this._path(req);
 			console.log("Remove cache file: " + file);
 			_fs.unlinkSync(file);
 		}

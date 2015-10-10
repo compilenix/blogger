@@ -70,7 +70,7 @@ function process_request(request, response, handle, route) {
 
 		if (data.code == 200) {
 			if (write_cache) {
-				_cache.add(request, response.content, response.mimetype, response.code);
+				_cache.add(request, data.content, data.mimetype, data.code);
 				response.setLastModified(_cache.getLastModified(request));	
 			}
 

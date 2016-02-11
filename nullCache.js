@@ -1,37 +1,37 @@
-class nullCache {
-	constructor() {
+"use strict";
 
-	}
+class NullCache {
+    NullCache() {
 
-	has(req) {
-		return false;
-	}
+    }
 
-	send(req, res) {
-		res.send();
-	}
+    has(req) {
+        return false;
+    }
 
-	getLastModified(req) {
-		return 0;
-	}
+    send(req, res) {
+        res.send();
+    }
 
-	del(req) {
-		return null;
-	}
+    getLastModified(req) {
+        return 0;
+    }
 
-	clear() {
-		return null;
-	}
+    del(req) {
+        return null;
+    }
 
-	add(req, cont, mime, code, dependsOn) {
-		return null;
-	}
+    clear() {
+        return null;
+    }
 
-	_hash(req) {
-		var shasum = _crypto.createHash('sha1');
-		shasum.update(req.url);
-		return shasum.digest('hex');
-	}
+    add(req, cont, mime, code, dependsOn) {
+        return null;
+    }
+
+    _hash(req) {
+        return crypto.createHash("sha1").update(req.url).digest("hex");
+    }
 }
 
-exports.nullCache = nullCache;
+exports.NullCache = NullCache;

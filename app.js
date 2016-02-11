@@ -1,103 +1,109 @@
-"use strict"
+"use strict";
 
-var _cluster = require('cluster');
-var _domain = require('domain');
+var cluster = require("cluster");
+var domain = require("domain");
 
-global._querystring = require('querystring');
-global._url = require('url');
-global._fs = require('fs');
-global._crypto = require('crypto');
+global.querystring = require("querystring");
+global.url = require("url");
+global.fs = require("fs");
+global.crypto = require("crypto");
+global.os = require("os");
 
-var _ConfigFile = undefined;
-if (_fs.existsSync("./Config.js")) {
-	_ConfigFile = "./Config.js";
+var ConfigFile = undefined;
+if (fs.existsSync("./Config.js")) {
+    ConfigFile = "./Config.js";
 } else {
-	_ConfigFile = "./Config.js.example";
+    ConfigFile = "./Config.js.example";
 }
 
-global._Config = require(_ConfigFile).Config;
+global.Config = require(ConfigFile).Config;
 
-process.argv.forEach(function(val, index, array) {
-		switch (val) {
-		case "config":
-			console.log("Loading config from command line!");
-			console.log(process.argv[index + 1]);
-			global._Config = JSON.parse(process.argv[index + 1]);
-			break;
-	}
+process.argv.forEach(function (val, index, array) {
+    switch (val) {
+        case "config":
+            console.log("Loading config from command line!");
+            console.log(process.argv[index + 1]);
+            global.Config = JSON.parse(process.argv[index + 1]);
+            break;
+    }
 });
 
-if (! _fs.existsSync(_Config.post.DirectoryPosts)) {
-	_fs.mkdirSync(_Config.post.DirectoryPosts);
+if (!fs.existsSync(Config.post.DirectoryPosts)) {
+    fs.mkdirSync(Config.post.DirectoryPosts);
 }
 
-global.responseWrapper = require('./responseWrapper.js').responseWrapper;
-global._responseCodeMessage = require('./responseCodeMessage.js');
-global._helper = require('./helper.js');
-﻿var server = require('./server.js');
-var router = require('./router.js');
+global.ResponseWrapper = require("./ResponseWrapper.js").ResponseWrapper;
+global.ResponseCodeMessage = require("./ResponseCodeMessage.js");
+global.Helper = require("./Helper.js");
+global.router = require("./router.js");
+var server = require("./server.js");
 var requestHandlers = require("./requestHandlers.js");
 
 function Init() {
-	var handle = {};
-	handle[_Config.root] = {callback: requestHandlers.Index, cache: true};
-	handle[_Config.root + "static/"] = {callback: requestHandlers.Static, cache: false};
-	handle[_Config.root + "post/"] = {callback: requestHandlers.Post, cache: true};
-	handle[_Config.root + "page/"] = {callback: requestHandlers.Page, cache: true};
-	handle[_Config.root + "ajax/"] = {callback: requestHandlers.Ajax, cache: false};
-	handle[_Config.root + "rss.xml"] = {callback: requestHandlers.RSS, cache: true};
-	handle[_Config.root + "rss"] = {callback: requestHandlers.RSS, cache: true};
-	handle[_Config.root + "edit"] = {callback: requestHandlers.Edit, cache: true};
-	handle[_Config.root + "code/"] = {callback: requestHandlers.Code, cache: false};
+    global.handle = {};
+    handle[Config.root] = { callback: requestHandlers.Index, cache: true };
+    handle[Config.root + "static/"] = { callback: requestHandlers.Static, cache: false };
+    handle[Config.root + "post/"] = { callback: requestHandlers.Post, cache: true };
+    handle[Config.root + "page/"] = { callback: requestHandlers.Page, cache: true };
+    handle[Config.root + "ajax/"] = { callback: requestHandlers.Ajax, cache: false };
+    handle[Config.root + "rss.xml"] = { callback: requestHandlers.RSS, cache: true };
+    handle[Config.root + "rss"] = { callback: requestHandlers.RSS, cache: true };
+    handle[Config.root + "edit"] = { callback: requestHandlers.Edit, cache: true };
+    handle[Config.root + "code/"] = { callback: requestHandlers.Code, cache: false };
 
-	server.Start(handle, router.Route);
+    server.Start(router.Route);
 }
 
-global._cache = {};
+global.NullCache = require("./NullCache.js").NullCache;
+global.FsCache = require("./FsCache.js").FsCache;
+global.MemCache = require("./MemCache.js").MemCache;
 
-switch (_Config.cache) {
-case 'fsCache':
-	console.log('using fsCache module for caching');
-	var c = require('./fsCache.js');
-	_cache = new c.fsCache();
-	break;
-case 'memCache':
-	console.log('using memCache module for caching');
-	var c = require('./memCache.js');
-	_cache = new c.memCache();
-	break;
-case 'none':
-default:
-	console.log('using no cache');
-	var c = require('./nullCache.js');
-	_cache = new c.nullCache();
-	break;
+switch (Config.cache) {
+    case "FsCache":
+        console.log("using FsCache module for caching");
+        global.Cache = new FsCache();
+        break;
+    case "MemCache":
+        console.log("using MemCache module for caching");
+        global.Cache = new MemCache();
+        break;
+    case "none":
+    default:
+        console.log("using no cache");
+        global.Cache = new NullCache();
+        break;
 }
 
-if (_cluster.isMaster) {
+if (Config.DevMode) {
+    Init();
+} else {
+    if (cluster.isMaster) {
 
-	if (_cache && _Config.ClearCacheOnStart) {
-		_cache.clear();
-	}
+        if (Cache && Config.ClearCacheOnStart) {
+            Cache.clear();
+        }
 
-	if (_Config.threads <= 1) { _Config.threads = 1; }
+        if (Config.threads <= 1) {
+            Config.threads = 1;
+        }
 
-	for (var i = _Config.threads; i > 0; i--) {
-		_cluster.fork();
-	};
+        for (var i = Config.threads; i > 0; i--) {
+            cluster.fork();
+        };
 
-	_cluster.on('fork', function(worker) {
-		console.log('worker #%d forked. (pid %d)', worker.id, worker.process.pid);
-	});
+        cluster.on("fork", function (worker) {
+            console.log("worker #%d forked. (pid %d)", worker.id, worker.process.pid);
+        });
 
-	_cluster.on('disconnect', function(worker) {
-		console.log('worker #%d (pid %d) disconnected.', worker.id, worker.process.pid);
-	});
+        cluster.on("disconnect", function (worker) {
+            console.log("worker #%d (pid %d) disconnected.", worker.id, worker.process.pid);
+        });
 
-	_cluster.on('exit', function(worker, code, signal) {
-		console.log('worker #%d (pid %d) died (returned code %s; signal %s). restarting...', worker.id, worker.process.pid, code || "undefined", signal || "undefined");
-		_cluster.fork();
-	});
-} else if (_cluster.isWorker) {
-	Init();
+        cluster.on("exit", function (worker, code, signal) {
+            console.log("worker #%d (pid %d) died (returned code %s; signal %s). restarting...", worker.id, worker.process.pid, code || "undefined", signal || "undefined");
+            cluster.fork();
+        });
+    } else if (cluster.isWorker) {
+        Init();
+    }
 }

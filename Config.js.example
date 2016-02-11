@@ -1,4 +1,4 @@
-var _OS = require('os');
+"use strict";
 
 var Config = {
 	root: "/",
@@ -10,11 +10,12 @@ var Config = {
 	HeaderExpires: 60000 * 60, // 60 Minutes
 	ClearCacheOnStart: false,
 	DevMode: false,
+	MaxHttpPOSTSize: 5e7, // 50 Megabyte
 	HandleClientCacheControl: true,
 	DefaultContentType: "text/html",
 	ServerVersion: "node.js/" + process.version,
-	cache: 'fsCache', // 'memCache' | 'fsCache' |'none'
-	APIKey: 'ggg',
+	cache: "FsCache", // "MemCache" | "FsCache" | "none"
+	APIKey: "changeme",
 	server: {
 		port: 8000
 	},
@@ -26,7 +27,7 @@ var Config = {
 		CountPosts: 5,
 		MessageOlderPage: "Older",
 		MessageNewerPage: "Newer",
-		MessageEnd: '<a href="/code/?c=797">The end.</a>'
+		MessageEnd: "The end."
 	},
 	rss: {
 		CountPosts: 30,
@@ -39,7 +40,7 @@ var Config = {
 		webMasterMail: "admin@domain.tld"
 	},
 	// threads: 1
-	threads: _OS.cpus().length
+	threads: os.cpus().length
 };
 
 

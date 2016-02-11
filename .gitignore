@@ -3,7 +3,11 @@ parts/
 *.log
 *.gz
 *.bz2
+*.dat
+*.bin
 cache/
+obj/
+bin/
 node_modules
 /Config.js
 *.sublime-project

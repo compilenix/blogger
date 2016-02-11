@@ -1,106 +1,130 @@
+"use strict";
 
+function Ajax(request) {
+    var response = {
+        type: "error",
+        code: 500
+    };
 
-function Ajax(request, response, write_cache) {
+    if (request.method === "POST") {
+        return process_post;
+    } else if (request.method === "GET") {
 
-	if (request.method == 'POST') {
-		var body = '';
-       	request.on('data', function (data) {
-            body += data;
-        });
-        request.on('end', function () {
-            var post = _querystring.parse(body);
+        const vars = querystring.parse(request.url);
 
-            if (!checkApiKey(post.apikey)) {
-            	response.setContent('{}');
-				response.setContentType('application/json');
-				response.setResponseCode(403);
-				response.send();
-				return false;
+        // TODO checkApiKey
+        if (vars && vars["action"] && vars["action"] === "previewpost") {
+            response.type = "content";
+            response.mimetype = "text/html";
+            response.content = previewPost(vars);
+            return response;
+        }
+
+        response.content = "{\n\t\"code\": 501,\n\t\"content\": \"Not Implemented\"\n}";
+        response.mimetype = "application/json";
+        response.code = 501;
+        return response;
+    }
+    return response;
+}
+
+function process_post(data, request) {
+    var response = {
+        type: "error",
+        code: 500
+    };
+
+    const post = querystring.parse(data);
+
+    if (!checkApiKey(post.apikey)) {
+        response.content = "{}";
+        response.mimetype = "application/json";
+        response.code = 403;
+        return response;
+    }
+
+    var ret;
+    switch (post.action) {
+        case "postlist":
+            ret = postList();
+            response.mimetype = "application/json";
+            response.code = 200;
+            break;
+        case "getpost":
+            ret = getPost(post);
+            response.mimetype = "application/json";
+
+            if (ret === "{}") {
+                ret = "{\n\t\"code\": 404,\n\t\"content\": \"Not Found\"\n}";
+                response.code = 404;
+            } else {
+                response.code = 200;
             }
+            break;
+        case "writepost":
+            ret = writePost(post);
+            response.mimetype = "application/json";
 
-			var ret = '{}';
-			switch (post.action) {
-				case 'postlist':
-					ret = postList(response);
-					response.setContentType('application/json');
-				break;
-				case 'getpost':
-					ret = getPost(response, post);
-					response.setContentType('application/json');
-				break;
-				case 'writepost':
-					ret = writePost(response, post);
-					response.setContentType('application/json');
-				break;
-				case 'previewpost':
-					ret = previewPost(response, post);
-					response.setContentType('text/html');
-				break;
-				default:
-					ret = '{}';
-					response.setResponseCode(400);
-					response.setContentType('application/json');
-				break;
-			}
+            if (ret === "{}") {
+                ret = "{\n\t\"code\": 400,\n\t\"content\": \"Bad Request\"\n}";
+                response.code = 400;
+            } else {
+                response.code = 200;
+            }
+            break;
+        case "previewpost":
+            ret = previewPost(post);
+            response.mimetype = "text/html";
 
-			response.setContent(ret);
-			response.send();
-        });
-	} else if (request.method == 'GET') {
-		var vars = _querystring.parse(request.url);
-		if (vars && vars['action'] && vars['action'] == 'previewpost') {
-			response.setContentType('text/html');
-			response.setContent(previewPost(response, vars));
-			response.send();
-			return true;
-		}
-		response.setContent('{}');
-		response.setContentType('application/json');
-		response.setResponseCode(400);
-		response.send()
-		return true;
-	}
+            if (ret === "") {
+                response.code = 400;
+            } else {
+                response.code = 200;
+            }
+            break;
+        default:
+            ret = "{}";
+            response.code = 400;
+            response.mimetype = "application/json";
+            break;
+    }
+
+    response.content = ret;
+    return response;
 }
 
-function postList(response) {
-	response.setResponseCode(200);
-	return JSON.stringify({type: 'postlist', list: _helper.getPosts(), titles: _helper.getTitles(true)});
+function postList() {
+    return JSON.stringify({ type: "postlist", list: Helper.getPosts(), titles: Helper.getTitles(true) });
 }
 
-function getPost(response, post) {
-	if (post.postid) {
-		response.setResponseCode(200);
-		return JSON.stringify({type: 'post', id: post.postid, content: _helper.getPost(post.postid), title: _helper.getTitle(post.postid)});
-	} else {
-		response.setResponseCode(400);
-		return '{}';
-	}
+function getPost(post) {
+    if (post.postid) {
+        return JSON.stringify({ type: "post", id: post.postid, content: Helper.getPost(post.postid), title: Helper.getTitle(post.postid) });
+    } else {
+        return "{}";
+    }
 }
 
-function writePost(response, post) {
-	if (post && post.content && post.title) {
-		response.setResponseCode(200);
-		_helper.writePost(post.postid, post.content, post.title);
-		_cache.clear();
-		return JSON.stringify({type: 'postsaved', id: post.postid});
-	} else {
-		response.setResponseCode(400);
-		return '{}';
-	}
+function writePost(post) {
+    if (post && post.content && post.title) {
+        Helper.writePost(post.postid, post.content, post.title);
+        // TODO clear only needed stuff
+        Cache.clear();
+        return JSON.stringify({ type: "postsaved", id: post.postid });
+    } else {
+        return "{}";
+    }
 }
 
-function previewPost(response, post) {
-	if (post.content) {
-		response.setResponseCode(200);
-		var content = JSON.parse(post.content) || post.content || '';
-		return _helper.getPage(content);
-	}
-	response.setResponseCode(400);
-	return '';
+function previewPost(post) {
+    if (post.content) {
+        return Helper.getPage(JSON.parse(post.content) || post.content || "");
+    }
+    return "";
 }
 
 function checkApiKey(key) {
-	return key === _Config.APIKey;
+    return key === Config.APIKey;
 }
 
 exports.Ajax = Ajax;

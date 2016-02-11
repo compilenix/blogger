@@ -1,101 +1,152 @@
-﻿var Port = _Config.server.port || 80;
-var HandleClientCacheControl = _Config.HandleClientCacheControl || true;
-var DevMode = _Config.DevMode || false;
+﻿"use strict";
 
-var _http = require('http');
-var _domain = require('domain');
+var Port = Config.server.port || 80;
+var HandleClientCacheControl = Config.HandleClientCacheControl || true;
+var DevMode = Config.DevMode || false;
 
-function Start(handle, route) {
-	var handle = handle;
+var http = require("http");
+var domain = require("domain");
 
-	if (!DevMode) {
-		var domain = _domain.create();
-		var onErrRes = undefined;
+function Start(route) {
+    var onErrRes = undefined;
 
-		domain.on('error', onErr);
-	}
+    function onRequest(request, response) {
+        const res = new ResponseWrapper(response);
 
-	function onRequest(request, response) {
-		var res = new responseWrapper(response);
-		if (!DevMode) {
-			onErrRes = res;
-		}
-		process_request(request, res, handle, route);
-	}
+        if (!DevMode) {
+            onErrRes = res;
+        }
 
-	function onErr(e) {
-		console.error('error', e.stack);
-		onErrRes.setResponseCode(500);
-		onErrRes.setContent('');
-		_responseCodeMessage.responseCodeMessage(onErrRes);
-		onErrRes.send();
-		process.exit(1);
-	}
+        process_request(request, res, route);
+    }
 
-	if (!DevMode) {
-		domain.run(function() {
-			_http.createServer(onRequest).listen(Port);
-		});
-	} else {
-		_http.createServer(onRequest).listen(Port);
-	}
-	console.log("Init done.");
+    function onErr(error) {
+        console.error("error", error.stack);
+        onErrRes.setResponseCode(500);
+        onErrRes.setContent("");
+        ResponseCodeMessage.ResponseCodeMessage(onErrRes);
+        onErrRes.send();
+        process.exit(1);
+    }
+
+    if (!DevMode) {
+        const currentDomain = domain.create();
+        currentDomain.on("error", onErr);
+        currentDomain.run(function() {
+            http.createServer(onRequest).listen(Port);
+        });
+    } else {
+        http.createServer(onRequest).listen(Port);
+    }
+    console.log("Init done.");
 }
 
-function process_request(request, response, handle, route) {
-	var pathname = _url.parse(request.url).pathname;
+/*
+ * returns bool which is not relevant for the calling instance, used to break the execution
+ */
+function process_request(request, response, route) {
+    const pathname = url.parse(request.url).pathname;
 
-	if (!handle[pathname]) {
-		response.setResponseCode(404);
-		_responseCodeMessage.responseCodeMessage(response);
-		response.send();
-		return false;
-	}
+    if (!router.RouteExists(pathname)) {
+        response.setResponseCode(404);
+        ResponseCodeMessage.ResponseCodeMessage(response);
+        response.send();
+        return false;
+    }
 
-	if (_cache.has(request) && request.headers["if-modified-since"] === _cache.getLastModified(request)) {
-		response.setResponseCode(304);
-		response.setLastModified(_cache.getLastModified(request));
-		response.send();
-	} else {
+    if (Cache.has(request) && request.headers["if-modified-since"] === Cache.getLastModified(request)) {
+        response.setResponseCode(304);
+        response.setLastModified(Cache.getLastModified(request));
+        response.send();
+    } else {
+        const deliverCache = !(HandleClientCacheControl && request.headers["cache-control"] === "no-cache");
+        const writeCache = handle[pathname].cache;
+        if (deliverCache && Cache.has(request)) {
+            response.setLastModified(Cache.getLastModified(request));
+            Cache.send(request, response);
+            return false;
+        }
 
-		var deliver_cache = !(HandleClientCacheControl && request.headers["cache-control"] === 'no-cache');
-		var write_cache = handle[pathname].cache;
+        var data = route(handle[pathname].callback, request);
 
-		if (deliver_cache && _cache.has(request)) {
-			response.setLastModified(_cache.getLastModified(request));
-			_cache.send(request, response);
-			return false;
-		}
+        if (request.method === "POST") {
+            var body = "";
 
-		var data = route(handle[pathname].callback, request);
+            request.on("data", function(postData) {
+                // reading http POST body
+                if (body.length + postData.length < Config.MaxHttpPOSTSize) {
+                    body += postData;
+                } else {
+                    // Request entity too large
+                    response.setResponseCode(413);
+                    ResponseCodeMessage.ResponseCodeMessage(response);
+                    response.send();
+                    return false;
+                }
+                return true;
+            });
 
-		if (data.code == 200) {
-			if (write_cache) {
-				_cache.add(request, data.content, data.mimetype, data.code);
-				response.setLastModified(_cache.getLastModified(request));	
-			}
+            request.on("end", function() {
+                // after reading the http POST body, call the callback function "data()" from request handler
+                sendData(data(body, request), request, response, writeCache);
+            });
+            return true;
+        } else if (request.method === "GET") {
+            if (!sendData(data, request, response, writeCache)) {
+                return false;
+            }
+        } else {
+            // unknown http method
+            response.setResponseCode(501);
+            ResponseCodeMessage.ResponseCodeMessage(response);
+            response.send();
+            return false;
+        }
 
-			response.setContentType(data.mimetype);
-			response.setResponseCode(200);
+        response.send();
+    }
 
-			if (data.type == 'content') {
-				response.setContent(data.content);
-			} else if (data.type == 'file') {
-				var fileStream = _fs.createReadStream(data.content);
-				response.sendFileStream(fileStream);
-				return false;
-			}
+    return true;
+}
 
+/*
+ * "data.type" MUST be set to a valid http status code (default: 500 "Internal Server Error") 
+ * returns false if response has been send
+ */
+function sendData(data, request, response, writeCache) {
+    if (data && data.type) {
+        if (data.mimetype) {
+            response.setContentType(data.mimetype);
+        }
 
-		} else {
-			response.setResponseCode(data.code);
-			_responseCodeMessage.responseCodeMessage(response);
-		}
+        if (data.code) {
+            response.setResponseCode(data.code);
+        }
 
-		response.send();
-	}
+        if (data.type === "file" && data.content) {
+            response.setResponseCode(data.code || 200);
+            response.sendFileStream(fs.createReadStream(data.content));
+            return false;
+        }
 
-	return false;
+        if (data.content) {
+            response.setContent(data.content);
+        }
+
+        ResponseCodeMessage.ResponseCodeMessage(response);
+        response.send();
+
+        if (writeCache) {
+            Cache.add(request, data.content, data.mimetype, data.code);
+            response.setLastModified(Cache.getLastModified(request));
+        }
+
+        return true;
+    } else {
+        ResponseCodeMessage.ResponseCodeMessage(response);
+        response.send();
+        return false;
+    }
 }
 
 

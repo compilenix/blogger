@@ -1,8 +1,11 @@
 {
-	"name": "blogger",
-	"version": "0.1.7",
-	"description": "A simple, minimalistic and high performance blogging web application",
-	"author": "Compilenix <Compilenix@compilenix.org>",
-	"main": "app.js",
-	"license": "GPLv3"
+  "name": "blogger",
+  "version": "0.1.7",
+  "description": "A simple, minimalistic and high performance blogging web application",
+  "author": "Compilenix <Compilenix@compilenix.org>",
+  "main": "app.js",
+  "scripts": {
+    "start": "node app.js"
+  },
+  "license": "GPLv3"
 }

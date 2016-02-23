@@ -1,0 +1,429 @@
+﻿<!DOCTYPE html>
+<head>
+    <meta charset="UTF-8" />
+    <meta name="description" content="Compilenix's Blog" />
+    <meta name="author" content="Compilenix" />
+    <meta name=viewport content="width=device-width, initial-scale=1">
+    <script type="text/javascript" src="https://compilenix.org/cdn/ace-builds/src-min/ace.js"></script>
+    <script type="text/javascript" src="https://compilenix.org/cdn/jquery.js"></script>
+
+    <title>Editor - Compilenix&apos;s Blog</title>
+
+    <style>
+        @font-face {
+            font-family: Ubuntu;
+            src: url("https://compilenix.org/cdn/fonts/ubuntu-font-family-0.80/Ubuntu-R.ttf") format("truetype");
+        }
+
+        @font-face {
+            font-family: Ubuntu;
+            font-weight: bold;
+            src: url("https://compilenix.org/cdn/fonts/ubuntu-font-family-0.80/Ubuntu-B.ttf") format("truetype");
+        }
+
+        a {
+            text-decoration: none;
+        }
+
+            a:hover, a:focus {
+                color: #0AF;
+            }
+
+        #menu {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 30px;
+            padding-top: 5px;
+            line-height: 1.2em;
+            font-size: 1em;
+            font-family: Ubuntu, Tahoma, Verdana, sans-serif, serif;
+        }
+
+            #menu * {
+                margin: 5px;
+                cursor: pointer;
+            }
+
+        #tabs {
+            padding-left: 50px;
+            position: absolute;
+            top: 30px;
+            right: 0;
+            left: 20%;
+            height: 30px;
+            background-color: #161713;
+            line-height: 1.2em;
+            font-size: 1em;
+            font-family: Ubuntu, Tahoma, Verdana, sans-serif, serif;
+        }
+
+            #tabs > div {
+                background-image: url(//compilenix.org/cdn/blogger/inactivel.png), url(//cdn.compilenix.org/blogger/inactiver.png);
+                background-position: left, right;
+                background-repeat: no-repeat, no-repeat;
+                cursor: default;
+                display: inline;
+                position: relative;
+                float: left;
+                height: 31px;
+                color: #c1c1bf;
+                padding-left: 19px;
+                padding-right: 19px;
+                padding-top: 3px;
+                margin-right: -12px;
+                z-index: 1;
+            }
+
+                #tabs > div > div {
+                    height: 31px;
+                    background-image: url(//compilenix.org/cdn/blogger/inactivec.png);
+                    background-repeat: repeat-x;
+                }
+
+                #tabs > div.active > div {
+                    background-image: url(//compilenix.org/cdn/blogger/activec.png);
+                    background-repeat: repeat-x;
+                }
+
+                #tabs > div > div > div.wrapper {
+                    position: relative;
+                    padding-right: 20px;
+                    padding-top: 5px;
+                }
+
+            #tabs div.button {
+                position: absolute;
+                right: 3px;
+                top: 10px;
+                height: 8px;
+                width: 7px;
+                background-image: url(//compilenix.org/cdn/blogger/inactiveclose.png);
+            }
+
+            #tabs > div.active div.button {
+                background-image: url(//compilenix.org/cdn/blogger/activeclose.png);
+            }
+
+            #tabs > div.changed {
+                color: #ffa035;
+            }
+
+            #tabs > div.active {
+                background-image: url(//compilenix.org/cdn/blogger/activel.png), url(//compilenix.org/cdn/blogger/activer.png);
+                z-index: 2;
+            }
+
+        #edit {
+            position: absolute;
+            top: 60px;
+            right: 0;
+            bottom: 0;
+            left: 20%;
+            line-height: 1.2em;
+            font-size: 1em;
+            font-family: Lucida, Consolas, Courier, Verdana;
+        }
+
+        #postlist {
+            cursor: default;
+            position: absolute;
+            background-color: #e6e6e6;
+            top: 30px;
+            right: 80%;
+            bottom: 0;
+            left: 0;
+            line-height: 1.2em;
+            font-size: 1em;
+            font-family: Ubuntu, Tahoma, Verdana, sans-serif, serif;
+        }
+
+            #postlist ul {
+                list-style-type: none;
+            }
+
+            #postlist li {
+                background-image: url(//compilenix.org/cdn/blogger/doc.png);
+                background-repeat: no-repeat;
+                background-position: left center;
+                padding-left: 15px;
+                margin: 4px;
+            }
+    </style>
+</head>
+
+<body>
+    <div id="menu">
+        <label onclick="e.emptyTab();">New</label>
+        <label onclick="e.remove();">Remove</label>
+        <label onclick="e.preview();">Preview</label>
+    </div>
+    <div id="postlist"></div>
+    <div id="tabs"></div>
+    <div id="edit"></div>
+    <script type="text/javascript">
+    "use strict";
+
+    function editor() {
+        this.postlistContainer = document.getElementById('postlist');
+        this.editorContainer = document.getElementById('edit');
+        this.tabsContainer = document.getElementById('tabs');
+        this.ace = ace.edit("edit");
+        this.ace.setTheme("ace/theme/monokai");
+        this.ace.getSession().setMode("ace/mode/html");
+
+        this.apikey = this.loadApiKey();
+
+        if (!this.apikey) {
+            this.askForKey();
+        }
+
+        this.requestPostlist();
+
+        this.sessions = {};
+
+        this.sessions['default'] = this.ace.getSession();
+
+        this.sessions['default'].on('change', function(ev) {
+            if (ev.data.action === 'insertText') {
+                const name = Math.floor(new Date().getTime() / 1000).toString(16);
+                e.newSession(name, ev.data.text, true);
+                e.ace.navigateFileEnd();
+                e.sessions['default'].setValue('');
+            }
+        })
+
+        document.addEventListener('keydown', function(event) {
+            if (event.keyCode === 83 && event.ctrlKey) {
+                if ($('#tabs div.active')[0]) {
+                    e.save($($('#tabs div.active')[0]).attr('data-postid'));
+                }
+            } else if (event.keyCode === 78 && event.ctrlKey) {
+                const name = Math.floor(new Date().getTime() / 1000).toString(16);
+                e.newSession(name, '', true);
+            } else {
+                return true;
+            }
+            event.preventDefault();
+            return false;
+        });
+
+    }
+
+    editor.prototype.request = function(post) {
+        jQuery.post('/ajax/', post, function(data) {
+            e.handleResponse(data);
+        }, 'json').fail(function(d) {
+            e.askForKey();
+        });
+    }
+
+    editor.prototype.handleResponse = function(data) {
+        if (data.type) {
+            switch (data.type) {
+                case 'postlist':
+                    this.updatePostList(data);
+                    break;
+                case 'post':
+                    this.loadPost(data);
+                    break;
+                case 'postsaved':
+                    this.postSaved(data.id);
+                    break;
+                case 'postremoved':
+                    this.postRemoved(data.id);
+                    break;
+                default:
+                    alert('unknown response type');
+                    break;
+            }
+        }
+    }
+
+    editor.prototype.askForKey = function() {
+        var key = prompt('please enter your apy key');
+        this.apikey = key;
+        this.storeApiKey(key);
+    }
+
+    editor.prototype.loadApiKey = function() {
+        return localStorage.apikey;
+    }
+
+    editor.prototype.storeApiKey = function(apikey) {
+        localStorage.setItem('apikey', apikey);
+    }
+
+    editor.prototype.loadPost = function(data) {
+        console.log(data);
+        this.newSession(data.id, data.content.contents, false, data.title);
+    }
+
+    editor.prototype.postSaved = function(id) {
+        $(this.tabsContainer).find('div[data-postid=' + id + ']').removeClass('changed');
+        this.requestPostlist();
+        this.closeTab(id);
+        this.showPost(id);
+    }
+
+    editor.prototype.updatePostList = function(data) {
+        const ul = document.createElement('ul');
+        for (let i = 0; i < data.list.length; i++) {
+            const li = document.createElement('li');
+            li.appendChild(document.createTextNode(data.titles[i]));
+            li.setAttribute('data-postid', data.list[i]);
+            jQuery(li).on('click', function(ev) {
+                e.showPost(this.getAttribute('data-postid'));
+            });
+            ul.appendChild(li);
+        }
+        this.postlistContainer.innerHTML = '';
+        this.postlistContainer.appendChild(ul);
+    }
+
+    editor.prototype.requestPostlist = function() {
+        this.request({
+            apikey: this.apikey,
+            action: 'postlist'
+        });
+    }
+
+    editor.prototype.requestPost = function(id) {
+        this.request({
+            apikey: this.apikey,
+            postid: id,
+            action: 'getpost'
+        });
+    }
+
+    editor.prototype.requestSavePost = function(id, title, content) {
+        this.request({
+            apikey: this.apikey,
+            postid: id,
+            title: title,
+            content: content,
+            action: 'writepost'
+        });
+    }
+
+    editor.prototype.save = function(id) {
+        const title = prompt('Enter title:', (this.ace.getValue()).substring(0, 39));
+        if (id && title) {
+            this.requestSavePost(id, title, this.ace.getValue());
+        }
+        return false;
+    }
+
+    editor.prototype.showPost = function(id) {
+        if (this.hasSession(id)) {
+            this.openSession(id);
+        } else {
+            this.requestPost(id);
+        }
+    }
+
+    editor.prototype.emptyTab = function() {
+        const name = Math.floor(new Date().getTime() / 1000).toString(16);
+        e.newSession(name, '', true);
+    }
+
+    editor.prototype.remove = function() {
+        if (!confirm('are you sure?')) {
+            return false;
+        }
+        this.request({
+            apikey: this.apikey,
+            action: "removepost",
+            postid: $('#tabs div.active').attr("data-postid")
+        });
+    }
+    editor.prototype.postRemoved = function(id) {
+        this.closeTab(id);
+        this.requestPostlist();
+    }
+
+    editor.prototype.addTab = function(id, isnew, title) {
+        const tab = document.createElement('div');
+        const inner = document.createElement('div');
+        const wrapper = document.createElement('div');
+        const closebutton = document.createElement('div');
+        closebutton.setAttribute('data-postid', id);
+        $(closebutton).addClass('button');
+        $(wrapper).addClass('wrapper');
+        tab.setAttribute('data-postid', id);
+        jQuery(tab).on('click', function(ev) {
+            ev.preventDefault();
+            e.openSession(this.getAttribute('data-postid'));
+            return false;
+        });
+        jQuery(closebutton).on('click', function(ev) {
+            ev.preventDefault();
+            e.closeTab(this.getAttribute('data-postid'));
+            return false;
+        });
+        wrapper.appendChild(document.createTextNode(isnew ? id + ' <new>': title));
+        wrapper.appendChild(closebutton);
+        inner.appendChild(wrapper);
+        tab.appendChild(inner);
+        this.tabsContainer.appendChild(tab);
+        return tab;
+    }
+
+    editor.prototype.closeTab = function(id) {
+        if ($(this.tabsContainer).find('div[data-postid=' + id + ']').hasClass('changed')) {
+            if (!confirm('are you sure?')) {
+                return false;
+            }
+        }
+        if ($(this.tabsContainer).find('div[data-postid=' + id + ']')[0].previousSibling) {
+            this.openSession($(this.tabsContainer).find('div[data-postid=' + id + ']')[0].previousSibling.getAttribute('data-postid'));
+        } else if ($(this.tabsContainer).find('div[data-postid=' + id + ']')[0].nextSibling) {
+            this.openSession($(this.tabsContainer).find('div[data-postid=' + id + ']')[0].nextSibling.getAttribute('data-postid'));
+        } else {
+            this.ace.setSession(this.sessions['default']);
+            this.ace.focus();
+        }
+        $(this.tabsContainer).find('div[data-postid=' + id + ']').remove();
+        this.sessions[id] = false;
+    }
+
+    editor.prototype.activateTab = function(id) {
+        $('#tabs div').removeClass('active');
+        $(this.tabsContainer).find('div[data-postid=' + id + ']').addClass('active');
+    }
+
+    editor.prototype.hasSession = function(id) {
+        return this.sessions[id];
+    }
+
+    editor.prototype.newSession = function(id, content, isnew, title) {
+        var tab = this.addTab(id, isnew, title);
+        this.sessions[id] = ace.createEditSession(content || '', "ace/mode/html");
+        this.sessions[id].on('change', function(e) {
+            $(tab).addClass('changed');
+        });
+        this.openSession(id);
+    }
+
+    editor.prototype.openSession = function(id) {
+        this.activateTab(id);
+        this.ace.setSession(this.sessions[id]);
+        this.ace.focus();
+    }
+
+    editor.prototype.preview = function (content) {
+        $.post("/ajax/", { apikey: e.apikey, action: "previewpost", content: JSON.stringify(e.ace.getValue()) },
+            function (data) {
+                var win = window.open('about:blank');
+                win.document.open();
+                win.document.write(data);
+                win.document.close();
+            }
+        );
+    }
+
+    window.e = new editor();
+    </script>
+</body>
+

@@ -16,6 +16,7 @@ if (fs.existsSync("./Config.js")) {
     ConfigFile = "./Config.js.example";
 }
 
+console.log("loading config: " + ConfigFile);
 global.Config = require(ConfigFile).Config;
 
 process.argv.forEach(function (val, index, array) {
@@ -28,16 +29,21 @@ process.argv.forEach(function (val, index, array) {
     }
 });
 
+if (Config.DevMode) {
+    Config.HeaderExpires = 0;
+    Config.ClearCacheOnStart = true;
+}
+
 if (!fs.existsSync(Config.post.DirectoryPosts)) {
     fs.mkdirSync(Config.post.DirectoryPosts);
 }
 
-global.ResponseWrapper = require("./ResponseWrapper.js").ResponseWrapper;
-global.ResponseCodeMessage = require("./ResponseCodeMessage.js");
-global.Helper = require("./Helper.js");
-global.router = require("./router.js");
+global.ResponseWrapper = require("./lib/ResponseWrapper.js").ResponseWrapper;
+global.ResponseCodeMessage = require("./lib/ResponseCodeMessage.js");
+global.Helper = require("./lib/helper.js");
+global.router = require("./lib/router.js");
 var server = require("./server.js");
-var requestHandlers = require("./requestHandlers.js");
+var requestHandlers = require("./lib/requestHandlers.js");
 
 function Init() {
     global.handle = {};
@@ -54,9 +60,9 @@ function Init() {
     server.Start(router.Route);
 }
 
-global.NullCache = require("./NullCache.js").NullCache;
-global.FsCache = require("./FsCache.js").FsCache;
-global.MemCache = require("./MemCache.js").MemCache;
+require("./lib/cache/NullCache.js");
+require("./lib/cache/FsCache.js");
+require("./lib/cache/MemCache.js");
 
 switch (Config.cache) {
     case "FsCache":

@@ -1,11 +1,10 @@
-posts
 parts/
 *.log
 *.gz
 *.bz2
 *.dat
 *.bin
-cache/
+/cache/
 obj/
 bin/
 node_modules

@@ -29,14 +29,14 @@ function Start(route) {
         process.exit(1);
     }
 
-    if (!DevMode) {
+    if (DevMode) {
+        http.createServer(onRequest).listen(Port);
+    } else {
         const currentDomain = domain.create();
         currentDomain.on("error", onErr);
         currentDomain.run(function() {
             http.createServer(onRequest).listen(Port);
         });
-    } else {
-        http.createServer(onRequest).listen(Port);
     }
     console.log("Init done.");
 }
@@ -48,6 +48,9 @@ function process_request(request, response, route) {
     const pathname = url.parse(request.url).pathname;
 
     if (!router.RouteExists(pathname)) {
+        if (Config.DevMode) {
+            console.log("404: " + (pathname == undefined ? "undefined" : pathname));
+        }
         response.setResponseCode(404);
         ResponseCodeMessage.ResponseCodeMessage(response);
         response.send();

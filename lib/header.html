@@ -1,28 +1,27 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <head>
 <meta charset="UTF-8">
-<meta name="description" content="Compilenix's Blog">
-<meta name="author" content="Compilenix">
-<meta name=viewport content="width=device-width, initial-scale=1">
+<meta name="author" content="{{Author}}">
+<meta name="viewport" content="width=device-width, initial-scale=1">
 <link rel="alternate" type="application/rss+xml" title="RSS-Feed" href="/rss.xml">
-<title>Compilenix&apos;s Blog</title>
+<title>{{Title}}</title>
 
 <style>
 @font-face {
     font-family: Ubuntu;
-    src: url("https://compilenix.org/cdn/fonts/ubuntu-font-family-0.80/Ubuntu-R.ttf") format("truetype");
+    src: url("{{StaticContent_Ubuntu-R}}") format("truetype");
 }
 
 @font-face {
     font-family: Ubuntu;
     font-weight: bold;
-    src: url("https://compilenix.org/cdn/fonts/ubuntu-font-family-0.80/Ubuntu-B.ttf") format("truetype");
+    src: url("{{StaticContent_Ubuntu-B}}") format("truetype");
 }
 
 * {
     font-family: Ubuntu, Tahoma, Verdana, sans-serif, serif;
     transition: 200ms;
-    word-break: break-word;
+    word-break: break-all;
     line-height: 1.2em;
 }
 
@@ -51,4 +50,4 @@ a:hover, a:focus {
 </head>
 
 <body>
-<h1><a href="/" style="color: black;">Compilenix's Blog</a></h1>
+<h1><a href="/" style="color: black;">{{Title}}</a></h1>

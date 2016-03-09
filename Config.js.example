@@ -1,46 +1,48 @@
 "use strict";
 
 var Config = {
-	root: "/",
-	language: "en",
-	author: "user",
-	authorMail: "user@domain.tld",
-	Link: "http://127.0.0.1",
-	DirectoryCache: "cache",
-	HeaderExpires: 60000 * 60, // 60 Minutes
-	ClearCacheOnStart: false,
-	DevMode: false,
-	MaxHttpPOSTSize: 5e7, // 50 Megabyte
-	HandleClientCacheControl: true,
-	DefaultContentType: "text/html",
-	ServerVersion: "node.js/" + process.version,
-	cache: "FsCache", // "MemCache" | "FsCache" | "none"
-	APIKey: "changeme",
-	server: {
-		port: 8000
-	},
-	post: {
-		FileHeader: "header.html",
-		FileFooter: "footer.html",
-		DirectoryPosts: "posts",
-		DeliverPgpSignatures: true, // if available
-		CountPosts: 5,
-		MessageOlderPage: "Older",
-		MessageNewerPage: "Newer",
-		MessageEnd: "The end."
-	},
-	rss: {
-		CountPosts: 30,
-		Description: "Some Description",
-		Encoding: "UTF-8",
-		skipHours: [0, 1, 2, 3, 4, 5, 6, 7],
-		Title: "Some Title",
-		ttl: 60, // minutes
-		webMaster: "Admin",
-		webMasterMail: "admin@domain.tld"
-	},
-	// threads: 1
-	threads: os.cpus().length
+    root: "/",
+    language: "en",
+    author: "user",
+    authorMail: "user@domain.tld",
+    Link: "http://127.0.0.1",
+    Title: "My Blog",
+    DirectoryCache: "cache",
+    HeaderExpires: 60000 * 60, // 60 Minutes
+    ClearCacheOnStart: false,
+    DevMode: false,
+    MaxHttpPOSTSize: 5e7, // 50 Megabyte
+    HandleClientCacheControl: true,
+    DefaultContentType: "text/html",
+    ServerVersion: "node.js/" + process.version,
+    cache: "FsCache", // "MemCache" | "FsCache" | "none"
+    APIKey: "changeme",
+    server: {
+        port: 8000
+    },
+    post: {
+        FileHeader: "header.html",
+        FileFooter: "footer.html",
+        DirectoryPosts: "posts",
+        DeliverPgpSignatures: true, // if available
+        CountPosts: 5,
+        MessageOlderPage: "Older",
+        MessageNewerPage: "Newer",
+        MessageEnd: "The end."
+    },
+    rss: {
+        CountPosts: 30,
+        Description: "Some Description",
+        Encoding: "UTF-8",
+        skipHours: [0, 1, 2, 3, 4, 5, 6, 7],
+        Title: "Some Title",
+        ttl: 60, // minutes
+        webMaster: "Admin",
+        webMasterMail: "admin@domain.tld"
+    },
+    staticContentPath: "static/",
+    staticContentUri: "/static/?f=",
+    threads: os.cpus().length
 };
 
 

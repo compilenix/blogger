@@ -7,5 +7,22 @@
   "scripts": {
     "start": "node app.js"
   },
-  "license": "GPLv3"
+  "keywords": [
+    "Blog",
+    "minimalistic",
+    "blogging",
+    "performance",
+    "blogger",
+    "compilenix",
+    "simple"
+  ],
+  "dependencies": {
+    "htmlencode": ">= 0.0.4"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://git.compilenix.org/Compilenix/blogger.git"
+  },
+  "bugs": "https://git.compilenix.org/Compilenix/blogger/issues",
+  "license": "GPL-3.0"
 }

@@ -49,6 +49,8 @@
     <Content Include="static\inactiveclose.png" />
     <Content Include="static\inactivel.png" />
     <Content Include="static\inactiver.png" />
+    <Content Include="static\Ubuntu-B.ttf" />
+    <Content Include="static\Ubuntu-R.ttf" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="app.js" />
@@ -70,6 +72,11 @@
     <Compile Include="lib\tests\data.js" />
     <Compile Include="lib\tests\test.js" />
     <Compile Include="lib\tests\unit_test.js" />
+    <Compile Include="static\ace.js" />
+    <Compile Include="static\jquery.js" />
+    <Compile Include="static\mode-html.js" />
+    <Compile Include="static\theme-monokai.js" />
+    <Compile Include="static\worker-html.js" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="lib\" />

@@ -113,7 +113,7 @@ function process_request(request, response, route) {
 }
 
 /*
- * "data.type" MUST be set to a valid http status code (default: 500 "Internal Server Error") 
+ * "data.type" MUST be set to a valid http status code (default: 500 "Internal Server Error")
  * returns false if response has been send
  */
 function sendData(data, request, response, writeCache) {

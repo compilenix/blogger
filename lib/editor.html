@@ -1,168 +1,160 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <head>
-    <meta charset="UTF-8" />
-    <meta name="description" content="Compilenix's Blog" />
-    <meta name="author" content="Compilenix" />
-    <meta name=viewport content="width=device-width, initial-scale=1">
-    <script type="text/javascript" src="https://compilenix.org/cdn/ace-builds/src-min/ace.js"></script>
-    <script type="text/javascript" src="https://compilenix.org/cdn/jquery.js"></script>
+    <meta charset="UTF-8"/>
+    <meta name="author" content="{{Author}}"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <script type="text/javascript" src="{{StaticContent_jquery.js}}"></script>
+    <script type="text/javascript" src="{{StaticContent_ace.js}}"></script>
+    <script type="text/javascript" src="{{StaticContent_worker-html.js}}"></script>
+    <script type="text/javascript" src="{{StaticContent_mode-html.js}}"></script>
+    <script type="text/javascript" src="{{StaticContent_theme-monokai.js}}"></script>
 
-    <title>Editor - Compilenix&apos;s Blog</title>
+    <title>{{Title}}</title>
 
     <style>
         @font-face {
             font-family: Ubuntu;
-            src: url("https://compilenix.org/cdn/fonts/ubuntu-font-family-0.80/Ubuntu-R.ttf") format("truetype");
+            src: url("{{StaticContent_Ubuntu-R}}") format("truetype");
         }
 
         @font-face {
             font-family: Ubuntu;
             font-weight: bold;
-            src: url("https://compilenix.org/cdn/fonts/ubuntu-font-family-0.80/Ubuntu-B.ttf") format("truetype");
+            src: url("{{StaticContent_Ubuntu-B}}") format("truetype");
         }
 
-        a {
-            text-decoration: none;
-        }
+        a { text-decoration: none; }
 
-            a:hover, a:focus {
-                color: #0AF;
-            }
+        a:hover, a:focus { color: #0AF; }
 
         #menu {
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 30px;
-            padding-top: 5px;
-            line-height: 1.2em;
-            font-size: 1em;
             font-family: Ubuntu, Tahoma, Verdana, sans-serif, serif;
+            font-size: 1em;
+            height: 30px;
+            left: 0;
+            line-height: 1.2em;
+            padding-top: 5px;
+            position: absolute;
+            right: 0;
+            top: 0;
         }
 
-            #menu * {
-                margin: 5px;
-                cursor: pointer;
-            }
+        #menu * {
+            cursor: pointer;
+            margin: 5px;
+        }
 
         #tabs {
+            background-color: #161713;
+            font-family: Ubuntu, Tahoma, Verdana, sans-serif, serif;
+            font-size: 1em;
+            height: 30px;
+            left: 20%;
+            line-height: 1.2em;
             padding-left: 50px;
             position: absolute;
-            top: 30px;
             right: 0;
-            left: 20%;
-            height: 30px;
-            background-color: #161713;
-            line-height: 1.2em;
-            font-size: 1em;
-            font-family: Ubuntu, Tahoma, Verdana, sans-serif, serif;
+            top: 30px;
         }
 
-            #tabs > div {
-                background-image: url(//compilenix.org/cdn/blogger/inactivel.png), url(//cdn.compilenix.org/blogger/inactiver.png);
-                background-position: left, right;
-                background-repeat: no-repeat, no-repeat;
-                cursor: default;
-                display: inline;
-                position: relative;
-                float: left;
-                height: 31px;
-                color: #c1c1bf;
-                padding-left: 19px;
-                padding-right: 19px;
-                padding-top: 3px;
-                margin-right: -12px;
-                z-index: 1;
-            }
+        #tabs > div {
+            background-image: url({{StaticContent_inactivel.png}});
+            background-position: left, right;
+            background-repeat: no-repeat, no-repeat;
+            color: #c1c1bf;
+            cursor: default;
+            display: inline;
+            float: left;
+            height: 31px;
+            margin-right: -12px;
+            padding-left: 19px;
+            padding-right: 19px;
+            padding-top: 3px;
+            position: relative;
+            z-index: 1;
+        }
 
-                #tabs > div > div {
-                    height: 31px;
-                    background-image: url(//compilenix.org/cdn/blogger/inactivec.png);
-                    background-repeat: repeat-x;
-                }
+        #tabs > div > div {
+            background-image: url({{StaticContent_inactivec.png}});
+            background-repeat: repeat-x;
+            height: 31px;
+        }
 
-                #tabs > div.active > div {
-                    background-image: url(//compilenix.org/cdn/blogger/activec.png);
-                    background-repeat: repeat-x;
-                }
+        #tabs > div.active > div {
+            background-image: url({{StaticContent_activec.png}});
+            background-repeat: repeat-x;
+        }
 
-                #tabs > div > div > div.wrapper {
-                    position: relative;
-                    padding-right: 20px;
-                    padding-top: 5px;
-                }
+        #tabs > div > div > div.wrapper {
+            padding-right: 20px;
+            padding-top: 5px;
+            position: relative;
+        }
 
-            #tabs div.button {
-                position: absolute;
-                right: 3px;
-                top: 10px;
-                height: 8px;
-                width: 7px;
-                background-image: url(//compilenix.org/cdn/blogger/inactiveclose.png);
-            }
+        #tabs div.button {
+            background-image: url({{StaticContent_inactiveclose.png}});
+            height: 8px;
+            position: absolute;
+            right: 3px;
+            top: 10px;
+            width: 7px;
+        }
 
-            #tabs > div.active div.button {
-                background-image: url(//compilenix.org/cdn/blogger/activeclose.png);
-            }
+        #tabs > div.active div.button { background-image: url({{StaticContent_activeclose.png}}); }
 
-            #tabs > div.changed {
-                color: #ffa035;
-            }
+        #tabs > div.changed { color: #ffa035; }
 
-            #tabs > div.active {
-                background-image: url(//compilenix.org/cdn/blogger/activel.png), url(//compilenix.org/cdn/blogger/activer.png);
-                z-index: 2;
-            }
+        #tabs > div.active {
+            background-image: url({{StaticContent_activel.png}}), url({{StaticContent_activer.png}});
+            z-index: 2;
+        }
 
         #edit {
-            position: absolute;
-            top: 60px;
-            right: 0;
             bottom: 0;
+            font-family: Lucida, Consolas, Courier, Verdana;
+            font-size: 1em;
             left: 20%;
             line-height: 1.2em;
-            font-size: 1em;
-            font-family: Lucida, Consolas, Courier, Verdana;
+            position: absolute;
+            right: 0;
+            top: 60px;
         }
 
         #postlist {
-            cursor: default;
-            position: absolute;
             background-color: #e6e6e6;
-            top: 30px;
-            right: 80%;
             bottom: 0;
+            cursor: default;
+            font-family: Ubuntu, Tahoma, Verdana, sans-serif, serif;
+            font-size: 1em;
             left: 0;
             line-height: 1.2em;
-            font-size: 1em;
-            font-family: Ubuntu, Tahoma, Verdana, sans-serif, serif;
+            position: absolute;
+            right: 80%;
+            top: 30px;
         }
 
-            #postlist ul {
-                list-style-type: none;
-            }
+        #postlist ul { list-style-type: none; }
 
-            #postlist li {
-                background-image: url(//compilenix.org/cdn/blogger/doc.png);
-                background-repeat: no-repeat;
-                background-position: left center;
-                padding-left: 15px;
-                margin: 4px;
-            }
+        #postlist li {
+            background-image: url({{StaticContent_doc.png}});
+            background-position: left center;
+            background-repeat: no-repeat;
+            margin: 4px;
+            padding-left: 15px;
+        }
     </style>
 </head>
 
 <body>
-    <div id="menu">
-        <label onclick="e.emptyTab();">New</label>
-        <label onclick="e.remove();">Remove</label>
-        <label onclick="e.preview();">Preview</label>
-    </div>
-    <div id="postlist"></div>
-    <div id="tabs"></div>
-    <div id="edit"></div>
-    <script type="text/javascript">
+<div id="menu">
+    <label onclick="e.emptyTab();">New</label>
+    <label onclick="e.remove();">Remove</label>
+    <label onclick="e.preview();">Preview</label>
+</div>
+<div id="postlist"></div>
+<div id="tabs"></div>
+<div id="edit"></div>
+<script type="text/javascript">
     "use strict";
 
     function editor() {
@@ -174,6 +166,7 @@
         this.ace.getSession().setMode("ace/mode/html");
 
         this.apikey = this.loadApiKey();
+        this.title = "";
 
         if (!this.apikey) {
             this.askForKey();
@@ -192,8 +185,7 @@
                 e.ace.navigateFileEnd();
                 e.sessions['default'].setValue('');
             }
-        })
-
+        });
         document.addEventListener('keydown', function(event) {
             if (event.keyCode === 83 && event.ctrlKey) {
                 if ($('#tabs div.active')[0]) {
@@ -217,8 +209,7 @@
         }, 'json').fail(function(d) {
             e.askForKey();
         });
-    }
-
+    };
     editor.prototype.handleResponse = function(data) {
         if (data.type) {
             switch (data.type) {
@@ -239,34 +230,29 @@
                     break;
             }
         }
-    }
-
+    };
     editor.prototype.askForKey = function() {
-        var key = prompt('please enter your apy key');
+        const key = prompt('please enter your apy key');
         this.apikey = key;
         this.storeApiKey(key);
-    }
-
+    };
     editor.prototype.loadApiKey = function() {
         return localStorage.apikey;
-    }
-
+    };
     editor.prototype.storeApiKey = function(apikey) {
         localStorage.setItem('apikey', apikey);
-    }
-
+    };
     editor.prototype.loadPost = function(data) {
         console.log(data);
         this.newSession(data.id, data.content.contents, false, data.title);
-    }
-
+        this.title = data.title;
+    };
     editor.prototype.postSaved = function(id) {
         $(this.tabsContainer).find('div[data-postid=' + id + ']').removeClass('changed');
         this.requestPostlist();
         this.closeTab(id);
         this.showPost(id);
-    }
-
+    };
     editor.prototype.updatePostList = function(data) {
         const ul = document.createElement('ul');
         for (let i = 0; i < data.list.length; i++) {
@@ -280,24 +266,22 @@
         }
         this.postlistContainer.innerHTML = '';
         this.postlistContainer.appendChild(ul);
-    }
-
+    };
     editor.prototype.requestPostlist = function() {
         this.request({
             apikey: this.apikey,
             action: 'postlist'
         });
-    }
-
+    };
     editor.prototype.requestPost = function(id) {
         this.request({
             apikey: this.apikey,
             postid: id,
             action: 'getpost'
         });
-    }
-
+    };
     editor.prototype.requestSavePost = function(id, title, content) {
+        this.title = title;
         this.request({
             apikey: this.apikey,
             postid: id,
@@ -305,29 +289,26 @@
             content: content,
             action: 'writepost'
         });
-    }
-
+    };
     editor.prototype.save = function(id) {
-        const title = prompt('Enter title:', (this.ace.getValue()).substring(0, 39));
+        const title = prompt('Enter title:', this.title);
         if (id && title) {
+            this.title = title;
             this.requestSavePost(id, title, this.ace.getValue());
         }
         return false;
-    }
-
+    };
     editor.prototype.showPost = function(id) {
         if (this.hasSession(id)) {
             this.openSession(id);
         } else {
             this.requestPost(id);
         }
-    }
-
+    };
     editor.prototype.emptyTab = function() {
         const name = Math.floor(new Date().getTime() / 1000).toString(16);
         e.newSession(name, '', true);
-    }
-
+    };
     editor.prototype.remove = function() {
         if (!confirm('are you sure?')) {
             return false;
@@ -337,12 +318,11 @@
             action: "removepost",
             postid: $('#tabs div.active').attr("data-postid")
         });
-    }
+    };
     editor.prototype.postRemoved = function(id) {
         this.closeTab(id);
         this.requestPostlist();
-    }
-
+    };
     editor.prototype.addTab = function(id, isnew, title) {
         const tab = document.createElement('div');
         const inner = document.createElement('div');
@@ -362,14 +342,14 @@
             e.closeTab(this.getAttribute('data-postid'));
             return false;
         });
-        wrapper.appendChild(document.createTextNode(isnew ? id + ' <new>': title));
+        wrapper.appendChild(document.createTextNode(isnew ? id + ' <new>' : title));
         wrapper.appendChild(closebutton);
         inner.appendChild(wrapper);
         tab.appendChild(inner);
         this.tabsContainer.appendChild(tab);
+        this.title = title;
         return tab;
-    }
-
+    };
     editor.prototype.closeTab = function(id) {
         if ($(this.tabsContainer).find('div[data-postid=' + id + ']').hasClass('changed')) {
             if (!confirm('are you sure?')) {
@@ -386,17 +366,14 @@
         }
         $(this.tabsContainer).find('div[data-postid=' + id + ']').remove();
         this.sessions[id] = false;
-    }
-
+    };
     editor.prototype.activateTab = function(id) {
         $('#tabs div').removeClass('active');
         $(this.tabsContainer).find('div[data-postid=' + id + ']').addClass('active');
-    }
-
+    };
     editor.prototype.hasSession = function(id) {
         return this.sessions[id];
-    }
-
+    };
     editor.prototype.newSession = function(id, content, isnew, title) {
         var tab = this.addTab(id, isnew, title);
         this.sessions[id] = ace.createEditSession(content || '', "ace/mode/html");
@@ -404,26 +381,22 @@
             $(tab).addClass('changed');
         });
         this.openSession(id);
-    }
-
+    };
     editor.prototype.openSession = function(id) {
         this.activateTab(id);
         this.ace.setSession(this.sessions[id]);
         this.ace.focus();
-    }
-
-    editor.prototype.preview = function (content) {
-        $.post("/ajax/", { apikey: e.apikey, action: "previewpost", content: JSON.stringify(e.ace.getValue()) },
-            function (data) {
-                var win = window.open('about:blank');
+    };
+    editor.prototype.preview = function(content) {
+        $.post("/ajax/", { apikey: e.apikey, action: "previewpost", content: JSON.stringify(e.ace.getValue()), title: this.title },
+            function(data) {
+                const win = window.open('about:blank');
                 win.document.open();
                 win.document.write(data);
                 win.document.close();
             }
         );
-    }
-
+    };
     window.e = new editor();
-    </script>
+</script>
 </body>
-

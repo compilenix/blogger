@@ -8,6 +8,7 @@ global.url = require("url");
 global.fs = require("fs");
 global.crypto = require("crypto");
 global.os = require("os");
+global.htmlenclode = require("htmlencode").htmlEncode;
 
 var ConfigFile = undefined;
 if (fs.existsSync("./Config.js")) {

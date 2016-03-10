@@ -39,8 +39,8 @@ if (!fs.existsSync(Config.post.DirectoryPosts)) {
     fs.mkdirSync(Config.post.DirectoryPosts);
 }
 
-global.ResponseWrapper = require("./lib/ResponseWrapper.js").ResponseWrapper;
-global.ResponseCodeMessage = require("./lib/ResponseCodeMessage.js");
+global.ResponseWrapper = require("./lib/responseWrapper.js").ResponseWrapper;
+global.ResponseCodeMessage = require("./lib/responseCodeMessage.js");
 global.Helper = require("./lib/helper.js");
 global.router = require("./lib/router.js");
 var server = require("./server.js");

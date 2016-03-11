@@ -81,6 +81,12 @@ switch (Config.cache) {
         break;
 }
 
+if (Config.Version && Config.Version !== JSON.parse(fs.readFileSync("package.json", "utf8")).version) {
+    console.log("Update detected, clear cache...");
+    Cache.clear();
+    console.log("Please update your Config.json!");
+}
+
 if (Config.DevMode) {
     if (Cache && Config.ClearCacheOnStart) {
         Cache.clear();

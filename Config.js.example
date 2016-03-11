@@ -1,6 +1,7 @@
 "use strict";
 
 var Config = {
+	Version: "0.1.8",
     root: "/",
     language: "en",
     author: "user",

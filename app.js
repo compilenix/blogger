@@ -8,6 +8,7 @@ global.url = require("url");
 global.fs = require("fs");
 global.crypto = require("crypto");
 global.os = require("os");
+global.zlib = require("zlib");
 global.htmlenclode = require("htmlencode").htmlEncode;
 
 var ConfigFile = undefined;
@@ -47,16 +48,15 @@ var server = require("./server.js");
 var requestHandlers = require("./lib/requestHandlers.js");
 
 function Init() {
-    global.handle = {};
-    handle[Config.root] = { callback: requestHandlers.Index, cache: true };
-    handle[Config.root + "static/"] = { callback: requestHandlers.Static, cache: false };
-    handle[Config.root + "post/"] = { callback: requestHandlers.Post, cache: true };
-    handle[Config.root + "page/"] = { callback: requestHandlers.Page, cache: true };
-    handle[Config.root + "ajax/"] = { callback: requestHandlers.Ajax, cache: false };
-    handle[Config.root + "rss.xml"] = { callback: requestHandlers.RSS, cache: true };
-    handle[Config.root + "rss"] = { callback: requestHandlers.RSS, cache: true };
-    handle[Config.root + "edit"] = { callback: requestHandlers.Edit, cache: true };
-    handle[Config.root + "code/"] = { callback: requestHandlers.Code, cache: false };
+    global.handle = [];
+    handle.push({ match: /^\/static\/?.+$/, callback: requestHandlers.Static, cache: false });
+    handle.push({ match: /^\/post\/?.+$/, callback: requestHandlers.Post, cache: true });
+    handle.push({ match: /^\/ajax\?.+$/, callback: requestHandlers.ajax, cache: false });
+    handle.push({ match: /^\/rss$|^\/rss.xml$/, callback: requestHandlers.RSS, cache: true });
+    handle.push({ match: /^\/edit$|^\/edit\/$/, callback: requestHandlers.Edit, cache: false });
+    handle.push({ match: /^\/code\/?.+$/, callback: requestHandlers.Code, cache: false });
+    handle.push({ match: /^\/page\/?.+$/, callback: requestHandlers.Page, cache: true });
+    handle.push({ match: /^\/$/, callback: requestHandlers.Index, cache: true });
 
     server.Start(router.Route);
 }
@@ -82,6 +82,9 @@ switch (Config.cache) {
 }
 
 if (Config.DevMode) {
+    if (Cache && Config.ClearCacheOnStart) {
+        Cache.clear();
+    }
     Init();
 } else {
     if (cluster.isMaster) {

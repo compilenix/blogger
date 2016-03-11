@@ -38,6 +38,10 @@
     <Content Include="lib\editor.html" />
     <Content Include="lib\footer.html" />
     <Content Include="lib\header.html" />
+    <Content Include="lib\tests\posts\56cb9c4a.json" />
+    <Content Include="lib\tests\posts\56cb9c4a.json.asc" />
+    <Content Include="lib\tests\posts\56cb9c69.json" />
+    <Content Include="lib\tests\posts\56cb9c69.json.asc" />
     <Content Include="package.json" />
     <Content Include="robots.txt" />
     <Content Include="static\activec.png" />
@@ -82,7 +86,7 @@
     <Folder Include="lib\" />
     <Folder Include="lib\cache\" />
     <Folder Include="lib\requestHandlers\" />
-    <Folder Include="posts\" />
+    <Folder Include="lib\tests\posts\" />
     <Folder Include="requestHandlers\" />
     <Folder Include="static\" />
     <Folder Include="lib\tests\" />

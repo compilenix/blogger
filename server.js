@@ -63,14 +63,14 @@ function process_request(request, response, route) {
         response.send();
     } else {
         const deliverCache = !(HandleClientCacheControl && request.headers["cache-control"] === "no-cache");
-        const writeCache = handle[pathname].cache;
+        const writeCache = router.RouteGetCacheEnabled(pathname);
         if (deliverCache && Cache.has(request)) {
             response.setLastModified(Cache.getLastModified(request));
             Cache.send(request, response);
             return false;
         }
 
-        var data = route(handle[pathname].callback, request);
+        var data = route(pathname, request);
 
         if (request.method === "POST") {
             var body = "";

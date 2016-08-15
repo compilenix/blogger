@@ -1,11 +1,12 @@
-﻿"use strict";
-
-var Port = Config.server.port || 80;
+﻿var Port = Config.server.port || 80;
 var HandleClientCacheControl = Config.HandleClientCacheControl || true;
 var DevMode = Config.DevMode || false;
 
 var http = require("http");
 var domain = require("domain");
+var url = require("url");
+var fs = require("fs");
+var querystring = require("querystring");
 
 function Start(route) {
     var onErrRes = undefined;
@@ -29,6 +30,7 @@ function Start(route) {
         process.exit(1);
     }
 
+	console.log("Starting Server on port: " + Port);
     if (DevMode) {
         http.createServer(onRequest).listen(Port);
     } else {
@@ -38,7 +40,7 @@ function Start(route) {
             http.createServer(onRequest).listen(Port);
         });
     }
-    console.log("Init done.");
+    console.log("Init done, waiting for clients/requests...");
 }
 
 /*
@@ -46,6 +48,10 @@ function Start(route) {
  */
 function process_request(request, response, route) {
     const pathname = url.parse(request.url).pathname;
+
+	if (Config.DevMode) {
+		console.log("process_request: " + request.url);
+	}
 
     if (!router.RouteExists(pathname)) {
         if (Config.DevMode) {
@@ -57,15 +63,33 @@ function process_request(request, response, route) {
         return false;
     }
 
-    if (Cache.has(request) && request.headers["if-modified-since"] === Cache.getLastModified(request)) {
+	if (router.GetRoute(pathname).callback === requestHandlers.Static && (request.headers["cache-control"] !== "no-cache")) {
+		const path = Helper.replaceAll("/", Helper.GetFsDelimiter(), Config.staticContentPath);
+		let lastModified = undefined;
+
+		if (pathname === "/favicon.ico") {
+			lastModified = new Date(fs.statSync(path + Helper.GetFsDelimiter() + "favicon.ico").mtime).toUTCString();
+		} else {
+			lastModified = new Date(fs.statSync(path + Helper.GetFsDelimiter() + querystring.parse(url.parse(request.url).query)["f"]).mtime).toUTCString(); // TODO fix this
+		}
+
+		if (lastModified === request.headers["if-modified-since"]) {
+			response.setResponseCode(304);
+			response.setLastModified(lastModified);
+			response.send();
+		}
+	}
+
+	let cacheLastModified = Cache.getLastModified(request);
+	let cacheHasRequest = Cache.has(request);
+    if (cacheHasRequest && request.headers["if-modified-since"] === cacheLastModified) {
         response.setResponseCode(304);
-        response.setLastModified(Cache.getLastModified(request));
+        response.setLastModified(cacheLastModified);
         response.send();
     } else {
         const deliverCache = !(HandleClientCacheControl && request.headers["cache-control"] === "no-cache");
         const writeCache = router.RouteGetCacheEnabled(pathname);
-        if (deliverCache && Cache.has(request)) {
-            response.setLastModified(Cache.getLastModified(request));
+        if (deliverCache && cacheHasRequest) {
             Cache.send(request, response);
             return false;
         }
@@ -128,6 +152,8 @@ function sendData(data, request, response, writeCache) {
 
         if (data.type === "file" && data.content) {
             response.setResponseCode(data.code || 200);
+			response.setLastModified(new Date(fs.statSync(data.content).mtime).toUTCString());
+			response.contentLength = fs.statSync(data.content).size;
             response.sendFileStream(fs.createReadStream(data.content));
             return false;
         }
@@ -137,12 +163,13 @@ function sendData(data, request, response, writeCache) {
         }
 
         ResponseCodeMessage.ResponseCodeMessage(response);
-        response.send();
 
         if (writeCache) {
             Cache.add(request, data.content, data.mimetype, data.code);
             response.setLastModified(Cache.getLastModified(request));
         }
+
+		response.send();
 
         return true;
     } else {

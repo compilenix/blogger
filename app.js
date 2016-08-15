@@ -1,32 +1,31 @@
 "use strict";
 
-var cluster = require("cluster");
-var domain = require("domain");
+console.log("platform: " + process.platform);
+console.log("architecture: " + process.arch);
+console.log("versions: " + JSON.stringify(process.versions));
+console.log("command line arguments: " + process.argv);
 
-global.querystring = require("querystring");
-global.url = require("url");
-global.fs = require("fs");
-global.crypto = require("crypto");
-global.os = require("os");
-global.zlib = require("zlib");
-global.htmlenclode = require("htmlencode").htmlEncode;
+var cluster = require("cluster");
+var fs = require("fs");
 
 var ConfigFile = undefined;
+const ConfigDefaultFile = "./Config.js.example";
 if (fs.existsSync("./Config.js")) {
     ConfigFile = "./Config.js";
 } else {
-    ConfigFile = "./Config.js.example";
+    ConfigFile = ConfigDefaultFile;
 }
 
 console.log("loading config: " + ConfigFile);
 global.Config = require(ConfigFile).Config;
+global.ConfigDefault = require(ConfigDefaultFile).Config;
 
 process.argv.forEach(function (val, index, array) {
     switch (val) {
         case "config":
             console.log("Loading config from command line!");
             console.log(process.argv[index + 1]);
-            global.Config = JSON.parse(process.argv[index + 1]);
+            Config = JSON.parse(process.argv[index + 1]);
             break;
     }
 });
@@ -37,21 +36,28 @@ if (Config.DevMode) {
 }
 
 if (!fs.existsSync(Config.post.DirectoryPosts)) {
-    fs.mkdirSync(Config.post.DirectoryPosts);
+	console.error("Posts-Directory is non-existing! creating new empty directory");
+	try {
+		fs.mkdirSync(Config.post.DirectoryPosts);
+	} catch (error) {
+		console.error("Posts-Directory couldn't be created, see following error");
+		console.error(error);
+		process.exit(1);
+	}
 }
 
 global.ResponseWrapper = require("./lib/responseWrapper.js").ResponseWrapper;
 global.ResponseCodeMessage = require("./lib/responseCodeMessage.js");
 global.Helper = require("./lib/helper.js");
 global.router = require("./lib/router.js");
-var server = require("./server.js");
-var requestHandlers = require("./lib/requestHandlers.js");
+global.server = require("./server.js");
+global.requestHandlers = require("./lib/requestHandlers.js");
 
+global.handle = [];
 function Init() {
-    global.handle = [];
-    handle.push({ match: /^\/static\/?.+$/, callback: requestHandlers.Static, cache: false });
+    handle.push({ match: /(^\/static\/?.+$)|(\/favicon.ico)/, callback: requestHandlers.Static, cache: false });
     handle.push({ match: /^\/post\/?.+$/, callback: requestHandlers.Post, cache: true });
-    handle.push({ match: /^\/ajax\?.+$/, callback: requestHandlers.ajax, cache: false });
+    handle.push({ match: /^\/ajax\/?.+$/, callback: requestHandlers.Ajax, cache: false });
     handle.push({ match: /^\/rss$|^\/rss.xml$/, callback: requestHandlers.RSS, cache: true });
     handle.push({ match: /^\/edit$|^\/edit\/$/, callback: requestHandlers.Edit, cache: false });
     handle.push({ match: /^\/code\/?.+$/, callback: requestHandlers.Code, cache: false });
@@ -81,10 +87,11 @@ switch (Config.cache) {
         break;
 }
 
-if (Config.Version && Config.Version !== JSON.parse(fs.readFileSync("package.json", "utf8")).version) {
-    console.log("Update detected, clear cache...");
+if (Config.Version && Config.Version !== ConfigDefault.Version) {
+    console.log("Update detected -> clear cache...");
     Cache.clear();
-    console.log("Please update your Config.json!");
+    console.log("Please update your Config.js!");
+	process.exit(1);
 }
 
 if (Config.DevMode) {
@@ -105,7 +112,7 @@ if (Config.DevMode) {
 
         for (var i = Config.threads; i > 0; i--) {
             cluster.fork();
-        };
+        }
 
         cluster.on("fork", function (worker) {
             console.log("worker #%d forked. (pid %d)", worker.id, worker.process.pid);

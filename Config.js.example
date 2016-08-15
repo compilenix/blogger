@@ -1,7 +1,7 @@
-"use strict";
+var os = require("os");
 
 var Config = {
-	Version: "0.1.8",
+	Version: "0.1.9",
     root: "/",
     language: "en",
     author: "user",
@@ -17,6 +17,7 @@ var Config = {
     DefaultContentType: "text/html",
     ServerVersion: "node.js/" + process.version,
     cache: "FsCache", // "MemCache" | "FsCache" | "none"
+	FileEditor: "editor.html",
     APIKey: "changeme",
     server: {
         port: 8000
@@ -25,14 +26,13 @@ var Config = {
         FileHeader: "header.html",
         FileFooter: "footer.html",
         DirectoryPosts: "posts",
-        DeliverPgpSignatures: true, // if available
-        CountPosts: 5,
+        CountPosts: 20,
         MessageOlderPage: "Older",
         MessageNewerPage: "Newer",
         MessageEnd: "The end."
     },
     rss: {
-        CountPosts: 30,
+        CountPosts: 100,
         Description: "Some Description",
         Encoding: "UTF-8",
         skipHours: [0, 1, 2, 3, 4, 5, 6, 7],

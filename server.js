@@ -72,15 +72,15 @@ function Start(route) {
 }
 
 function process_request(request, response, route) {
-	const pathname = url.parse(request.url).pathname;
+	const query = url.parse(request.url).path;
 
 	if (Config.DevMode) {
 		console.log("process_request: " + request.url);
 	}
 
-	if (!router.RouteExists(pathname)) {
+	if (!router.RouteExists(query)) {
 		if (Config.DevMode) {
-			console.log("404: " + (pathname == undefined ? "undefined" : pathname));
+			console.log("404: " + (query == undefined ? "undefined" : query));
 		}
 		response.setResponseCode(404);
 		ResponseCodeMessage.ResponseCodeMessage(response);
@@ -88,11 +88,11 @@ function process_request(request, response, route) {
 		return false;
 	}
 
-	if (router.GetRoute(pathname).callback === requestHandlers.Static && (request.headers["cache-control"] !== "no-cache")) {
+	if (router.GetRoute(query).callback === requestHandlers.Static && (request.headers["cache-control"] !== "no-cache")) {
 		const path = Helper.replaceAll("/", Helper.GetFsDelimiter(), Config.staticContentPath);
 		let lastModified = undefined;
 
-		if (pathname === "/favicon.ico") {
+		if (query === "/favicon.ico") {
 			lastModified = new Date(fs.statSync(path + Helper.GetFsDelimiter() + "favicon.ico").mtime).toUTCString();
 		} else {
 			lastModified = new Date(fs.statSync(path + Helper.GetFsDelimiter() + querystring.parse(url.parse(request.url).query)["f"]).mtime).toUTCString(); // TODO fix this
@@ -113,13 +113,13 @@ function process_request(request, response, route) {
 		response.send();
 	} else {
 		const deliverCache = !(HandleClientCacheControl && request.headers["cache-control"] === "no-cache");
-		const writeCache = router.RouteGetCacheEnabled(pathname);
+		const writeCache = router.RouteGetCacheEnabled(query);
 		if (deliverCache && cacheHasRequest) {
 			Cache.send(request, response);
 			return false;
 		}
 
-		var data = route(pathname, request);
+		var data = route(query, request);
 
 		if (request.method === "POST") {
 			var body = "";
@@ -187,7 +187,7 @@ function sendData(data, request, response, writeCache) {
 
 		ResponseCodeMessage.ResponseCodeMessage(response);
 
-		if (writeCache) {
+		if (writeCache && (data.code > 99 && data.code < 300)) {
 			Cache.add(request, data.content, data.mimetype, data.code);
 			response.setLastModified(Cache.getLastModified(request));
 		}

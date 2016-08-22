@@ -54,6 +54,7 @@ function Init() {
 	handle.push({ match: /^\/edit$|^\/edit\/$/, callback: requestHandlers.Edit, cache: false });
 	handle.push({ match: /^\/code\/?.+$/, callback: requestHandlers.Code, cache: false });
 	handle.push({ match: /^\/page\/?.+$/, callback: requestHandlers.Page, cache: true });
+	handle.push({ match: /^(\/find\/?.+)|(\/search\/?.+)|(\/\?q=)|(\/\?search=)$/, callback: requestHandlers.Find, cache: true });
 	handle.push({ match: /^\/$/, callback: requestHandlers.Index, cache: true });
 
 	server.Start(router.Route);

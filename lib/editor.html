@@ -1,402 +1,558 @@
 <!DOCTYPE html>
 <head>
-    <meta charset="UTF-8"/>
-    <meta name="author" content="{{Author}}"/>
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <script type="text/javascript" src="{{StaticContent_jquery.js}}"></script>
-    <script type="text/javascript" src="{{StaticContent_ace.js}}"></script>
-    <script type="text/javascript" src="{{StaticContent_worker-html.js}}"></script>
-    <script type="text/javascript" src="{{StaticContent_mode-html.js}}"></script>
-    <script type="text/javascript" src="{{StaticContent_theme-monokai.js}}"></script>
+	<meta charset="UTF-8"/>
+	<meta name="author" content="{{Author}}"/>
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<script type="text/javascript" src="{{StaticContent_jquery.js}}"></script>
+	<script type="text/javascript" src="{{StaticContent_ace.js}}"></script>
+	<script type="text/javascript" src="{{StaticContent_worker-html.js}}"></script>
+	<script type="text/javascript" src="{{StaticContent_mode-html.js}}"></script>
+	<script type="text/javascript" src="{{StaticContent_theme-monokai.js}}"></script>
+	<script type="text/javascript" src="{{StaticContent_sweetalert.min.js}}"></script>
+	<link type="text/css" rel="stylesheet" href="{{StaticContent_sweetalert.css}}">
 
-    <title>{{Title}}</title>
+	<title>{{Title}}</title>
 
-    <style>
-        @font-face {
-            font-family: Ubuntu;
-            src: url("{{StaticContent_Ubuntu-R}}") format("truetype");
-        }
+	<style>
+		@font-face {
+			font-family: Ubuntu;
+			src: url("{{StaticContent_Ubuntu-R}}") format("truetype");
+		}
 
-        @font-face {
-            font-family: Ubuntu;
-            font-weight: bold;
-            src: url("{{StaticContent_Ubuntu-B}}") format("truetype");
-        }
+		@font-face {
+			font-family: Ubuntu;
+			font-weight: bold;
+			src: url("{{StaticContent_Ubuntu-B}}") format("truetype");
+		}
 
-        a { text-decoration: none; }
+		a { text-decoration: none; }
 
-        a:hover, a:focus { color: #0AF; }
+		a:hover, a:focus { color: #0AF; }
 
-        #menu {
-            font-family: Ubuntu, Tahoma, Verdana, sans-serif, serif;
-            font-size: 1em;
-            height: 30px;
-            left: 0;
-            line-height: 1.2em;
-            padding-top: 5px;
-            position: absolute;
-            right: 0;
-            top: 0;
-        }
+		::-webkit-scrollbar {
+			width: .5em;
+			height: .5em;
+		}
 
-        #menu * {
-            cursor: pointer;
-            margin: 5px;
-        }
+		::-webkit-scrollbar-thumb {
+			background: grey;
+			border-radius: .125em;
+		}
 
-        #tabs {
-            background-color: #161713;
-            font-family: Ubuntu, Tahoma, Verdana, sans-serif, serif;
-            font-size: 1em;
-            height: 30px;
-            left: 20%;
-            line-height: 1.2em;
-            padding-left: 50px;
-            position: absolute;
-            right: 0;
-            top: 30px;
-        }
+		::-webkit-scrollbar-thumb:hover {
+			background: #bfbfbf;
+		}
 
-        #tabs > div {
-            background-image: url({{StaticContent_inactivel.png}});
-            background-position: left, right;
-            background-repeat: no-repeat, no-repeat;
-            color: #c1c1bf;
-            cursor: default;
-            display: inline;
-            float: left;
-            height: 31px;
-            margin-right: -12px;
-            padding-left: 19px;
-            padding-right: 19px;
-            padding-top: 3px;
-            position: relative;
-            z-index: 1;
-        }
+		#menu {
+			font-family: Ubuntu, Tahoma, Verdana, sans-serif, serif;
+			font-size: 1em;
+			height: 30px;
+			left: 0;
+			line-height: 1.2em;
+			padding-top: 5px;
+			position: absolute;
+			right: 0;
+			top: 0;
+		}
 
-        #tabs > div > div {
-            background-image: url({{StaticContent_inactivec.png}});
-            background-repeat: repeat-x;
-            height: 31px;
-        }
+		#menu * {
+			cursor: pointer;
+		}
 
-        #tabs > div.active > div {
-            background-image: url({{StaticContent_activec.png}});
-            background-repeat: repeat-x;
-        }
+		#menu .button {
+			padding: .2em;
+		}
 
-        #tabs > div > div > div.wrapper {
-            padding-right: 20px;
-            padding-top: 5px;
-            position: relative;
-        }
+		#menu .button:hover {
+			background-color: #bdbdbd;
+			border-radius: .125em;
+		}
 
-        #tabs div.button {
-            background-image: url({{StaticContent_inactiveclose.png}});
-            height: 8px;
-            position: absolute;
-            right: 3px;
-            top: 10px;
-            width: 7px;
-        }
+		#tabs {
+			background-color: #161713;
+			font-family: Ubuntu, Tahoma, Verdana, sans-serif, serif;
+			font-size: 1em;
+			left: 20%;
+			line-height: 1.2em;
+			position: absolute;
+			right: 0px;
+			top: 30px;
+			overflow-x: hidden;
+			overflow-y: hidden;
+		}
 
-        #tabs > div.active div.button { background-image: url({{StaticContent_activeclose.png}}); }
+		#tabs > div {
+			background-image: url("{{StaticContent_inactivel.png}}"), url("{{StaticContent_inactiver.png}}");
+			background-position: left, right;
+			background-repeat: no-repeat, no-repeat;
+			color: #c1c1bf;
+			cursor: default;
+			display: inline;
+			float: left;
+			height: 31px;
+			margin-right: -12px;
+			padding-left: 19px;
+			padding-right: 19px;
+			padding-top: 3px;
+			position: relative;
+			z-index: 1;
+		}
 
-        #tabs > div.changed { color: #ffa035; }
+		#tabs > div > div {
+			background-image: url("{{StaticContent_inactivec.png}}");
+			background-repeat: repeat-x;
+			height: 31px;
+		}
 
-        #tabs > div.active {
-            background-image: url({{StaticContent_activel.png}}), url({{StaticContent_activer.png}});
-            z-index: 2;
-        }
+		#tabs > div.active > div {
+			background-image: url("{{StaticContent_activec.png}}");
+			background-repeat: repeat-x;
+		}
 
-        #edit {
-            bottom: 0;
-            font-family: Lucida, Consolas, Courier, Verdana;
-            font-size: 1em;
-            left: 20%;
-            line-height: 1.2em;
-            position: absolute;
-            right: 0;
-            top: 60px;
-        }
+		#tabs > div > div > div.wrapper {
+			padding-right: 20px;
+			padding-top: 5px;
+			position: relative;
+		}
 
-        #postlist {
-            background-color: #e6e6e6;
-            bottom: 0;
-            cursor: default;
-            font-family: Ubuntu, Tahoma, Verdana, sans-serif, serif;
-            font-size: 1em;
-            left: 0;
-            line-height: 1.2em;
-            position: absolute;
-            right: 80%;
-            top: 30px;
-        }
+		#tabs div.button {
+			background-image: url("{{StaticContent_inactiveclose.png}}");
+			height: 13px;
+			position: absolute;
+			right: 0px;
+			top: 8px;
+			width: 13px;
+		}
+		#tabs div.button:hover { background-image: url("{{StaticContent_activeclose.png}}"); }
+		#tabs div.button:focus { background-image: url("{{StaticContent_activeclose.png}}"); }
 
-        #postlist ul { list-style-type: none; }
+		#tabs > div.active div.button { background-image: url("{{StaticContent_inactiveclose.png}}"); }
+		#tabs > div.active div.button:hover { background-image: url("{{StaticContent_activeclose.png}}"); }
+		#tabs > div.active div.button:focus { background-image: url("{{StaticContent_activeclose.png}}"); }
 
-        #postlist li {
-            background-image: url({{StaticContent_doc.png}});
-            background-position: left center;
-            background-repeat: no-repeat;
-            margin: 4px;
-            padding-left: 15px;
-        }
-    </style>
+		#tabs > div.changed { color: #ffa035; }
+
+		#tabs > div.active {
+			background-image: url("{{StaticContent_activel.png}}"), url("{{StaticContent_activer.png}}");
+			z-index: 2;
+		}
+
+		#edit {
+			bottom: 0;
+			font-family: Lucida, Consolas, Courier, Verdana;
+			font-size: 1em;
+			left: 20%;
+			line-height: 1.2em;
+			position: absolute;
+			right: 0;
+			top: 60px;
+		}
+
+		#postlist {
+			background-color: #e6e6e6;
+			overflow-x: hidden;
+			overflow-y: overlay;
+			white-space: nowrap;
+			bottom: 0;
+			cursor: default;
+			font-family: Ubuntu, Tahoma, Verdana, sans-serif, serif;
+			font-size: 1em;
+			left: 0;
+			line-height: 1.2em;
+			position: absolute;
+			right: 80%;
+			top: 30px;
+		}
+
+		#postlist ul {
+			list-style-type: none;
+			padding-left: 16px;
+		}
+
+		#postlist li {
+			background-image: url("{{StaticContent_doc.png}}");
+			background-position: left center;
+			background-repeat: no-repeat;
+			margin: 4px;
+			padding-left: 15px;
+		}
+
+		#postlist li:hover { background-color: #bfbfbf; }
+		#postlist li:focus { background-color: #bfbfbf; }
+	</style>
 </head>
 
 <body>
 <div id="menu">
-    <label onclick="e.emptyTab();">New</label>
-    <label onclick="e.remove();">Remove</label>
-    <label onclick="e.preview();">Preview</label>
+	<label class="button" onclick="e.emptyTab();">New</label>
+	<label class="button" onclick="e.remove();">Remove</label>
+	<label class="button" onclick="e.preview();">Preview</label>
 </div>
 <div id="postlist"></div>
 <div id="tabs"></div>
 <div id="edit"></div>
 <script type="text/javascript">
-    "use strict";
+	"use strict";
 
-    function editor() {
-        this.postlistContainer = document.getElementById('postlist');
-        this.editorContainer = document.getElementById('edit');
-        this.tabsContainer = document.getElementById('tabs');
-        this.ace = ace.edit("edit");
-        this.ace.setTheme("ace/theme/monokai");
-        this.ace.getSession().setMode("ace/mode/html");
+	var skey = 83;
+	var vkey = 86;
+	var nkey = 78;
+	var wkey = 87;
 
-        this.apikey = this.loadApiKey();
-        this.title = "";
+	function editor() {
+		this.postlistContainer = document.getElementById('postlist');
+		this.editorContainer = document.getElementById('edit');
+		this.tabsContainer = document.getElementById('tabs');
+		this.ace = ace.edit("edit");
+		this.ace.setTheme("ace/theme/monokai");
+		this.ace.getSession().setMode("ace/mode/html");
 
-        if (!this.apikey) {
-            this.askForKey();
-        }
+		this.ApiKey = this.loadApiKey();
 
-        this.requestPostlist();
+		if (!this.ApiKey) {
+			this.askForKey(function() { e.requestPostlist(); });
+		} else {
+			this.requestPostlist();
+		}
 
-        this.sessions = {};
+		this.sessions = {};
 
-        this.sessions['default'] = this.ace.getSession();
+		this.sessions['default'] = this.ace.getSession();
 
-        this.sessions['default'].on('change', function(ev) {
-            if (ev.data.action === 'insertText') {
-                const name = Math.floor(new Date().getTime() / 1000).toString(16);
-                e.newSession(name, ev.data.text, true);
-                e.ace.navigateFileEnd();
-                e.sessions['default'].setValue('');
-            }
-        });
-        document.addEventListener('keydown', function(event) {
-            if (event.keyCode === 83 && event.ctrlKey) {
-                if ($('#tabs div.active')[0]) {
-                    e.save($($('#tabs div.active')[0]).attr('data-postid'));
-                }
-            } else if (event.keyCode === 78 && event.ctrlKey) {
-                const name = Math.floor(new Date().getTime() / 1000).toString(16);
-                e.newSession(name, '', true);
-            } else {
-                return true;
-            }
-            event.preventDefault();
-            return false;
-        });
+		this.sessions['default'].on('change', function(ev) {
+			if (ev.data.action === 'insertText') {
+				const name = Math.floor(new Date().getTime() / 1000).toString(16);
+				e.newSession(name, e.sessions['default'].getValue(), true);
+				e.ace.navigateFileEnd();
+				e.sessions['default'].setValue('');
+			}
+		});
+		document.addEventListener('keydown', function(event) {
+			switch (event.keyCode) {
+				case skey:
+					if (event.ctrlKey || event.altKey) {
+						event.preventDefault();
+						if ($('#tabs div.active')[0]) {
+							e.save($($('#tabs div.active')[0]).attr('data-postid'));
+						}
+					}
+					break;
+				case nkey:
+					if (event.ctrlKey || event.altKey) {
+						event.preventDefault();
+						e.emptyTab();
+					}
+					break;
+				case vkey:
+					if (event.ctrlKey && $('#tabs div.active')[0] === undefined) {
+						e.emptyTab();
+					}
+					break;
+				case wkey:
+					if (event.ctrlKey || event.altKey) {
+						event.preventDefault();
+						e.closeTab($($('#tabs div.active')[0]).attr('data-postid'));
+					}
+			}
 
-    }
+			if ($('#tabs div.active')[0] === undefined) {
+				e.emptyTab();
+			}
+		});
 
-    editor.prototype.request = function(post) {
-        jQuery.post('/ajax/', post, function(data) {
-            e.handleResponse(data);
-        }, 'json').fail(function(d) {
-            e.askForKey();
-        });
-    };
-    editor.prototype.handleResponse = function(data) {
-        if (data.type) {
-            switch (data.type) {
-                case 'postlist':
-                    this.updatePostList(data);
-                    break;
-                case 'post':
-                    this.loadPost(data);
-                    break;
-                case 'postsaved':
-                    this.postSaved(data.id);
-                    break;
-                case 'postremoved':
-                    this.postRemoved(data.id);
-                    break;
-                default:
-                    alert('unknown response type');
-                    break;
-            }
-        }
-    };
-    editor.prototype.askForKey = function() {
-        const key = prompt('please enter your apy key');
-        this.apikey = key;
-        this.storeApiKey(key);
-    };
-    editor.prototype.loadApiKey = function() {
-        return localStorage.apikey;
-    };
-    editor.prototype.storeApiKey = function(apikey) {
-        localStorage.setItem('apikey', apikey);
-    };
-    editor.prototype.loadPost = function(data) {
-        console.log(data);
-        this.newSession(data.id, data.content.contents, false, data.title);
-        this.title = data.title;
-    };
-    editor.prototype.postSaved = function(id) {
-        $(this.tabsContainer).find('div[data-postid=' + id + ']').removeClass('changed');
-        this.requestPostlist();
-        this.closeTab(id);
-        this.showPost(id);
-    };
-    editor.prototype.updatePostList = function(data) {
-        const ul = document.createElement('ul');
-        for (let i = 0; i < data.list.length; i++) {
-            const li = document.createElement('li');
-            li.appendChild(document.createTextNode(data.titles[i]));
-            li.setAttribute('data-postid', data.list[i]);
-            jQuery(li).on('click', function(ev) {
-                e.showPost(this.getAttribute('data-postid'));
-            });
-            ul.appendChild(li);
-        }
-        this.postlistContainer.innerHTML = '';
-        this.postlistContainer.appendChild(ul);
-    };
-    editor.prototype.requestPostlist = function() {
-        this.request({
-            apikey: this.apikey,
-            action: 'postlist'
-        });
-    };
-    editor.prototype.requestPost = function(id) {
-        this.request({
-            apikey: this.apikey,
-            postid: id,
-            action: 'getpost'
-        });
-    };
-    editor.prototype.requestSavePost = function(id, title, content) {
-        this.title = title;
-        this.request({
-            apikey: this.apikey,
-            postid: id,
-            title: title,
-            content: content,
-            action: 'writepost'
-        });
-    };
-    editor.prototype.save = function(id) {
-        const title = prompt('Enter title:', this.title);
-        if (id && title) {
-            this.title = title;
-            this.requestSavePost(id, title, this.ace.getValue());
-        }
-        return false;
-    };
-    editor.prototype.showPost = function(id) {
-        if (this.hasSession(id)) {
-            this.openSession(id);
-        } else {
-            this.requestPost(id);
-        }
-    };
-    editor.prototype.emptyTab = function() {
-        const name = Math.floor(new Date().getTime() / 1000).toString(16);
-        e.newSession(name, '', true);
-    };
-    editor.prototype.remove = function() {
-        if (!confirm('are you sure?')) {
-            return false;
-        }
-        this.request({
-            apikey: this.apikey,
-            action: "removepost",
-            postid: $('#tabs div.active').attr("data-postid")
-        });
-    };
-    editor.prototype.postRemoved = function(id) {
-        this.closeTab(id);
-        this.requestPostlist();
-    };
-    editor.prototype.addTab = function(id, isnew, title) {
-        const tab = document.createElement('div');
-        const inner = document.createElement('div');
-        const wrapper = document.createElement('div');
-        const closebutton = document.createElement('div');
-        closebutton.setAttribute('data-postid', id);
-        $(closebutton).addClass('button');
-        $(wrapper).addClass('wrapper');
-        tab.setAttribute('data-postid', id);
-        jQuery(tab).on('click', function(ev) {
-            ev.preventDefault();
-            e.openSession(this.getAttribute('data-postid'));
-            return false;
-        });
-        jQuery(closebutton).on('click', function(ev) {
-            ev.preventDefault();
-            e.closeTab(this.getAttribute('data-postid'));
-            return false;
-        });
-        wrapper.appendChild(document.createTextNode(isnew ? id + ' <new>' : title));
-        wrapper.appendChild(closebutton);
-        inner.appendChild(wrapper);
-        tab.appendChild(inner);
-        this.tabsContainer.appendChild(tab);
-        this.title = title;
-        return tab;
-    };
-    editor.prototype.closeTab = function(id) {
-        if ($(this.tabsContainer).find('div[data-postid=' + id + ']').hasClass('changed')) {
-            if (!confirm('are you sure?')) {
-                return false;
-            }
-        }
-        if ($(this.tabsContainer).find('div[data-postid=' + id + ']')[0].previousSibling) {
-            this.openSession($(this.tabsContainer).find('div[data-postid=' + id + ']')[0].previousSibling.getAttribute('data-postid'));
-        } else if ($(this.tabsContainer).find('div[data-postid=' + id + ']')[0].nextSibling) {
-            this.openSession($(this.tabsContainer).find('div[data-postid=' + id + ']')[0].nextSibling.getAttribute('data-postid'));
-        } else {
-            this.ace.setSession(this.sessions['default']);
-            this.ace.focus();
-        }
-        $(this.tabsContainer).find('div[data-postid=' + id + ']').remove();
-        this.sessions[id] = false;
-    };
-    editor.prototype.activateTab = function(id) {
-        $('#tabs div').removeClass('active');
-        $(this.tabsContainer).find('div[data-postid=' + id + ']').addClass('active');
-    };
-    editor.prototype.hasSession = function(id) {
-        return this.sessions[id];
-    };
-    editor.prototype.newSession = function(id, content, isnew, title) {
-        var tab = this.addTab(id, isnew, title);
-        this.sessions[id] = ace.createEditSession(content || '', "ace/mode/html");
-        this.sessions[id].on('change', function(e) {
-            $(tab).addClass('changed');
-        });
-        this.openSession(id);
-    };
-    editor.prototype.openSession = function(id) {
-        this.activateTab(id);
-        this.ace.setSession(this.sessions[id]);
-        this.ace.focus();
-    };
-    editor.prototype.preview = function(content) {
-        $.post("/ajax/", { apikey: e.apikey, action: "previewpost", content: JSON.stringify(e.ace.getValue()), title: this.title },
-            function(data) {
-                const win = window.open('about:blank');
-                win.document.open();
-                win.document.write(data);
-                win.document.close();
-            }
-        );
-    };
-    window.e = new editor();
+	}
+
+	editor.prototype.request = function(post, callback) {
+		jQuery.post('/ajax/', post, function(data) {
+			e.handleResponse(data);
+
+			if (typeof callback === "function") {
+				callback(data);
+			}
+		}, 'json').fail(function(xhr, status) {
+			e.askForKey(function() { e.requestPostlist(); });
+
+			if (typeof callback === "function") {
+				callback(xhr, status);
+			}
+		});
+	};
+	editor.prototype.handleResponse = function(data) {
+		if (data.type) {
+			switch (data.type) {
+				case 'postlist':
+					this.updatePostList(data);
+					break;
+				case 'post':
+					this.loadPost(data);
+					break;
+				case 'postsaved':
+					this.postSaved(data.id);
+					break;
+				case 'postremoved':
+				case 'postnotfound':
+					this.postRemoved(data.id);
+					break;
+				default:
+					console.log("handleResponse: unknown response type");
+					swal("Error!", "Got unexpexted response!", "error")
+					break;
+			}
+		}
+	};
+	editor.prototype.askForKey = function(callback) {
+		swal(
+			{
+				title: "Password needed",
+				type: "input",
+				inputType: "password",
+				showCancelButton: false,
+				showLoaderOnConfirm: true,
+				closeOnConfirm: true
+			}, function(typedPassword) {
+				e.ApiKey = typedPassword;
+				e.storeApiKey(typedPassword);
+				if (typeof callback === "function") {
+					callback();
+				}
+			}
+		);
+	};
+	editor.prototype.loadApiKey = function() {
+		return localStorage.ApiKey;
+	};
+	editor.prototype.storeApiKey = function(ApiKey) {
+		localStorage.setItem('ApiKey', ApiKey);
+	};
+	editor.prototype.loadPost = function(data) {
+		console.log("show post: " + data.title + " (" + data.id + ")");
+		this.newSession(data.id, data.content.contents, false, data.title);
+	};
+	editor.prototype.postSaved = function(id) {
+		$(this.tabsContainer).find('div[data-postid=' + id + ']').removeClass('changed');
+		this.requestPostlist();
+		this.closeTab(id);
+		this.showPost(id);
+	};
+	editor.prototype.updatePostList = function(data) {
+		const ul = document.createElement('ul');
+		for (let i = 0; i < data.list.length; i++) {
+			const li = document.createElement('li');
+			li.appendChild(document.createTextNode(data.titles[i]));
+			li.setAttribute('data-postid', data.list[i]);
+			jQuery(li).on('click', function(ev) {
+				e.showPost(this.getAttribute('data-postid'));
+			});
+			ul.appendChild(li);
+		}
+		this.postlistContainer.innerHTML = '';
+		this.postlistContainer.appendChild(ul);
+	};
+	editor.prototype.requestPostlist = function() {
+		this.request({
+			ApiKey: this.ApiKey,
+			action: 'postlist'
+		});
+	};
+	editor.prototype.requestPost = function(id) {
+		this.request({
+			ApiKey: this.ApiKey,
+			postid: id,
+			action: 'getpost'
+		});
+	};
+	editor.prototype.requestSavePost = function(id, title, content, callback) {
+		this.request({
+			ApiKey: this.ApiKey,
+			postid: id,
+			title: title,
+			content: content,
+			action: 'writepost'
+		}, callback);
+	};
+	editor.prototype.save = function(id) {
+
+		if (!id) {
+			swal("Error!", "No tab/file selected for saving", "error");
+			return false;
+		}
+
+		swal(
+			{
+				title: "Enter a nice title",
+				type: "input",
+				showCancelButton: true,
+				closeOnConfirm: false,
+				closeOnCancel: false,
+				showLoaderOnConfirm: true,
+				inputValue: $($('#tabs div.active')[0]).attr('data-posttitle')
+			}, function(title) {
+				if (title === false) {
+					swal("Save canceled", null, "error");
+					return false;
+				}
+
+				if (!title || title == "") {
+					swal.showInputError("You need to write something!");
+					return false
+				}
+
+				e.requestSavePost(
+					id,
+					title,
+					e.sessions[$($('#tabs div.active')[0]).attr('data-postid')].getValue(),
+					function(data, status) {
+						if (status == "error") {
+							swal("Error!", "The post can't be saved!", "error");
+						} else {
+							swal("Nice!", "Done", "success");
+						}
+					}
+				);
+			}
+		);
+
+		return true;
+	};
+	editor.prototype.showPost = function(id) {
+		if (this.hasSession(id)) {
+			this.openSession(id);
+		} else {
+			this.requestPost(id);
+		}
+	};
+	editor.prototype.emptyTab = function() {
+		const name = Math.floor(new Date().getTime() / 1000).toString(16);
+		e.newSession(name, '', true);
+	};
+	editor.prototype.remove = function() {
+		let postId = $('#tabs div.active').attr("data-postid");
+		let postTitle = $('#tabs div.active').attr("data-posttitle");
+
+		swal(
+			{
+				title: "Are you sure?",
+				text: "Remove \"" + postTitle + "\" (" + postId + ")?",
+				type: "warning",
+				showCancelButton: true,
+				confirmButtonColor: "#DD6B55",
+				confirmButtonText: "Yes, delete it!",
+				cancelButtonText: "No, cancel please!",
+				showLoaderOnConfirm: true,
+				closeOnConfirm: false,
+				closeOnCancel: false
+			},
+			function(isConfirmed){
+				if (isConfirmed) {
+					console.log("remove post: \"" + postTitle + "\" (" + postId + ")");
+
+					e.request({
+						ApiKey: e.ApiKey,
+						action: "removepost",
+						postid: postId
+						}, function(data, status, error) {
+							if (error) {
+								swal("Error!", "The post \"" + postTitle + "\" (" + postId + ") couldn't be deleted.", "error");
+							} else {
+								swal("Deleted!", "The post \"" + postTitle + "\" (" + postId + ") has been deleted.", "success");
+							}
+						}
+					);
+				} else {
+					swal("Cancelled", "\"" + postTitle + "\" (" + postId + ") is safe :)", "error");
+					return false;
+				}
+			}
+		);
+	};
+	editor.prototype.postRemoved = function(id) {
+		this.closeTab(id);
+		this.requestPostlist();
+	};
+	editor.prototype.addTab = function(id, isnew, title) {
+		const tab = document.createElement('div');
+		const inner = document.createElement('div');
+		const wrapper = document.createElement('div');
+		const closebutton = document.createElement('div');
+		closebutton.setAttribute('data-postid', id);
+		$(closebutton).addClass('button');
+		$(wrapper).addClass('wrapper');
+		tab.setAttribute('data-postid', id);
+		tab.setAttribute('data-posttitle', isnew ? id + ' (new Post)' : title);
+		jQuery(tab).on('click', function(ev) {
+			ev.preventDefault();
+			e.openSession(this.getAttribute('data-postid'));
+			return false;
+		});
+		jQuery(closebutton).on('click', function(ev) {
+			ev.preventDefault();
+			e.closeTab(this.getAttribute('data-postid'));
+			return false;
+		});
+		wrapper.appendChild(document.createTextNode(isnew ? id + ' (new Post)' : title));
+		wrapper.appendChild(closebutton);
+		inner.appendChild(wrapper);
+		tab.appendChild(inner);
+		this.tabsContainer.appendChild(tab);
+		return tab;
+	};
+	editor.prototype.closeTab = function(id) {
+		let postTitle = $('#tabs div.active').attr("data-posttitle");
+
+		if ($(this.tabsContainer).find('div[data-postid=' + id + ']').hasClass('changed')) {
+			if (!confirm('are you sure?')) {
+				return false;
+			}
+			console.log("close tab and discard changes of: \"" + postTitle + "\" (" + id + ")");
+		}
+		if ($(this.tabsContainer).find('div[data-postid=' + id + ']')[0].previousSibling) {
+			this.openSession($(this.tabsContainer).find('div[data-postid=' + id + ']')[0].previousSibling.getAttribute('data-postid'));
+		} else if ($(this.tabsContainer).find('div[data-postid=' + id + ']')[0].nextSibling) {
+			this.openSession($(this.tabsContainer).find('div[data-postid=' + id + ']')[0].nextSibling.getAttribute('data-postid'));
+		} else {
+			this.ace.setSession(this.sessions['default']);
+			this.ace.focus();
+			this.emptyTab();
+		}
+		$(this.tabsContainer).find('div[data-postid=' + id + ']').remove();
+		this.sessions[id] = false;
+		this.editorContainer.style.top = this.tabsContainer.offsetHeight + parseInt(window.getComputedStyle(this.tabsContainer).getPropertyValue("top").replace("px", "")) + "px";
+	};
+	editor.prototype.activateTab = function(id) {
+		$('#tabs div').removeClass('active');
+		$(this.tabsContainer).find('div[data-postid=' + id + ']').addClass('active');
+	};
+	editor.prototype.hasSession = function(id) {
+		return this.sessions[id];
+	};
+	editor.prototype.newSession = function(id, content, isnew, title) {
+		var tab = this.addTab(id, isnew, title);
+		this.sessions[id] = ace.createEditSession(content || '', "ace/mode/html");
+		this.sessions[id].on('change', function(e) {
+			$(tab).addClass('changed');
+		});
+		if (isnew && content !== "") {
+			$(tab).addClass('changed');
+		}
+		this.openSession(id);
+		this.editorContainer.style.top = this.tabsContainer.offsetHeight + parseInt(window.getComputedStyle(this.tabsContainer).getPropertyValue("top").replace("px", "")) + "px";
+	};
+	editor.prototype.openSession = function(id) {
+		this.activateTab(id);
+		this.ace.setSession(this.sessions[id]);
+		this.ace.focus();
+	};
+	editor.prototype.preview = function() {
+		$.post("/ajax/", { ApiKey: e.ApiKey, action: "previewpost", content: JSON.stringify(this.sessions[$($('#tabs div.active')[0]).attr('data-postid')].getValue()), title: $($('#tabs div.active')[0]).attr('data-posttitle') },
+			function(data) {
+				const win = window.open('about:blank');
+				win.document.open();
+				win.document.write(data);
+				win.document.close();
+			}
+		);
+	};
+	window.e = new editor();
+	e.emptyTab();
 </script>
 </body>

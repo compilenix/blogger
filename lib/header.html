@@ -8,46 +8,108 @@
 
 <style>
 @font-face {
-    font-family: Ubuntu;
-    src: url("{{StaticContent_Ubuntu-R}}") format("truetype");
+	font-family: Ubuntu;
+	src: url("{{StaticContent_Ubuntu-R}}") format("truetype");
 }
 
 @font-face {
-    font-family: Ubuntu;
-    font-weight: bold;
-    src: url("{{StaticContent_Ubuntu-B}}") format("truetype");
+	font-family: Ubuntu;
+	font-weight: bold;
+	src: url("{{StaticContent_Ubuntu-B}}") format("truetype");
+}
+
+@font-face{
+	font-family: 'Source Code Pro';
+	font-weight: 400;
+	font-style: normal;
+	font-stretch: normal;
+	src: url("{{StaticContent_SourceCodePro-Regular.eot}}") format('embedded-opentype'),
+		 url("{{StaticContent_SourceCodePro-Regular.ttf.woff2}}") format('woff2'),
+		 url("{{StaticContent_SourceCodePro-Regular.otf.woff}}") format('woff'),
+		 url("{{StaticContent_SourceCodePro-Regular.otf}}") format('opentype'),
+		 url("{{StaticContent_SourceCodePro-Regular.ttf}}") format('truetype');
+}
+
+@font-face{
+	font-family: 'Source Code Pro';
+	font-weight: 400;
+	font-style: italic;
+	font-stretch: normal;
+	src: url("{{StaticContent_SourceCodePro-It.eot}}") format('embedded-opentype'),
+		 url("{{StaticContent_SourceCodePro-It.ttf.woff2}}") format('woff2'),
+		 url("{{StaticContent_SourceCodePro-It.otf.woff'}}") format('woff'),
+		 url("{{StaticContent_SourceCodePro-It.otf}}") format('opentype'),
+		 url("{{StaticContent_SourceCodePro-It.ttf}}") format('truetype');
+}
+
+@font-face{
+	font-family: 'Source Code Pro';
+	font-weight: 700;
+	font-style: normal;
+	font-stretch: normal;
+	src: url("{{StaticContent_SourceCodePro-Bold.eot}}") format('embedded-opentype'),
+		 url("{{StaticContent_SourceCodePro-Bold.ttf.woff2}}") format('woff2'),
+		 url("{{StaticContent_SourceCodePro-Bold.otf.woff}}") format('woff'),
+		 url("{{StaticContent_SourceCodePro-Bold.otf}}") format('opentype'),
+		 url("{{StaticContent_SourceCodePro-Bold.ttf}}") format('truetype');
+}
+
+@font-face{
+	font-family: 'Source Code Pro';
+	font-weight: 700;
+	font-style: italic;
+	font-stretch: normal;
+	src: url("{{StaticContent_SourceCodePro-BoldIt.eot}}") format('embedded-opentype'),
+		 url("{{StaticContent_SourceCodePro-BoldIt.ttf.woff2}}") format('woff2'),
+		 url("{{StaticContent_SourceCodePro-BoldIt.otf.woff}}") format('woff'),
+		 url("{{StaticContent_SourceCodePro-BoldIt.otf}}") format('opentype'),
+		 url("{{StaticContent_SourceCodePro-BoldIt.ttf}}") format('truetype');
+}
+
+::-webkit-scrollbar {
+	width: .5em;
+	height: .5em;
+}
+
+::-webkit-scrollbar-thumb {
+	background: #bfbfbf;
+	border-radius: .125em;
+}
+
+::-webkit-scrollbar-thumb:hover {
+	background: grey;
 }
 
 * {
-    font-family: Ubuntu, Tahoma, Verdana, sans-serif, serif;
-    transition: 200ms;
-    word-break: break-word;
-    line-height: 1.2em;
+	font-family: Ubuntu, "Helvetica", "Helvetica Neue", "Helvetica World", sans-serif;
+	transition: 200ms;
+	word-break: break-word;
+	line-height: 1.2em;
 }
 
 div, pre, code, p, span {
-    font-size: 16px;
+	font-size: 16px;
 }
 
 img {
-    max-width:100%;
+	max-width: 100%;
 }
 
 pre, code {
-    font-family: Lucida, Consolas, Courier, Verdana;
+	font-family: "Source Code Pro", Consolas, Lucida, Monospace;
 }
 
 a {
-    text-decoration: none;
-    font-size: 1.15em;
-    line-height: 1.25em;
+	text-decoration: none;
+	font-size: 1.15em;
+	line-height: 1.25em;
 }
 
 a:hover, a:focus {
-    color: #0AF;
+	color: #0AF;
 }
 </style>
 </head>
 
 <body>
-<h1><a href="/" style="color: black;">{{Title}}</a></h1>
+<h1><a href="/" style="color: black;" title="Start page">{{Title}}</a></h1>

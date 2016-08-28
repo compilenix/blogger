@@ -3,8 +3,6 @@ var HandleClientCacheControl = Config.HandleClientCacheControl || true;
 var DevMode = Config.DevMode || false;
 var logger = require("./lib/logger.js");
 
-logger.setLogLevel(logger.level.DEBUG);
-
 var http = undefined;
 var https = undefined;
 var httpsOptions = {

@@ -1,6 +1,9 @@
 var Port = Config.server.port || 80;
 var HandleClientCacheControl = Config.HandleClientCacheControl || true;
 var DevMode = Config.DevMode || false;
+var logger = require("./lib/logger.js");
+
+logger.setLogLevel(logger.level.DEBUG);
 
 var http = undefined;
 var https = undefined;
@@ -10,13 +13,13 @@ var httpsOptions = {
 };
 
 if (Config.EnableHttp2 && Config.Https.Enabled) {
-	console.log("Start server with https AND h2 enabled");
+	logger.info("Start server with https AND h2 enabled");
 	https = require("http2");
 } else if (Config.Https.Enabled) {
-	console.log("Start server with https enabled");
+	logger.info("Start server with https enabled");
 	https = require("https");
 } else {
-	console.log("Start server with http");
+	logger.info("Start server with http");
 	http = require("http");
 }
 
@@ -39,7 +42,7 @@ function Start(route) {
 	}
 
 	function onErr(error) {
-		console.error("error", error.stack);
+		logger.error("error", error);
 		onErrRes.setResponseCode(500);
 		onErrRes.setContent("");
 		ResponseCodeMessage.ResponseCodeMessage(onErrRes);
@@ -48,7 +51,7 @@ function Start(route) {
 	}
 
 	if (DevMode) {
-		console.log("Starting Server on port: " + Port);
+		logger.info("Starting Server on port: " + Port);
 		if ((Config.EnableHttp2 && Config.Https.Enabled) || Config.Https.Enabled) {
 			https.createServer(httpsOptions, onRequest).listen(Port);
 		} else {
@@ -59,7 +62,7 @@ function Start(route) {
 		currentDomain.on("error", onErr);
 
 		currentDomain.run(function() {
-			console.log("Starting Server on port: " + Port);
+			logger.info("Starting Server on port: " + Port);
 			if ((Config.EnableHttp2 && Config.Https.Enabled) || Config.Https.Enabled) {
 				https.createServer(httpsOptions, onRequest).listen(Port);
 			} else {
@@ -68,19 +71,19 @@ function Start(route) {
 		});
 	}
 
-	console.log("Init done, waiting for clients/requests...");
+	logger.info("Init done, waiting for clients/requests...");
 }
 
 function process_request(request, response, route) {
 	const query = url.parse(request.url).path;
 
 	if (Config.DevMode) {
-		console.log("process_request: " + request.url);
+		logger.info("process_request: " + request.url);
 	}
 
 	if (!router.RouteExists(query)) {
 		if (Config.DevMode) {
-			console.log("404: " + (query == undefined ? "undefined" : query));
+			logger.log("404: " + (query == undefined ? "undefined" : query));
 		}
 		response.setResponseCode(404);
 		ResponseCodeMessage.ResponseCodeMessage(response);

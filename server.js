@@ -85,6 +85,7 @@ function process_request(request, response, route) {
 		if (Config.DevMode) {
 			logger.log("404: " + (query == undefined ? "undefined" : query));
 		}
+
 		response.setResponseCode(404);
 		ResponseCodeMessage.ResponseCodeMessage(response);
 		response.send();
@@ -98,7 +99,17 @@ function process_request(request, response, route) {
 		if (query === "/favicon.ico") {
 			lastModified = new Date(fs.statSync(path + Helper.GetFsDelimiter() + "favicon.ico").mtime).toUTCString();
 		} else {
-			lastModified = new Date(fs.statSync(path + Helper.GetFsDelimiter() + querystring.parse(url.parse(request.url).query)["f"]).mtime).toUTCString(); // TODO fix this
+			let file = path + Helper.GetFsDelimiter() + querystring.parse(url.parse(request.url).query)["f"];
+
+			try {
+				fs.accessSync(file, fs.F_OK);
+				lastModified = new Date(fs.statSync(file).mtime).toUTCString(); // TODO fix this
+			} catch (error) {
+				response.setResponseCode(404);
+				ResponseCodeMessage.ResponseCodeMessage(response);
+				response.send();
+				return false;
+			}
 		}
 
 		if (lastModified === request.headers["if-modified-since"]) {

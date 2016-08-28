@@ -60,6 +60,17 @@ function Init() {
 	handle.push({ match: /^(\/find\/?.+)|(\/search\/?.+)|(\/\?q=)|(\/\?search=)$/, callback: requestHandlers.Find, cache: true });
 	handle.push({ match: /^\/$/, callback: requestHandlers.Index, cache: true });
 
+	if (!fs.existsSync(Config.templatePath)) {
+		logger.error("template-Directory is non-existing! creating new empty directory");
+		try {
+			fs.mkdirSync(Config.templatePath);
+		} catch (error) {
+			logger.error("template-Directory couldn't be created, see following error");
+			logger.error(error);
+			process.exit(1);
+		}
+	}
+
 	server.Start(router.Route);
 }
 

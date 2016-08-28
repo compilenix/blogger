@@ -68,7 +68,6 @@ function Start(route) {
 			}
 		});
 	}
-
 	logger.info("Init done, waiting for clients/requests...");
 }
 
@@ -81,7 +80,7 @@ function process_request(request, response, route) {
 
 	if (!router.RouteExists(query)) {
 		if (Config.DevMode) {
-			logger.log("404: " + (query == undefined ? "undefined" : query));
+			logger.info("404: " + (query == undefined ? "undefined" : query));
 		}
 
 		response.setResponseCode(404);

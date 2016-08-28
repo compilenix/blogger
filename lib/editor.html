@@ -3,15 +3,15 @@
 	<meta charset="UTF-8"/>
 	<meta name="author" content="{{Author}}"/>
 	<meta name="viewport" content="width=device-width, initial-scale=1">
-	<script type="text/javascript" src="{{StaticContent_jquery.js}}"></script>
-	<script type="text/javascript" src="{{StaticContent_ace.js}}"></script>
+	<script type="text/javascript" src="{{{path.staticContentUri}}}jquery.js"></script>
+	<script type="text/javascript" src="{{{path.staticContentUri}}}ace.js"></script>
 	<script type="text/javascript" src="{{StaticContent_worker-html.js}}"></script>
 	<script type="text/javascript" src="{{StaticContent_mode-html.js}}"></script>
 	<script type="text/javascript" src="{{StaticContent_theme-monokai.js}}"></script>
 	<script type="text/javascript" src="{{StaticContent_sweetalert.min.js}}"></script>
 	<link type="text/css" rel="stylesheet" href="{{StaticContent_sweetalert.css}}">
 
-	<title>{{Title}}</title>
+	<title>{{title}}</title>
 
 	<style>
 		@font-face {
@@ -42,7 +42,7 @@
 			font-weight: 400;
 			font-style: italic;
 			font-stretch: normal;
-			src: url("{{StaticContent_SourceCodePro-It.eot}}") format('embedded-opentype'),
+			src: url("{{path.staticContentUri}}SourceCodePro-It.eot") format('embedded-opentype'),
 				url("{{StaticContent_SourceCodePro-It.ttf.woff2}}") format('woff2'),
 				url("{{StaticContent_SourceCodePro-It.otf.woff'}}") format('woff'),
 				url("{{StaticContent_SourceCodePro-It.otf}}") format('opentype'),

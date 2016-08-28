@@ -5,25 +5,26 @@
   "author": "Compilenix <Compilenix@compilenix.org>",
   "main": "app.js",
   "scripts": {
-	"start": "node app.js",
-	"test": "node lib/tests/test.js && node lib/tests/unit_test.js"
+    "start": "node app.js",
+    "test": "node lib/tests/test.js && node lib/tests/unit_test.js"
   },
   "keywords": [
-	"Blog",
-	"minimalistic",
-	"blogging",
-	"performance",
-	"blogger",
-	"compilenix",
-	"simple"
+    "Blog",
+    "minimalistic",
+    "blogging",
+    "performance",
+    "blogger",
+    "compilenix",
+    "simple"
   ],
   "dependencies": {
-	"htmlencode": ">= 0.0.4",
-	"http2": "*"
+    "htmlencode": ">= 0.0.4",
+    "http2": "*",
+    "mustache": "^2.2.1"
   },
   "repository": {
-	"type": "git",
-	"url": "https://git.compilenix.org/Compilenix/blogger.git"
+    "type": "git",
+    "url": "https://git.compilenix.org/Compilenix/blogger.git"
   },
   "bugs": "https://git.compilenix.org/Compilenix/blogger/issues",
   "license": "MIT"

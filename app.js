@@ -48,16 +48,53 @@ global.server = require("./server.js");
 global.requestHandlers = require("./lib/requestHandlers.js");
 
 global.handle = [];
+
 function Init() {
-	global.handle.push({ match: /(^\/static\/?.+$)|(\/favicon.ico)/, callback: global.requestHandlers.Static, cache: false });
-	global.handle.push({ match: /^\/post\/?.+$/, callback: global.requestHandlers.Post, cache: true });
-	global.handle.push({ match: /^\/ajax\/?.+$/, callback: global.requestHandlers.Ajax, cache: false });
-	global.handle.push({ match: /^\/rss$|^\/rss.xml$/, callback: global.requestHandlers.RSS, cache: true });
-	global.handle.push({ match: /^\/edit$|^\/edit\/$/, callback: global.requestHandlers.Edit, cache: false });
-	global.handle.push({ match: /^\/code\/?.+$/, callback: global.requestHandlers.Code, cache: false });
-	global.handle.push({ match: /^\/page\/?.+$/, callback: global.requestHandlers.Page, cache: true });
-	global.handle.push({ match: /^(\/find\/?.+)|(\/search\/?.+)|(\/\?q=)|(\/\?search=)$/, callback: global.requestHandlers.Find, cache: true });
-	global.handle.push({ match: /^\/$/, callback: global.requestHandlers.Index, cache: true });
+	global.handle.push({
+		match: /(^\/static\/?.+$)|(\/favicon.ico)/,
+		callback: global.requestHandlers.Static,
+		cache: false
+	});
+	global.handle.push({
+		match: /^\/post\/?.+$/,
+		callback: global.requestHandlers.Post,
+		cache: true
+	});
+	global.handle.push({
+		match: /^\/ajax\/?.+$/,
+		callback: global.requestHandlers.Ajax,
+		cache: false
+	});
+	global.handle.push({
+		match: /^\/rss$|^\/rss.xml$/,
+		callback: global.requestHandlers.RSS,
+		cache: true
+	});
+	global.handle.push({
+		match: /^\/edit$|^\/edit\/$/,
+		callback: global.requestHandlers.Edit,
+		cache: false
+	});
+	global.handle.push({
+		match: /^\/code\/?.+$/,
+		callback: global.requestHandlers.Code,
+		cache: false
+	});
+	global.handle.push({
+		match: /^\/page\/?.+$/,
+		callback: global.requestHandlers.Page,
+		cache: true
+	});
+	global.handle.push({
+		match: /^(\/find\/?.+)|(\/search\/?.+)|(\/\?q=)|(\/\?search=)$/,
+		callback: global.requestHandlers.Find,
+		cache: true
+	});
+	global.handle.push({
+		match: /^\/$/,
+		callback: global.requestHandlers.Index,
+		cache: true
+	});
 
 	if (!fs.existsSync(global.Config.templatePath)) {
 		logger.error("template-Directory is non-existing! creating new empty directory");

@@ -40,7 +40,7 @@ function Start(route) {
 	}
 
 	function onErr(error) {
-		logger.error("error", error);
+		logger.error("Internal Server Error", error);
 		onErrRes.setResponseCode(500);
 		onErrRes.setContent("");
 		ResponseCodeMessage.ResponseCodeMessage(onErrRes);

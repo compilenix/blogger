@@ -51,7 +51,7 @@ var Config = {
 	staticContentPath: "static/",
 	staticContentUri: "/static/?f=",
 	threads: os.cpus().length,
-	templatePath: "template/"
+	templatePath: "templates/"
 };
 
 

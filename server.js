@@ -95,6 +95,8 @@ function process_request(request, response, route) {
 
 		if (query === "/favicon.ico") {
 			lastModified = new Date(fs.statSync(path + Helper.GetFsDelimiter() + "favicon.ico").mtime).toUTCString();
+		} else if (query === "/worker-html.js") {
+			lastModified = new Date(fs.statSync(path + Helper.GetFsDelimiter() + "worker-html.js").mtime).toUTCString();
 		} else {
 			let file = path + Helper.GetFsDelimiter() + querystring.parse(url.parse(request.url).query)["f"];
 

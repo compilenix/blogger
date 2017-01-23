@@ -1,28 +1,28 @@
 <!DOCTYPE html>
 <head>
 	<meta charset="UTF-8"/>
-	<meta name="author" content="{{Author}}"/>
+	<meta name="author" content="{{{author}}}"/>
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<script type="text/javascript" src="{{{path.staticContentUri}}}jquery.js"></script>
 	<script type="text/javascript" src="{{{path.staticContentUri}}}ace.js"></script>
-	<script type="text/javascript" src="{{StaticContent_worker-html.js}}"></script>
-	<script type="text/javascript" src="{{StaticContent_mode-html.js}}"></script>
-	<script type="text/javascript" src="{{StaticContent_theme-monokai.js}}"></script>
-	<script type="text/javascript" src="{{StaticContent_sweetalert.min.js}}"></script>
-	<link type="text/css" rel="stylesheet" href="{{StaticContent_sweetalert.css}}">
+	<script type="text/javascript" src="{{{path.staticContentUri}}}worker-html.js"></script>
+	<script type="text/javascript" src="{{{path.staticContentUri}}}mode-html.js"></script>
+	<script type="text/javascript" src="{{{path.staticContentUri}}}theme-monokai.js"></script>
+	<script type="text/javascript" src="{{{path.staticContentUri}}}sweetalert.min.js"></script>
+	<link type="text/css" rel="stylesheet" href="{{{path.staticContentUri}}}sweetalert.css">
 
 	<title>{{title}}</title>
 
 	<style>
 		@font-face {
 			font-family: Ubuntu;
-			src: url("{{StaticContent_Ubuntu-R}}") format("truetype");
+			src: url("{{{path.staticContentUri}}}Ubuntu-R.ttf") format("truetype");
 		}
 
 		@font-face {
 			font-family: Ubuntu;
 			font-weight: bold;
-			src: url("{{StaticContent_Ubuntu-B}}") format("truetype");
+			src: url("{{{path.staticContentUri}}}Ubuntu-B.ttf") format("truetype");
 		}
 
 		@font-face{
@@ -30,11 +30,11 @@
 			font-weight: 400;
 			font-style: normal;
 			font-stretch: normal;
-			src: url("{{StaticContent_SourceCodePro-Regular.eot}}") format('embedded-opentype'),
-				url("{{StaticContent_SourceCodePro-Regular.ttf.woff2}}") format('woff2'),
-				url("{{StaticContent_SourceCodePro-Regular.otf.woff}}") format('woff'),
-				url("{{StaticContent_SourceCodePro-Regular.otf}}") format('opentype'),
-				url("{{StaticContent_SourceCodePro-Regular.ttf}}") format('truetype');
+			src: url("{{{path.staticContentUri}}}SourceCodePro-Regular.eot") format('embedded-opentype'),
+				url("{{{path.staticContentUri}}}SourceCodePro-Regular.ttf.woff2") format('woff2'),
+				url("{{{path.staticContentUri}}}SourceCodePro-Regular.otf.woff") format('woff'),
+				url("{{{path.staticContentUri}}}SourceCodePro-Regular.otf") format('opentype'),
+				url("{{{path.staticContentUri}}}SourceCodePro-Regular.ttf") format('truetype');
 		}
 
 		@font-face{
@@ -43,10 +43,10 @@
 			font-style: italic;
 			font-stretch: normal;
 			src: url("{{path.staticContentUri}}SourceCodePro-It.eot") format('embedded-opentype'),
-				url("{{StaticContent_SourceCodePro-It.ttf.woff2}}") format('woff2'),
-				url("{{StaticContent_SourceCodePro-It.otf.woff'}}") format('woff'),
-				url("{{StaticContent_SourceCodePro-It.otf}}") format('opentype'),
-				url("{{StaticContent_SourceCodePro-It.ttf}}") format('truetype');
+				url("{{{path.staticContentUri}}}SourceCodePro-It.ttf.woff2") format('woff2'),
+				url("{{{path.staticContentUri}}}SourceCodePro-It.otf.woff'") format('woff'),
+				url("{{{path.staticContentUri}}}SourceCodePro-It.otf") format('opentype'),
+				url("{{{path.staticContentUri}}}SourceCodePro-It.ttf") format('truetype');
 		}
 
 		@font-face{
@@ -54,11 +54,11 @@
 			font-weight: 700;
 			font-style: normal;
 			font-stretch: normal;
-			src: url("{{StaticContent_SourceCodePro-Bold.eot}}") format('embedded-opentype'),
-				url("{{StaticContent_SourceCodePro-Bold.ttf.woff2}}") format('woff2'),
-				url("{{StaticContent_SourceCodePro-Bold.otf.woff}}") format('woff'),
-				url("{{StaticContent_SourceCodePro-Bold.otf}}") format('opentype'),
-				url("{{StaticContent_SourceCodePro-Bold.ttf}}") format('truetype');
+			src: url("{{{path.staticContentUri}}}SourceCodePro-Bold.eot") format('embedded-opentype'),
+				url("{{{path.staticContentUri}}}SourceCodePro-Bold.ttf.woff2") format('woff2'),
+				url("{{{path.staticContentUri}}}SourceCodePro-Bold.otf.woff") format('woff'),
+				url("{{{path.staticContentUri}}}SourceCodePro-Bold.otf") format('opentype'),
+				url("{{{path.staticContentUri}}}SourceCodePro-Bold.ttf") format('truetype');
 		}
 
 		@font-face{
@@ -66,11 +66,11 @@
 			font-weight: 700;
 			font-style: italic;
 			font-stretch: normal;
-			src: url("{{StaticContent_SourceCodePro-BoldIt.eot}}") format('embedded-opentype'),
-				url("{{StaticContent_SourceCodePro-BoldIt.ttf.woff2}}") format('woff2'),
-				url("{{StaticContent_SourceCodePro-BoldIt.otf.woff}}") format('woff'),
-				url("{{StaticContent_SourceCodePro-BoldIt.otf}}") format('opentype'),
-				url("{{StaticContent_SourceCodePro-BoldIt.ttf}}") format('truetype');
+			src: url("{{{path.staticContentUri}}}SourceCodePro-BoldIt.eot") format('embedded-opentype'),
+				url("{{{path.staticContentUri}}}SourceCodePro-BoldIt.ttf.woff2") format('woff2'),
+				url("{{{path.staticContentUri}}}SourceCodePro-BoldIt.otf.woff") format('woff'),
+				url("{{{path.staticContentUri}}}SourceCodePro-BoldIt.otf") format('opentype'),
+				url("{{{path.staticContentUri}}}SourceCodePro-BoldIt.ttf") format('truetype');
 		}
 
 		a {
@@ -139,7 +139,7 @@
 		}
 
 		#tabs > div {
-			background-image: url("{{StaticContent_inactivel.png}}"), url("{{StaticContent_inactiver.png}}");
+			background-image: url("{{{path.staticContentUri}}}inactivel.png"), url("{{{path.staticContentUri}}}inactiver.png");
 			background-position: left, right;
 			background-repeat: no-repeat, no-repeat;
 			color: #c1c1bf;
@@ -156,13 +156,13 @@
 		}
 
 		#tabs > div > div {
-			background-image: url("{{StaticContent_inactivec.png}}");
+			background-image: url("{{{path.staticContentUri}}}inactivec.png");
 			background-repeat: repeat-x;
 			height: 31px;
 		}
 
 		#tabs > div.active > div {
-			background-image: url("{{StaticContent_activec.png}}");
+			background-image: url("{{{path.staticContentUri}}}activec.png");
 			background-repeat: repeat-x;
 		}
 
@@ -173,7 +173,7 @@
 		}
 
 		#tabs div.button {
-			background-image: url("{{StaticContent_inactiveclose.png}}");
+			background-image: url("{{{path.staticContentUri}}}inactiveclose.png");
 			background-repeat: no-repeat;
 			height: 13px;
 			position: absolute;
@@ -182,17 +182,17 @@
 			width: 13px;
 		}
 
-		#tabs div.button:hover { background-image: url("{{StaticContent_activeclose.png}}"); }
-		#tabs div.button:focus { background-image: url("{{StaticContent_activeclose.png}}"); }
+		#tabs div.button:hover { background-image: url("{{{path.staticContentUri}}}activeclose.png"); }
+		#tabs div.button:focus { background-image: url("{{{path.staticContentUri}}}activeclose.png"); }
 
-		#tabs > div.active div.button { background-image: url("{{StaticContent_inactiveclose.png}}"); }
-		#tabs > div.active div.button:hover { background-image: url("{{StaticContent_activeclose.png}}"); }
-		#tabs > div.active div.button:focus { background-image: url("{{StaticContent_activeclose.png}}"); }
+		#tabs > div.active div.button { background-image: url("{{{path.staticContentUri}}}inactiveclose.png"); }
+		#tabs > div.active div.button:hover { background-image: url("{{{path.staticContentUri}}}activeclose.png"); }
+		#tabs > div.active div.button:focus { background-image: url("{{{path.staticContentUri}}}activeclose.png"); }
 
 		#tabs > div.changed { color: #ffa035; }
 
 		#tabs > div.active {
-			background-image: url("{{StaticContent_activel.png}}"), url("{{StaticContent_activer.png}}");
+			background-image: url("{{{path.staticContentUri}}}activel.png"), url("{{{path.staticContentUri}}}activer.png");
 			z-index: 2;
 		}
 
@@ -234,7 +234,7 @@
 		}
 
 		#postlist li {
-			background-image: url("{{StaticContent_doc.png}}");
+			background-image: url("{{{path.staticContentUri}}}doc.png");
 			background-position: left center;
 			background-repeat: no-repeat;
 			margin: 4px;
@@ -315,12 +315,12 @@
 
 			.buttonLeft {
 				left: 0;
-				background: url("{{StaticContent_arrow_left.png}}") no-repeat center center;
+				background: url("{{{path.staticContentUri}}}arrow_left.png") no-repeat center center;
 			}
 
 			.buttonRight {
 				right: 0;
-				background: url("{{StaticContent_arrow_right.png}}") no-repeat center center;
+				background: url("{{{path.staticContentUri}}}arrow_right.png") no-repeat center center;
 			}
 	</style>
 </head>

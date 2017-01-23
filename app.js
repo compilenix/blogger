@@ -51,7 +51,7 @@ global.handle = [];
 
 function Init() {
 	global.handle.push({
-		match: /(^\/static\/?.+$)|(\/favicon.ico)/,
+		match: /(^\/static\/?.+$)|(\/favicon\.ico)|(\/worker-html\.js)/,
 		callback: global.requestHandlers.Static,
 		cache: false
 	});

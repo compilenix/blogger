@@ -35,8 +35,7 @@ if (!fs.existsSync(global.Config.post.DirectoryPosts)) {
 	try {
 		fs.mkdirSync(global.Config.post.DirectoryPosts);
 	} catch (error) {
-		logger.error("Posts-Directory couldn't be created, see following error");
-		logger.error(error);
+		logger.error("Posts-Directory couldn't be created, see following error", error);
 		process.exit(1);
 	}
 }
@@ -65,8 +64,7 @@ function Init() {
 		try {
 			fs.mkdirSync(global.Config.templatePath);
 		} catch (error) {
-			logger.error("template-Directory couldn't be created, see following error");
-			logger.error(error);
+			logger.error("template-Directory couldn't be created, see following error", error);
 			process.exit(1);
 		}
 	}

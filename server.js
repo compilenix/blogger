@@ -1,10 +1,19 @@
-var Port = Config.server.port || 80;
-var HandleClientCacheControl = Config.HandleClientCacheControl || true;
-var DevMode = Config.DevMode || false;
 var logger = require("./lib/logger.js");
+var http = require("http");
+var https = require("https");
+var http2 = require("http2");
+var httpServerToUse = "http";
 
-var http = undefined;
-var https = undefined;
+/** @type {number} */
+var Port = Config.server.port || 80;
+
+/** @type {boolean} */
+var HandleClientCacheControl = Config.HandleClientCacheControl || true;
+
+/** @type {boolean} */
+var DevMode = Config.DevMode || false;
+
+/** @type {https.ServerOptions} */
 var httpsOptions = {
 	key: Config.Https.Key,
 	cert: Config.Https.Cert
@@ -12,13 +21,13 @@ var httpsOptions = {
 
 if (Config.EnableHttp2 && Config.Https.Enabled) {
 	logger.info("Start server with https AND h2 enabled");
-	https = require("http2");
+	httpServerToUse = "http2";
 } else if (Config.Https.Enabled) {
 	logger.info("Start server with https enabled");
-	https = require("https");
+	httpServerToUse = "https";
 } else {
 	logger.info("Start server with http");
-	http = require("http");
+	httpServerToUse = "http";
 }
 
 var domain = require("domain");
@@ -29,6 +38,10 @@ var querystring = require("querystring");
 function Start(route) {
 	var onErrRes = undefined;
 
+	/**
+	 * @param {http.IncomingMessage} request
+	 * @param {http.ServerResponse} response
+	 */
 	function onRequest(request, response) {
 		const res = new ResponseWrapper(response);
 
@@ -39,6 +52,9 @@ function Start(route) {
 		process_request(request, res, route);
 	}
 
+	/**
+	 * @param {Error} error
+	 */
 	function onErr(error) {
 		logger.error("Internal Server Error", error);
 		onErrRes.setResponseCode(500);
@@ -50,21 +66,35 @@ function Start(route) {
 
 	if (DevMode) {
 		logger.info("Starting Server on port: " + Port);
-		if ((Config.EnableHttp2 && Config.Https.Enabled) || Config.Https.Enabled) {
-			https.createServer(httpsOptions, onRequest).listen(Port);
-		} else {
-			http.createServer(onRequest).listen(Port);
+
+		switch (httpServerToUse) {
+			case "http":
+				http.createServer(onRequest).listen(Port);
+				break;
+			case "https":
+				https.createServer(httpsOptions, onRequest).listen(Port);
+				break;
+			case "http2":
+				http2.createServer(httpsOptions, onRequest).listen(Port);
+				break;
 		}
 	} else {
 		const currentDomain = domain.create();
 		currentDomain.on("error", onErr);
 
-		currentDomain.run(function() {
+		currentDomain.run(() => {
 			logger.info("Starting Server on port: " + Port);
-			if ((Config.EnableHttp2 && Config.Https.Enabled) || Config.Https.Enabled) {
-				https.createServer(httpsOptions, onRequest).listen(Port);
-			} else {
-				http.createServer(onRequest).listen(Port);
+
+			switch (httpServerToUse) {
+				case "http":
+					http.createServer(onRequest).listen(Port);
+					break;
+				case "https":
+					https.createServer(httpsOptions, onRequest).listen(Port);
+					break;
+				case "http2":
+					http2.createServer(httpsOptions, onRequest).listen(Port);
+					break;
 			}
 		});
 	}
@@ -80,7 +110,7 @@ function process_request(request, response, route) {
 
 	if (!router.RouteExists(query)) {
 		if (Config.DevMode) {
-			logger.info("404: " + (query == undefined ? "undefined" : query));
+			logger.info("404: " + (query === undefined ? "undefined" : query));
 		}
 
 		response.setResponseCode(404);
@@ -137,7 +167,7 @@ function process_request(request, response, route) {
 		if (request.method === "POST") {
 			var body = "";
 
-			request.on("data", function(postData) {
+			request.on("data", (postData) => {
 				// reading http POST body
 				if (body.length + postData.length < Config.MaxHttpPOSTSize) {
 					body += postData;
@@ -151,7 +181,7 @@ function process_request(request, response, route) {
 				return true;
 			});
 
-			request.on("end", function() {
+			request.on("end", () => {
 				// after reading the http POST body, call the callback function "data()" from request handler
 				sendData(data(body, request), request, response, writeCache);
 			});
@@ -222,4 +252,4 @@ function sendData(data, request, response, writeCache) {
 }
 
 
-exports.Start = Start;
+module.exports.Start = Start;

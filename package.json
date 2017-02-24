@@ -20,7 +20,8 @@
   "dependencies": {
     "htmlencode": ">= 0.0.4",
     "http2": "*",
-    "mustache": "^2.2.1"
+    "mustache": "*",
+	"use-strict": "*"
   },
   "repository": {
     "type": "git",

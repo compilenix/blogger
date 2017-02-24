@@ -1,19 +1,22 @@
+require("use-strict");
 global.cluster = require("cluster");
 var fs = require("fs");
 var logger = require("./lib/logger.js");
 
-logger.setLogLevel(logger.level.DEBUG);
+/** @type {string} */
+var ConfigFile = null;
 
-var ConfigFile = undefined;
-const ConfigDefaultFile = "./Config.js.example";
+/** @type {string} */
+const ConfigDefaultFile = "./Config.example.js";
+
 if (fs.existsSync("./Config.js")) {
 	ConfigFile = "./Config.js";
 } else {
 	ConfigFile = ConfigDefaultFile;
 }
 
-global.Config = require(ConfigFile).Config;
-global.ConfigDefault = require(ConfigDefaultFile).Config;
+global.Config = require(ConfigFile);
+global.ConfigDefault = require(ConfigDefaultFile);
 
 process.argv.forEach(function (val, index) {
 	switch (val) {

@@ -1,5 +1,8 @@
-var os = require("os");
-var fs = require("fs");
+const os = require("os");
+const fs = require("fs");
+
+/** @type {Config} */
+let instance;
 
 class Config {
 	constructor() {
@@ -61,4 +64,15 @@ class Config {
 	}
 }
 
-module.exports = new Config();
+/**
+ * @returns {Config}
+ */
+function getConfig() {
+	if (!instance) {
+		instance = new Config();
+	}
+
+	return instance;
+}
+
+module.exports = getConfig();

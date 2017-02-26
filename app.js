@@ -2,7 +2,6 @@ require("use-strict");
 const cluster = require("cluster");
 const fs = require("fs");
 
-const Router = require("./lib/Router.js");
 const Server = require("./Server.js");
 const RequestHandler = require("./lib/RequestHandler.js");
 const NullCache = require("./lib/cache/NullCache.js");
@@ -123,7 +122,7 @@ function StartServer() {
 	}
 
 	server.setCacheModule(cache);
-	server.setRouter(new Router());
+	server.setRequestHandlers(handle);
 	server.Start();
 }
 

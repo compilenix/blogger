@@ -9,216 +9,265 @@ const querystring = require("querystring");
 const ResponseWrapper = require("./lib/ResponseWrapper.js");
 const ResponseCodeMessage = require("./lib/ResponseCodeMessage.js");
 const Router = require("./lib/Router.js");
+const NullCache = require("./lib/Cache/NullCache.js");
+const Helper = require("./lib/Helper.js");
+const RequestHandler = require("./lib/RequestHandler.js");
 
 const config = require("./Config.js");
 const logger = require("./lib/logger.js");
-let httpServerToUse = "http";
 
-// TODO create Server class
+class Server {
+	constructor() {
+		this.cache = new NullCache();
+		// TODO give router the request handler mapping
+		this.router = new Router();
+		this.port = config.server.port;
+		this.onErrRes = new ResponseWrapper();
+		this.httpServerToUse = "http";
+		this.helper = new Helper();
+		this.requestHandlersMappings = [];
+		this.requestHandler = new RequestHandler();
 
-const Port = config.server.port;
-
-/** @type {https.ServerOptions} */
-const httpsOptions = {
-	key: config.Https.Key,
-	cert: config.Https.Cert
-};
-
-if (config.EnableHttp2 && config.Https.Enabled) {
-	logger.info("Start server with https AND h2 enabled");
-	httpServerToUse = "http2";
-} else if (config.Https.Enabled) {
-	logger.info("Start server with https enabled");
-	httpServerToUse = "https";
-} else {
-	logger.info("Start server with http");
-	httpServerToUse = "http";
-}
-
-/**
- * @param {Router} route
- */
-function Start(route) {
-	let onErrRes = null;
-
-	/**
-	 * @param {http.IncomingMessage} request
-	 * @param {http.ServerResponse} response
-	 */
-	function onRequest(request, response) {
-		const res = new ResponseWrapper(response);
-
-		if (!config.DevMode) {
-			onErrRes = res;
-		}
-
-		process_request(request, res, route);
+		/** @type {https.ServerOptions} */
+		this.httpsOptions = {
+			key: config.Https.Key,
+			cert: config.Https.Cert
+		};
 	}
 
 	/**
-	 * @param {Error} error
+	 * @public
+	 * @memberOf Server
 	 */
-	function onErr(error) {
+	start() {
+		if (config.EnableHttp2 && config.Https.Enabled) {
+			logger.info("Start server with https AND h2 enabled");
+			this.httpServerToUse = "http2";
+		} else if (config.Https.Enabled) {
+			logger.info("Start server with https enabled");
+			this.httpServerToUse = "https";
+		} else {
+			logger.info("Start server with http");
+			this.httpServerToUse = "http";
+		}
+
+		if (config.DevMode) {
+			logger.info("Starting Server on port: " + this.port);
+
+			switch (this.httpServerToUse) {
+				case "http":
+					http.createServer(this._onRequest).listen(this.port);
+					break;
+				case "https":
+					https.createServer(this.httpsOptions, this._onRequest).listen(this.port);
+					break;
+				case "http2":
+					http2.createServer(this.httpsOptions, this._onRequest).listen(this.port);
+					break;
+			}
+		} else {
+			const currentDomain = domain.create();
+			currentDomain.on("error", this._onError);
+
+			// TODO test the behavior of "this" at the anonymus delegate level!
+			currentDomain.run(() => {
+				logger.info("Starting Server on port: " + this.port);
+
+				switch (this.httpServerToUse) {
+					case "http":
+						http.createServer(this._onRequest).listen(this.port);
+						break;
+					case "https":
+						https.createServer(this.httpsOptions, this._onRequest).listen(this.port);
+						break;
+					case "http2":
+						http2.createServer(this.httpsOptions, this._onRequest).listen(this.port);
+						break;
+				}
+			});
+		}
+
+		logger.info("Init done, waiting for clients/requests...");
+	}
+
+	/**
+	 * @public
+	 * @param {Array} handlerList
+	 * @memberOf Server
+	 */
+	setRequestHandlers(handlerList) {
+		this.requestHandlers = handlerList;
+	}
+
+	/**
+	 * @private
+	 * @param {http.IncomingMessage} request
+	 * @param {http.ServerResponse} response
+	 * @memberOf Server
+	 */
+	_onRequest(request, response) {
+		const res = new ResponseWrapper(response);
+
+		if (!config.DevMode) {
+			this.onErrRes = res;
+		}
+
+		this._processRequest(request, res, this.router);
+	}
+
+	/**
+	 * @private
+	 * @param {Error} error
+	 * @memberOf Server
+	 */
+	_onError(error) {
 		logger.error("Internal Server Error", error);
 
 		if (!config.DevMode) {
-			onErrRes.setResponseCode(500);
-			onErrRes.setContent("");
-			ResponseCodeMessage.ResponseCodeMessage(onErrRes);
-			onErrRes.send();
+			this.onErrRes.setResponseCode(500);
+			this.onErrRes.setContent("");
+			this.onErrRes = new ResponseCodeMessage(this.onErrRes).prepareAndGetResponse(true);
+			this.onErrRes.send();
 		}
 
 		process.exit(1);
 	}
 
-	if (config.DevMode) {
-		logger.info("Starting Server on port: " + Port);
+	// TODO give the return value more meaning / sense or remove it
+	/**
+	 * @private
+	 * @param {http.ClientRequest} request
+	 * @param {ResponseWrapper} response
+	 * @param {Router} route
+	 * @returns {boolean} whether the requested content could be send or not
+	 * @memberOf Server
+	 */
+	_processRequest(request, response, route) {
+		const queryPath = url.parse(request.url).path;
+		const queryString = url.parse(request.url).query;
 
-		switch (httpServerToUse) {
-			case "http":
-				http.createServer(onRequest).listen(Port);
-				break;
-			case "https":
-				https.createServer(httpsOptions, onRequest).listen(Port);
-				break;
-			case "http2":
-				http2.createServer(httpsOptions, onRequest).listen(Port);
-				break;
-		}
-	} else {
-		const currentDomain = domain.create();
-		currentDomain.on("error", onErr);
-
-		currentDomain.run(() => {
-			logger.info("Starting Server on port: " + Port);
-
-			switch (httpServerToUse) {
-				case "http":
-					http.createServer(onRequest).listen(Port);
-					break;
-				case "https":
-					https.createServer(httpsOptions, onRequest).listen(Port);
-					break;
-				case "http2":
-					http2.createServer(httpsOptions, onRequest).listen(Port);
-					break;
-			}
-		});
-	}
-	logger.info("Init done, waiting for clients/requests...");
-}
-
-function process_request(request, response, route) {
-	const query = url.parse(request.url).path;
-
-	if (config.DevMode) {
-		logger.info("process_request: " + request.url);
-	}
-
-	// TODO use this.router given by constructor
-	if (!router.RouteExists(query)) {
 		if (config.DevMode) {
-			logger.info("404: " + (query === undefined ? "undefined" : query));
+			logger.info("process_request: " + request.url);
 		}
 
-		response.setResponseCode(404);
-		response = new ResponseCodeMessage(response).prepareAndGetResponse(true);
-		response.send();
-		return false;
-	}
+		if (!this.router.RouteExists(queryPath)) {
+			if (config.DevMode) {
+				logger.info("404: " + (queryPath === undefined ? "undefined" : queryPath));
+			}
 
-	// TODO use this.requestHandlers given by constructor or setter method
-	// TODO helper
-	// TODO use this.cache given by constructor or setter method
-	if (router.GetRoute(query).callback === requestHandlers.Static && (request.headers["cache-control"] !== "no-cache")) {
-		const path = Helper.replaceAll("/", Helper.GetFsDelimiter(), config.staticContentPath);
-		let lastModified;
+			response.setResponseCode(404);
+			response = new ResponseCodeMessage(response).prepareAndGetResponse(true);
+			response.send();
+			return false;
+		}
 
-		if (query === "/favicon.ico") {
-			lastModified = new Date(fs.statSync(path + Helper.GetFsDelimiter() + "favicon.ico").mtime).toUTCString();
-		} else if (query === "/worker-html.js") {
-			lastModified = new Date(fs.statSync(path + Helper.GetFsDelimiter() + "worker-html.js").mtime).toUTCString();
+		if (this.router.GetRoute(queryPath).callback === this.requestHandler.get("Static") && (request.headers["cache-control"] !== "no-cache")) {
+			/** @type {string} */
+			const filePath = this.helper.replaceAll("/", this.helper.GetFsDelimiter(), config.staticContentPath);
+
+			/** @type {Date} */
+			let lastModified;
+
+			if (queryPath === "/favicon.ico") {
+				lastModified = new Date(fs.statSync(filePath + this.helper.GetFsDelimiter() + "favicon.ico").mtime).toUTCString();
+			} else if (queryPath === "/worker-html.js") {
+				lastModified = new Date(fs.statSync(filePath + this.helper.GetFsDelimiter() + "worker-html.js").mtime).toUTCString();
+			} else {
+				/** @type {string} */
+				const file = filePath + this.helper.GetFsDelimiter() + querystring.parse(queryString).f;
+
+				try {
+					fs.accessSync(file, fs.F_OK);
+					lastModified = new Date(fs.statSync(file).mtime).toUTCString(); // TODO fix this
+				} catch (error) {
+					response.setResponseCode(404);
+					response = new ResponseCodeMessage(response).prepareAndGetResponse(true);
+					response.send();
+					return false;
+				}
+			}
+
+			if (lastModified === request.headers["if-modified-since"]) {
+				response.setResponseCode(304);
+				response.setLastModified(lastModified);
+				response.send();
+			}
+		}
+
+		const cacheLastModified = this.cache.getLastModified(request);
+		const cacheHasRequest = this.cache.has(request);
+
+		if (cacheHasRequest && request.headers["if-modified-since"] === cacheLastModified) {
+			response.setResponseCode(304);
+			response.setLastModified(cacheLastModified);
+			response.send();
 		} else {
-			let file = path + Helper.GetFsDelimiter() + querystring.parse(url.parse(request.url).query)["f"];
+			const deliverCache = !(config.HandleClientCacheControl && request.headers["cache-control"] === "no-cache");
+			const writeCache = this.router.RouteGetCacheEnabled(queryPath);
 
-			try {
-				fs.accessSync(file, fs.F_OK);
-				lastModified = new Date(fs.statSync(file).mtime).toUTCString(); // TODO fix this
-			} catch (error) {
-				response.setResponseCode(404);
-				ResponseCodeMessage.ResponseCodeMessage(response);
+			if (deliverCache && cacheHasRequest) {
+				this.cache.send(request, response);
+				return false;
+			}
+
+			var data = route(queryPath, request);
+
+			if (request.method === "POST") {
+				var body = "";
+
+				// TODO test the behavior of "this" at the anonymus delegate level!
+				request.on("data", (postData) => {
+					// reading http POST body
+					if (body.length + postData.length < config.MaxHttpPOSTSize) {
+						body += postData;
+					} else {
+						// Request entity too large
+						response.setResponseCode(413);
+						response = new ResponseCodeMessage(response).prepareAndGetResponse(true);
+						response.send();
+						return false;
+					}
+
+					return true;
+				});
+
+				request.on("end", () => {
+					// after reading the http POST body, call the callback function "data()" returned from the request handler
+					this._sendData(data(body, request), request, response, writeCache);
+				});
+			} else if (request.method === "GET") {
+				if (!this._sendData(data, request, response, writeCache)) {
+					return false;
+				}
+			} else {
+				// unknown http method
+				response.setResponseCode(501);
+				response = new ResponseCodeMessage(response).prepareAndGetResponse(true);
 				response.send();
 				return false;
 			}
 		}
 
-		if (lastModified === request.headers["if-modified-since"]) {
-			response.setResponseCode(304);
-			response.setLastModified(lastModified);
-			response.send();
-		}
+		return true;
 	}
 
-	let cacheLastModified = cache.getLastModified(request);
-	let cacheHasRequest = cache.has(request);
-	if (cacheHasRequest && request.headers["if-modified-since"] === cacheLastModified) {
-		response.setResponseCode(304);
-		response.setLastModified(cacheLastModified);
-		response.send();
-	} else {
-		const deliverCache = !(config.HandleClientCacheControl && request.headers["cache-control"] === "no-cache");
-		const writeCache = router.RouteGetCacheEnabled(query);
-		if (deliverCache && cacheHasRequest) {
-			cache.send(request, response);
-			return false;
-		}
-
-		var data = route(query, request);
-
-		if (request.method === "POST") {
-			var body = "";
-
-			request.on("data", (postData) => {
-				// reading http POST body
-				if (body.length + postData.length < config.MaxHttpPOSTSize) {
-					body += postData;
-				} else {
-					// Request entity too large
-					response.setResponseCode(413);
-					response = new ResponseCodeMessage(response).prepareAndGetResponse(true);
-					response.send();
-					return false;
-				}
-				return true;
-			});
-
-			request.on("end", () => {
-				// after reading the http POST body, call the callback function "data()" from request handler
-				sendData(data(body, request), request, response, writeCache);
-			});
-			return true;
-		} else if (request.method === "GET") {
-			if (!sendData(data, request, response, writeCache)) {
-				return false;
-			}
-		} else {
-			// unknown http method
-			response.setResponseCode(501);
+	/**
+	 * @private
+	 * "data.type" MUST be set to a valid http status code (default: 500 "Internal Server Error") returns false if response has been send
+	 * @param {Object} data
+	 * @param {http.ClientRequest} request
+	 * @param {ResponseWrapper} response
+	 * @param {boolean} writeCache
+	 * @returns {boolean} whether the requested content could be send or not
+	 * @memberOf Server
+	 */
+	_sendData(data, request, response, writeCache) {
+		if (!data || !data.type) {
 			response = new ResponseCodeMessage(response).prepareAndGetResponse(true);
 			response.send();
 			return false;
 		}
-	}
 
-	return true;
-}
-
-/*
- * "data.type" MUST be set to a valid http status code (default: 500 "Internal Server Error")
- * returns false if response has been send
- */
-function sendData(data, request, response, writeCache) {
-	if (data && data.type) {
 		if (data.mimetype) {
 			response.setContentType(data.mimetype);
 		}
@@ -239,28 +288,23 @@ function sendData(data, request, response, writeCache) {
 			response.setContent(data.content);
 		}
 
-		ResponseCodeMessage.ResponseCodeMessage(response);
+		response = new ResponseCodeMessage(response).prepareAndGetResponse(true);
 
 		if (writeCache && (data.code > 99 && data.code < 300)) {
-			cache.add(request, data.content, data.mimetype, data.code);
-			response.setLastModified(cache.getLastModified(request));
+			this.cache.add(request, data.content, data.mimetype, data.code);
+			response.setLastModified(this.cache.getLastModified(request));
 		}
 
 		if (config.EnableHttp2 && config.Https.Enabled && data.push) {
-			data.push.forEach(function(element) {
+			// TODO test the behavior of "this" at the anonymus delegate level!
+			data.push.forEach((element) => {
 				response.addHttp2PushEntity(element.path, element.data, element.httpCode, element.header);
 			}, this);
 		}
 
 		response.send();
 		return true;
-	} else {
-		response = new ResponseCodeMessage(response).prepareAndGetResponse(true);
-		response.send();
-		return false;
 	}
 }
 
-
-// TODO export Server class
-module.exports.Start = Start;
+module.exports = Server;

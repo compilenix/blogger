@@ -1,187 +1,178 @@
 require("use-strict");
-global.cluster = require("cluster");
-var fs = require("fs");
-var logger = require("./lib/logger.js");
+const cluster = require("cluster");
+const fs = require("fs");
+const logger = require("./lib/Logger.js");
+const Router = require("./lib/Router.js");
+const Server = require("./Server.js");
+const RequestHandler = require("./lib/RequestHandler.js");
+const NullCache = require("./lib/cache/NullCache.js");
+const FsCache = require("./lib/cache/FsCache.js");
+const MemCache = require("./lib/cache/MemCache.js");
 
-/** @type {string} */
-var ConfigFile = null;
-
-/** @type {string} */
-const ConfigDefaultFile = "./Config.example.js";
-
-if (fs.existsSync("./Config.js")) {
-	ConfigFile = "./Config.js";
-} else {
-	ConfigFile = ConfigDefaultFile;
-}
-
-global.Config = require(ConfigFile);
-global.ConfigDefault = require(ConfigDefaultFile);
+/** @type {Config} */
+let config = require("./Config.js");
 
 process.argv.forEach(function (val, index) {
 	switch (val) {
 		case "config":
 			logger.info("Loading config from command line!");
 			logger.info(process.argv[index + 1]);
-			global.Config = JSON.parse(process.argv[index + 1]);
+			config = JSON.parse(process.argv[index + 1]);
 			break;
 	}
 });
 
-if (global.Config.DevMode) {
-	global.Config.HeaderExpires = 0;
-	global.Config.ClearCacheOnStart = true;
+if (config.DevMode) {
+	config.HeaderExpires = 0;
+	config.ClearCacheOnStart = true;
 }
 
-if (!fs.existsSync(global.Config.post.DirectoryPosts)) {
+if (!fs.existsSync(config.post.DirectoryPosts)) {
 	logger.error("Posts-Directory is non-existing! creating new empty directory");
 	try {
-		fs.mkdirSync(global.Config.post.DirectoryPosts);
+		fs.mkdirSync(config.post.DirectoryPosts);
 	} catch (error) {
 		logger.error("Posts-Directory couldn't be created, see following error", error);
 		process.exit(1);
 	}
 }
 
-global.ResponseWrapper = require("./lib/responseWrapper.js").ResponseWrapper;
-global.ResponseCodeMessage = require("./lib/responseCodeMessage.js");
-global.Helper = require("./lib/helper.js");
-global.router = require("./lib/router.js");
-global.server = require("./server.js");
-global.requestHandlers = require("./lib/requestHandlers.js");
+let server = new Server();
+let cache = new NullCache();
 
-global.handle = [];
+// TODO move cache from each worker to master
+switch (config.cache) {
+	case "FsCache":
+		if (cluster.isMaster) {
+			logger.info("using FsCache module for caching");
+		}
+		cache = new FsCache();
+		break;
+	case "MemCache":
+		if (cluster.isMaster) {
+			logger.info("using MemCache module for caching");
+		}
+		cache = new MemCache();
+		break;
+	default:
+		if (cluster.isMaster) {
+			logger.info("using no cache");
+		}
+		break;
+}
 
-function Init() {
-	global.handle.push({
+let requestHandler = new RequestHandler();
+let handle = [];
+
+function StartServer() {
+	handle.push({
 		match: /(^\/static\/?.+$)|(\/favicon\.ico)|(\/worker-html\.js)/,
-		callback: global.requestHandlers.Static,
+		callback: requestHandler.get("Static"),
 		cache: false
 	});
-	global.handle.push({
+	handle.push({
 		match: /^\/post\/?.+$/,
-		callback: global.requestHandlers.Post,
+		callback: requestHandler.get("Post"),
 		cache: true
 	});
-	global.handle.push({
+	handle.push({
 		match: /^\/ajax\/?.+$/,
-		callback: global.requestHandlers.Ajax,
+		callback: requestHandler.get("Ajax"),
 		cache: false
 	});
-	global.handle.push({
+	handle.push({
 		match: /^\/rss$|^\/rss.xml$/,
-		callback: global.requestHandlers.RSS,
+		callback: requestHandler.get("RSS"),
 		cache: true
 	});
-	global.handle.push({
+	handle.push({
 		match: /^\/edit$|^\/edit\/$/,
-		callback: global.requestHandlers.Edit,
+		callback: requestHandler.get("Edit"),
 		cache: false
 	});
-	global.handle.push({
+	handle.push({
 		match: /^\/code\/?.+$/,
-		callback: global.requestHandlers.Code,
+		callback: requestHandler.get("Code"),
 		cache: false
 	});
-	global.handle.push({
+	handle.push({
 		match: /^\/page\/?.+$/,
-		callback: global.requestHandlers.Page,
+		callback: requestHandler.get("Page"),
 		cache: true
 	});
-	global.handle.push({
+	handle.push({
 		match: /^(\/find\/?.+)|(\/search\/?.+)|(\/\?q=)|(\/\?search=)$/,
-		callback: global.requestHandlers.Find,
+		callback: requestHandler.get("Find"),
 		cache: true
 	});
-	global.handle.push({
+	handle.push({
 		match: /^\/$/,
-		callback: global.requestHandlers.Index,
+		callback: requestHandler.get("Index"),
 		cache: true
 	});
 
-	if (!fs.existsSync(global.Config.templatePath)) {
+	if (!fs.existsSync(config.templatePath)) {
 		logger.error("template-Directory is non-existing! creating new empty directory");
+
 		try {
-			fs.mkdirSync(global.Config.templatePath);
+			fs.mkdirSync(config.templatePath);
 		} catch (error) {
 			logger.error("template-Directory couldn't be created, see following error", error);
 			process.exit(1);
 		}
 	}
 
-	global.server.Start(global.router.Route);
+	server.setCacheModule(cache);
+	server.setRouter(new Router());
+	server.Start();
 }
 
-require("./lib/cache/NullCache.js");
-require("./lib/cache/FsCache.js");
-require("./lib/cache/MemCache.js");
+// TODO config.Version !== ConfigDefault.Version
+// if (config.Version && config.Version !== ConfigDefault.Version) {
+// 	logger.info("Config version difference detected (reference was \"" + configDefaultFile + "\") -> clearing cache...");
+// 	Cache.clear();
+// 	logger.info("Please update your Config.js!");
+// 	process.exit(1);
+// }
 
-switch (global.Config.cache) {
-	case "FsCache":
-		if (global.cluster.isMaster) {
-			logger.info("using FsCache module for caching");
-		}
-		global.Cache = new global.FsCache();
-		break;
-	case "MemCache":
-		if (global.cluster.isMaster) {
-			logger.info("using MemCache module for caching");
-		}
-		global.Cache = new global.MemCache();
-		break;
-	case "none":
-	default:
-		if (global.cluster.isMaster) {
-			logger.info("using no cache");
-		}
-		global.Cache = new global.NullCache();
-		break;
-}
-
-if (global.Config.Version && global.Config.Version !== global.ConfigDefault.Version) {
-	logger.info("Config version difference detected (reference was \"" + ConfigDefaultFile + "\") -> clearing cache...");
-	global.Cache.clear();
-	logger.info("Please update your Config.js!");
-	process.exit(1);
-}
-
-if (global.Config.DevMode) {
-	if (global.Cache && global.Config.ClearCacheOnStart) {
-		global.Cache.clear();
+if (config.DevMode) {
+	if (cache && config.ClearCacheOnStart) {
+		cache.clear();
 	}
-	Init();
+
+	StartServer();
 } else {
-	if (global.cluster.isMaster) {
+	if (cluster.isMaster) {
 		logger.info("platform: " + process.platform);
 		logger.info("architecture: " + process.arch);
 		logger.info("versions: " + JSON.stringify(process.versions));
 		logger.info("command line arguments: " + process.argv);
 
-		if (global.Cache && global.Config.ClearCacheOnStart) {
-			global.Cache.clear();
+		if (cache && config.ClearCacheOnStart) {
+			cache.clear();
 		}
 
-		if (global.Config.threads <= 1) {
-			global.Config.threads = 1;
+		if (config.threads <= 1) {
+			config.threads = 1;
 		}
 
-		for (var i = global.Config.threads; i > 0; i--) {
-			global.cluster.fork();
+		for (let i = config.threads; i > 0; i--) {
+			cluster.fork();
 		}
 
-		global.cluster.on("fork", function (worker) {
+		cluster.on("fork", function (worker) {
 			logger.info("worker #%d forked. (pid %d)", worker.id, worker.process.pid);
 		});
 
-		global.cluster.on("disconnect", function (worker) {
+		cluster.on("disconnect", function (worker) {
 			logger.info("worker #%d (pid %d) disconnected.", worker.id, worker.process.pid);
 		});
 
-		global.cluster.on("exit", function (worker, code, signal) {
+		cluster.on("exit", function (worker, code, signal) {
 			logger.info("worker #%d (pid %d) died (returned code %s; signal %s). restarting...", worker.id, worker.process.pid, code || "undefined", signal || "undefined");
-			global.cluster.fork();
+			cluster.fork();
 		});
-	} else if (global.cluster.isWorker) {
-		Init();
+	} else if (cluster.isWorker) {
+		StartServer();
 	}
 }

@@ -1,28 +1,33 @@
+const http = require("http");
+const https = require("https");
+const http2 = require("http2");
+const domain = require("domain");
+const url = require("url");
+const fs = require("fs");
+const querystring = require("querystring");
+const ResponseWrapper = require("./lib/ResponseWrapper.js");
+const ResponseCodeMessage = require("./lib/ResponseCodeMessage.js");
+const Router = require("./lib/Router.js");
+var config = require("./Config.js");
 var logger = require("./lib/logger.js");
-var http = require("http");
-var https = require("https");
-var http2 = require("http2");
 var httpServerToUse = "http";
 
-/** @type {number} */
-var Port = Config.server.port || 80;
+// TODO create Server class
 
-/** @type {boolean} */
-var HandleClientCacheControl = Config.HandleClientCacheControl || true;
-
-/** @type {boolean} */
-var DevMode = Config.DevMode || false;
+var Port = config.server.port;
+var HandleClientCacheControl = config.HandleClientCacheControl;
+var DevMode = config.DevMode;
 
 /** @type {https.ServerOptions} */
 var httpsOptions = {
-	key: Config.Https.Key,
-	cert: Config.Https.Cert
+	key: config.Https.Key,
+	cert: config.Https.Cert
 };
 
-if (Config.EnableHttp2 && Config.Https.Enabled) {
+if (config.EnableHttp2 && config.Https.Enabled) {
 	logger.info("Start server with https AND h2 enabled");
 	httpServerToUse = "http2";
-} else if (Config.Https.Enabled) {
+} else if (config.Https.Enabled) {
 	logger.info("Start server with https enabled");
 	httpServerToUse = "https";
 } else {
@@ -30,11 +35,9 @@ if (Config.EnableHttp2 && Config.Https.Enabled) {
 	httpServerToUse = "http";
 }
 
-var domain = require("domain");
-var url = require("url");
-var fs = require("fs");
-var querystring = require("querystring");
-
+/**
+ * @param {Router} route
+ */
 function Start(route) {
 	var onErrRes = undefined;
 
@@ -104,23 +107,27 @@ function Start(route) {
 function process_request(request, response, route) {
 	const query = url.parse(request.url).path;
 
-	if (Config.DevMode) {
+	if (config.DevMode) {
 		logger.info("process_request: " + request.url);
 	}
 
+	// TODO use this.router given by constructor
 	if (!router.RouteExists(query)) {
-		if (Config.DevMode) {
+		if (config.DevMode) {
 			logger.info("404: " + (query === undefined ? "undefined" : query));
 		}
 
 		response.setResponseCode(404);
-		ResponseCodeMessage.ResponseCodeMessage(response);
+		response = new ResponseCodeMessage(response).prepareAndGetResponse(true);
 		response.send();
 		return false;
 	}
 
+	// TODO use this.requestHandlers given by constructor or setter method
+	// TODO helper
+	// TODO use this.cache given by constructor or setter method
 	if (router.GetRoute(query).callback === requestHandlers.Static && (request.headers["cache-control"] !== "no-cache")) {
-		const path = Helper.replaceAll("/", Helper.GetFsDelimiter(), Config.staticContentPath);
+		const path = Helper.replaceAll("/", Helper.GetFsDelimiter(), config.staticContentPath);
 		let lastModified = undefined;
 
 		if (query === "/favicon.ico") {
@@ -148,8 +155,8 @@ function process_request(request, response, route) {
 		}
 	}
 
-	let cacheLastModified = Cache.getLastModified(request);
-	let cacheHasRequest = Cache.has(request);
+	let cacheLastModified = cache.getLastModified(request);
+	let cacheHasRequest = cache.has(request);
 	if (cacheHasRequest && request.headers["if-modified-since"] === cacheLastModified) {
 		response.setResponseCode(304);
 		response.setLastModified(cacheLastModified);
@@ -158,7 +165,7 @@ function process_request(request, response, route) {
 		const deliverCache = !(HandleClientCacheControl && request.headers["cache-control"] === "no-cache");
 		const writeCache = router.RouteGetCacheEnabled(query);
 		if (deliverCache && cacheHasRequest) {
-			Cache.send(request, response);
+			cache.send(request, response);
 			return false;
 		}
 
@@ -169,12 +176,12 @@ function process_request(request, response, route) {
 
 			request.on("data", (postData) => {
 				// reading http POST body
-				if (body.length + postData.length < Config.MaxHttpPOSTSize) {
+				if (body.length + postData.length < config.MaxHttpPOSTSize) {
 					body += postData;
 				} else {
 					// Request entity too large
 					response.setResponseCode(413);
-					ResponseCodeMessage.ResponseCodeMessage(response);
+					response = new ResponseCodeMessage(response).prepareAndGetResponse(true);
 					response.send();
 					return false;
 				}
@@ -193,7 +200,7 @@ function process_request(request, response, route) {
 		} else {
 			// unknown http method
 			response.setResponseCode(501);
-			ResponseCodeMessage.ResponseCodeMessage(response);
+			response = new ResponseCodeMessage(response).prepareAndGetResponse(true);
 			response.send();
 			return false;
 		}
@@ -231,25 +238,25 @@ function sendData(data, request, response, writeCache) {
 		ResponseCodeMessage.ResponseCodeMessage(response);
 
 		if (writeCache && (data.code > 99 && data.code < 300)) {
-			Cache.add(request, data.content, data.mimetype, data.code);
-			response.setLastModified(Cache.getLastModified(request));
+			cache.add(request, data.content, data.mimetype, data.code);
+			response.setLastModified(cache.getLastModified(request));
 		}
 
-		if (Config.EnableHttp2 && Config.Https.Enabled && data.push) {
+		if (config.EnableHttp2 && config.Https.Enabled && data.push) {
 			data.push.forEach(function(element) {
 				response.addHttp2PushEntity(element.path, element.data, element.httpCode, element.header);
 			}, this);
 		}
 
 		response.send();
-
 		return true;
 	} else {
-		ResponseCodeMessage.ResponseCodeMessage(response);
+		response = new ResponseCodeMessage(response).prepareAndGetResponse(true);
 		response.send();
 		return false;
 	}
 }
 
 
+// TODO export Server class
 module.exports.Start = Start;

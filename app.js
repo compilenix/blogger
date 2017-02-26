@@ -8,8 +8,6 @@ const RequestHandler = require("./lib/RequestHandler.js");
 const NullCache = require("./lib/cache/NullCache.js");
 const FsCache = require("./lib/cache/FsCache.js");
 const MemCache = require("./lib/cache/MemCache.js");
-
-/** @type {Config} */
 let config = require("./Config.js");
 
 process.argv.forEach(function (val, index) {

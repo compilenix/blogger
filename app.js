@@ -1,13 +1,15 @@
 require("use-strict");
 const cluster = require("cluster");
 const fs = require("fs");
-const logger = require("./lib/Logger.js");
+
 const Router = require("./lib/Router.js");
 const Server = require("./Server.js");
 const RequestHandler = require("./lib/RequestHandler.js");
 const NullCache = require("./lib/cache/NullCache.js");
 const FsCache = require("./lib/cache/FsCache.js");
 const MemCache = require("./lib/cache/MemCache.js");
+
+const logger = require("./lib/Logger.js");
 let config = require("./Config.js");
 
 process.argv.forEach(function (val, index) {
@@ -35,7 +37,7 @@ if (!fs.existsSync(config.post.DirectoryPosts)) {
 	}
 }
 
-let server = new Server();
+const server = new Server();
 let cache = new NullCache();
 
 // TODO move cache from each worker to master
@@ -59,8 +61,8 @@ switch (config.cache) {
 		break;
 }
 
-let requestHandler = new RequestHandler();
-let handle = [];
+const requestHandler = new RequestHandler();
+const handle = [];
 
 function StartServer() {
 	handle.push({

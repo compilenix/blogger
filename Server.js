@@ -5,21 +5,21 @@ const domain = require("domain");
 const url = require("url");
 const fs = require("fs");
 const querystring = require("querystring");
+
 const ResponseWrapper = require("./lib/ResponseWrapper.js");
 const ResponseCodeMessage = require("./lib/ResponseCodeMessage.js");
 const Router = require("./lib/Router.js");
-var config = require("./Config.js");
-var logger = require("./lib/logger.js");
-var httpServerToUse = "http";
+
+const config = require("./Config.js");
+const logger = require("./lib/logger.js");
+let httpServerToUse = "http";
 
 // TODO create Server class
 
-var Port = config.server.port;
-var HandleClientCacheControl = config.HandleClientCacheControl;
-var DevMode = config.DevMode;
+const Port = config.server.port;
 
 /** @type {https.ServerOptions} */
-var httpsOptions = {
+const httpsOptions = {
 	key: config.Https.Key,
 	cert: config.Https.Cert
 };
@@ -39,7 +39,7 @@ if (config.EnableHttp2 && config.Https.Enabled) {
  * @param {Router} route
  */
 function Start(route) {
-	var onErrRes = undefined;
+	let onErrRes = null;
 
 	/**
 	 * @param {http.IncomingMessage} request
@@ -48,7 +48,7 @@ function Start(route) {
 	function onRequest(request, response) {
 		const res = new ResponseWrapper(response);
 
-		if (!DevMode) {
+		if (!config.DevMode) {
 			onErrRes = res;
 		}
 
@@ -60,14 +60,18 @@ function Start(route) {
 	 */
 	function onErr(error) {
 		logger.error("Internal Server Error", error);
-		onErrRes.setResponseCode(500);
-		onErrRes.setContent("");
-		ResponseCodeMessage.ResponseCodeMessage(onErrRes);
-		onErrRes.send();
+
+		if (!config.DevMode) {
+			onErrRes.setResponseCode(500);
+			onErrRes.setContent("");
+			ResponseCodeMessage.ResponseCodeMessage(onErrRes);
+			onErrRes.send();
+		}
+
 		process.exit(1);
 	}
 
-	if (DevMode) {
+	if (config.DevMode) {
 		logger.info("Starting Server on port: " + Port);
 
 		switch (httpServerToUse) {
@@ -128,7 +132,7 @@ function process_request(request, response, route) {
 	// TODO use this.cache given by constructor or setter method
 	if (router.GetRoute(query).callback === requestHandlers.Static && (request.headers["cache-control"] !== "no-cache")) {
 		const path = Helper.replaceAll("/", Helper.GetFsDelimiter(), config.staticContentPath);
-		let lastModified = undefined;
+		let lastModified;
 
 		if (query === "/favicon.ico") {
 			lastModified = new Date(fs.statSync(path + Helper.GetFsDelimiter() + "favicon.ico").mtime).toUTCString();
@@ -162,7 +166,7 @@ function process_request(request, response, route) {
 		response.setLastModified(cacheLastModified);
 		response.send();
 	} else {
-		const deliverCache = !(HandleClientCacheControl && request.headers["cache-control"] === "no-cache");
+		const deliverCache = !(config.HandleClientCacheControl && request.headers["cache-control"] === "no-cache");
 		const writeCache = router.RouteGetCacheEnabled(query);
 		if (deliverCache && cacheHasRequest) {
 			cache.send(request, response);

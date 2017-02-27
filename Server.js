@@ -23,7 +23,6 @@ class Server {
 		this.port = config.server.port;
 		this.onErrRes = new ResponseWrapper(null);
 		this.httpServerToUse = "http";
-		this.helper = new Helper();
 		this.requestHandlersMappings = [];
 		this.requestHandler = new RequestHandler();
 
@@ -162,18 +161,18 @@ class Server {
 
 		if (this.router.getRoute(queryPath).callback === this.requestHandler.get("Static") && (request.headers["cache-control"] !== "no-cache")) {
 			/** @type {string} */
-			const filePath = this.helper.replaceAll("/", this.helper.GetFsDelimiter(), config.staticContentPath);
+			const filePath = Helper.replaceAll("/", Helper.GetFsDelimiter(), config.staticContentPath);
 
 			/** @type {Date} */
 			let lastModified;
 
 			if (queryPath === "/favicon.ico") {
-				lastModified = new Date(fs.statSync(filePath + this.helper.GetFsDelimiter() + "favicon.ico").mtime).toUTCString();
+				lastModified = new Date(fs.statSync(filePath + Helper.GetFsDelimiter() + "favicon.ico").mtime).toUTCString();
 			} else if (queryPath === "/worker-html.js") {
-				lastModified = new Date(fs.statSync(filePath + this.helper.GetFsDelimiter() + "worker-html.js").mtime).toUTCString();
+				lastModified = new Date(fs.statSync(filePath + Helper.GetFsDelimiter() + "worker-html.js").mtime).toUTCString();
 			} else {
 				/** @type {string} */
-				const file = filePath + this.helper.GetFsDelimiter() + querystring.parse(queryString).f;
+				const file = filePath + Helper.GetFsDelimiter() + querystring.parse(queryString).f;
 
 				try {
 					fs.accessSync(file, fs.F_OK);

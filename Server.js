@@ -19,10 +19,9 @@ const logger = require("./lib/logger.js");
 class Server {
 	constructor() {
 		this.cache = new NullCache();
-		// TODO give router the request handler mapping
-		this.router = new Router();
+		this.router = new Router(null);
 		this.port = config.server.port;
-		this.onErrRes = new ResponseWrapper();
+		this.onErrRes = new ResponseWrapper(null);
 		this.httpServerToUse = "http";
 		this.helper = new Helper();
 		this.requestHandlersMappings = [];
@@ -97,6 +96,7 @@ class Server {
 	 */
 	setRequestHandlers(handlerList) {
 		this.requestHandlers = handlerList;
+		this.router = new Router(this.requestHandlersMappings);
 	}
 
 	/**
@@ -112,7 +112,7 @@ class Server {
 			this.onErrRes = res;
 		}
 
-		this._processRequest(request, res, this.router);
+		this._processRequest(request, res);
 	}
 
 	/**
@@ -138,11 +138,10 @@ class Server {
 	 * @private
 	 * @param {http.ClientRequest} request
 	 * @param {ResponseWrapper} response
-	 * @param {Router} route
 	 * @returns {boolean} whether the requested content could be send or not
 	 * @memberOf Server
 	 */
-	_processRequest(request, response, route) {
+	_processRequest(request, response) {
 		const queryPath = url.parse(request.url).path;
 		const queryString = url.parse(request.url).query;
 
@@ -150,7 +149,7 @@ class Server {
 			logger.info("process_request: " + request.url);
 		}
 
-		if (!this.router.RouteExists(queryPath)) {
+		if (!this.router.routeExists(queryPath)) {
 			if (config.DevMode) {
 				logger.info("404: " + (queryPath === undefined ? "undefined" : queryPath));
 			}
@@ -161,7 +160,7 @@ class Server {
 			return false;
 		}
 
-		if (this.router.GetRoute(queryPath).callback === this.requestHandler.get("Static") && (request.headers["cache-control"] !== "no-cache")) {
+		if (this.router.getRoute(queryPath).callback === this.requestHandler.get("Static") && (request.headers["cache-control"] !== "no-cache")) {
 			/** @type {string} */
 			const filePath = this.helper.replaceAll("/", this.helper.GetFsDelimiter(), config.staticContentPath);
 
@@ -203,17 +202,17 @@ class Server {
 			response.send();
 		} else {
 			const deliverCache = !(config.HandleClientCacheControl && request.headers["cache-control"] === "no-cache");
-			const writeCache = this.router.RouteGetCacheEnabled(queryPath);
+			const writeCache = this.router.routeGetCacheEnabled(queryPath);
 
 			if (deliverCache && cacheHasRequest) {
 				this.cache.send(request, response);
 				return false;
 			}
 
-			var data = route(queryPath, request);
+			let data = this.router.route(queryPath, request);
 
 			if (request.method === "POST") {
-				var body = "";
+				let body = "";
 
 				// TODO test the behavior of "this" at the anonymus delegate level!
 				request.on("data", (postData) => {

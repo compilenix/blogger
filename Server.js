@@ -24,7 +24,7 @@ class Server {
 		this.onErrRes = new ResponseWrapper(null);
 		this.httpServerToUse = "http";
 		this.requestHandlersMappings = [];
-		this.requestHandler = new RequestHandler();
+		this.requestHandler = new RequestHandler(this);
 
 		/** @type {https.ServerOptions} */
 		this.httpsOptions = {
@@ -159,7 +159,7 @@ class Server {
 			return false;
 		}
 
-		if (this.router.getRoute(queryPath).callback === this.requestHandler.get("Static") && (request.headers["cache-control"] !== "no-cache")) {
+		if (this.router.getRoute(queryPath).handler === this.requestHandler.get("Static") && (request.headers["cache-control"] !== "no-cache")) {
 			/** @type {string} */
 			const filePath = Helper.replaceAll("/", Helper.GetFsDelimiter(), config.staticContentPath);
 

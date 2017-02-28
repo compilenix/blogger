@@ -66,47 +66,47 @@ const handle = [];
 function StartServer() {
 	handle.push({
 		match: /(^\/static\/?.+$)|(\/favicon\.ico)|(\/worker-html\.js)/,
-		callback: requestHandler.get("Static"),
+		handler: requestHandler.get("Static"),
 		cache: false
 	});
 	handle.push({
 		match: /^\/post\/?.+$/,
-		callback: requestHandler.get("Post"),
+		handler: requestHandler.get("Post"),
 		cache: true
 	});
 	handle.push({
 		match: /^\/ajax\/?.+$/,
-		callback: requestHandler.get("Ajax"),
+		handler: requestHandler.get("Ajax"),
 		cache: false
 	});
 	handle.push({
 		match: /^\/rss$|^\/rss.xml$/,
-		callback: requestHandler.get("RSS"),
+		handler: requestHandler.get("Rss"),
 		cache: true
 	});
 	handle.push({
 		match: /^\/edit$|^\/edit\/$/,
-		callback: requestHandler.get("Edit"),
+		handler: requestHandler.get("Edit"),
 		cache: false
 	});
 	handle.push({
 		match: /^\/code\/?.+$/,
-		callback: requestHandler.get("Code"),
+		handler: requestHandler.get("Code"),
 		cache: false
 	});
 	handle.push({
 		match: /^\/page\/?.+$/,
-		callback: requestHandler.get("Page"),
+		handler: requestHandler.get("Page"),
 		cache: true
 	});
 	handle.push({
 		match: /^(\/find\/?.+)|(\/search\/?.+)|(\/\?q=)|(\/\?search=)$/,
-		callback: requestHandler.get("Find"),
+		handler: requestHandler.get("Find"),
 		cache: true
 	});
 	handle.push({
 		match: /^\/$/,
-		callback: requestHandler.get("Index"),
+		handler: requestHandler.get("Index"),
 		cache: true
 	});
 

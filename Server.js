@@ -14,7 +14,7 @@ const Helper = require("./lib/Helper.js");
 const RequestHandler = require("./lib/RequestHandler.js");
 
 const config = require("./Config.js");
-const logger = require("./lib/logger.js");
+const logger = require("./lib/Logger.js");
 
 class Server {
 	constructor() {

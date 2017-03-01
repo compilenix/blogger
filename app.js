@@ -4,9 +4,9 @@ const fs = require("fs");
 
 const Server = require("./Server.js");
 const RequestHandler = require("./lib/RequestHandler.js");
-const NullCache = require("./lib/cache/NullCache.js");
-const FsCache = require("./lib/cache/FsCache.js");
-const MemCache = require("./lib/cache/MemCache.js");
+const NullCache = require("./lib/Cache/NullCache.js");
+const FsCache = require("./lib/Cache/FsCache.js");
+const MemCache = require("./lib/Cache/MemCache.js");
 
 const logger = require("./lib/Logger.js");
 let config = require("./Config.js");
@@ -60,7 +60,7 @@ switch (config.cache) {
 		break;
 }
 
-const requestHandler = new RequestHandler();
+const requestHandler = new RequestHandler(server);
 const handle = [];
 
 function StartServer() {
@@ -123,7 +123,7 @@ function StartServer() {
 
 	server.setCacheModule(cache);
 	server.setRequestHandlers(handle);
-	server.Start();
+	server.start();
 }
 
 // TODO config.Version !== ConfigDefault.Version

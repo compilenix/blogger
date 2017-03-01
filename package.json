@@ -1,12 +1,12 @@
 {
   "name": "blogger",
-  "version": "0.1.9",
+  "version": "0.2.0",
   "description": "A simple, minimalistic and high performance blogging web application",
   "author": "Compilenix <Compilenix@compilenix.org>",
   "main": "app.js",
   "scripts": {
     "start": "node app.js",
-    "test": "node lib/tests/test.js && node lib/tests/unit_test.js"
+    "test": "node lib/tests/unit_test.js"
   },
   "keywords": [
     "Blog",

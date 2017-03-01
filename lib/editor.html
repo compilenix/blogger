@@ -82,6 +82,11 @@
 
 		a:hover, a:focus { color: #0AF; }
 
+		a.button { color: black; }
+		a.button:hover { color: black; }
+		a.button:focus { color: black; }
+		a.button:visited { color: black; }
+
 		::-webkit-scrollbar {
 			width: .5em;
 			height: .5em;
@@ -287,7 +292,7 @@
 				text-align: center;
 			}
 
-			#tabs > div > div { background: none); }
+			#tabs > div > div { background: none; }
 			#tabs > div.active > div { background: none; }
 
 			#tabs > div.active {
@@ -329,9 +334,10 @@
 <div id="menu">
 	<label class="button responsive" onclick="$('#postlist').toggleClass('active');">Posts</label>
 	<label class="button responsive" onclick="e.closeTab($($('#tabs div.active')[0]).attr('data-postid'));">Close</label>
-	<label class="button" onclick="e.emptyTab();">New</label>
-	<label class="button" onclick="e.remove();">Remove</label>
-	<label class="button" onclick="e.preview();">Preview</label>
+	<a class="button" href="/" target="_blank">Start Page</a>
+	<a class="button" onclick="e.emptyTab();">New</a>
+	<a class="button" onclick="e.remove();">Remove</a>
+	<a class="button" onclick="e.preview();">Preview</a>
 </div>
 <div id="postlist"></div>
 <div id="tabs">

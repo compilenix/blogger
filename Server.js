@@ -51,38 +51,24 @@ class Server {
 
 		if (config.DevMode) {
 			logger.info("Starting Server on port: " + this.port);
+			let _this = this;
 
 			switch (this.httpServerToUse) {
 				case "http":
-					http.createServer(this._onRequest).listen(this.port);
+					http.createServer((request, response) => { _this._onRequest(_this, request, response); }).listen(this.port);
 					break;
 				case "https":
-					https.createServer(this.httpsOptions, this._onRequest).listen(this.port);
+					https.createServer(this.httpsOptions, (request, response) => { _this._onRequest(_this, request, response); }).listen(this.port);
 					break;
 				case "http2":
-					http2.createServer(this.httpsOptions, this._onRequest).listen(this.port);
+					http2.createServer(this.httpsOptions, (request, response) => { _this._onRequest(_this, request, response); }).listen(this.port);
 					break;
 			}
 		} else {
 			const currentDomain = domain.create();
-			currentDomain.on("error", this._onError);
-
-			// TODO test the behavior of "this" at the anonymus delegate level!
-			currentDomain.run(() => {
-				logger.info("Starting Server on port: " + this.port);
-
-				switch (this.httpServerToUse) {
-					case "http":
-						http.createServer(this._onRequest).listen(this.port);
-						break;
-					case "https":
-						https.createServer(this.httpsOptions, this._onRequest).listen(this.port);
-						break;
-					case "http2":
-						http2.createServer(this.httpsOptions, this._onRequest).listen(this.port);
-						break;
-				}
-			});
+			let _this = this;
+			currentDomain.on("error", (error) => { _this._onError(_this, error); });
+			currentDomain.run(() => { _this._onDomainRun(_this); });
 		}
 
 		logger.info("Init done, waiting for clients/requests...");
@@ -94,39 +80,67 @@ class Server {
 	 * @memberOf Server
 	 */
 	setRequestHandlers(handlerList) {
-		this.requestHandlers = handlerList;
+		this.requestHandlersMappings = handlerList;
 		this.router = new Router(this.requestHandlersMappings);
 	}
 
 	/**
+	 * @public
+	 * @param {NullCache} cacheModule
+	 * @memberOf Server
+	 */
+	setCacheModule(cacheModule) {
+		this.cache = cacheModule;
+	}
+
+	/**
 	 * @private
+	 * @param {Server} server
 	 * @param {http.IncomingMessage} request
 	 * @param {http.ServerResponse} response
 	 * @memberOf Server
 	 */
-	_onRequest(request, response) {
+	_onRequest(server, request, response) {
 		const res = new ResponseWrapper(response);
 
 		if (!config.DevMode) {
 			this.onErrRes = res;
 		}
 
-		this._processRequest(request, res);
+		server._processRequest(server, request, res);
+	}
+
+	_onDomainRun() {
+		logger.info("Starting Server on port: " + this.port);
+		let _this = this;
+
+		switch (this.httpServerToUse) {
+			case "http":
+				http.createServer((request, response) => { _this._onRequest(_this, request, response); }).listen(this.port);
+				break;
+			case "https":
+				https.createServer(this.httpsOptions, (request, response) => { _this._onRequest(_this, request, response); }).listen(this.port);
+				break;
+			case "http2":
+				http2.createServer(this.httpsOptions, (request, response) => { _this._onRequest(_this, request, response); }).listen(this.port);
+				break;
+		}
 	}
 
 	/**
 	 * @private
+	 * @param {Server} server
 	 * @param {Error} error
 	 * @memberOf Server
 	 */
-	_onError(error) {
+	_onError(server, error) {
 		logger.error("Internal Server Error", error);
 
 		if (!config.DevMode) {
-			this.onErrRes.setResponseCode(500);
-			this.onErrRes.setContent("");
-			this.onErrRes = new ResponseCodeMessage(this.onErrRes).prepareAndGetResponse(true);
-			this.onErrRes.send();
+			server.onErrRes.setResponseCode(500);
+			server.onErrRes.setContent("");
+			server.onErrRes = new ResponseCodeMessage(server.onErrRes).prepareAndGetResponse(true);
+			server.onErrRes.send();
 		}
 
 		process.exit(1);
@@ -135,12 +149,13 @@ class Server {
 	// TODO give the return value more meaning / sense or remove it
 	/**
 	 * @private
+	 * @param {Server} server
 	 * @param {http.ClientRequest} request
 	 * @param {ResponseWrapper} response
 	 * @returns {boolean} whether the requested content could be send or not
 	 * @memberOf Server
 	 */
-	_processRequest(request, response) {
+	_processRequest(server, request, response) {
 		const queryPath = url.parse(request.url).path;
 		const queryString = url.parse(request.url).query;
 
@@ -148,7 +163,7 @@ class Server {
 			logger.info("process_request: " + request.url);
 		}
 
-		if (!this.router.routeExists(queryPath)) {
+		if (!server.router.routeExists(queryPath)) {
 			if (config.DevMode) {
 				logger.info("404: " + (queryPath === undefined ? "undefined" : queryPath));
 			}
@@ -159,7 +174,7 @@ class Server {
 			return false;
 		}
 
-		if (this.router.getRoute(queryPath).handler === this.requestHandler.get("Static") && (request.headers["cache-control"] !== "no-cache")) {
+		if (server.router.getRoute(queryPath).handler === server.requestHandler.get("Static") && (request.headers["cache-control"] !== "no-cache")) {
 			/** @type {string} */
 			const filePath = Helper.replaceAll("/", Helper.GetFsDelimiter(), config.staticContentPath);
 
@@ -192,8 +207,8 @@ class Server {
 			}
 		}
 
-		const cacheLastModified = this.cache.getLastModified(request);
-		const cacheHasRequest = this.cache.has(request);
+		const cacheLastModified = server.cache.getLastModified(request);
+		const cacheHasRequest = server.cache.has(request);
 
 		if (cacheHasRequest && request.headers["if-modified-since"] === cacheLastModified) {
 			response.setResponseCode(304);
@@ -201,14 +216,14 @@ class Server {
 			response.send();
 		} else {
 			const deliverCache = !(config.HandleClientCacheControl && request.headers["cache-control"] === "no-cache");
-			const writeCache = this.router.routeGetCacheEnabled(queryPath);
+			const writeCache = server.router.routeGetCacheEnabled(queryPath);
 
 			if (deliverCache && cacheHasRequest) {
-				this.cache.send(request, response);
+				server.cache.send(request, response);
 				return false;
 			}
 
-			let data = this.router.route(queryPath, request);
+			let data = server.router.route(queryPath, request);
 
 			if (request.method === "POST") {
 				let body = "";
@@ -231,10 +246,10 @@ class Server {
 
 				request.on("end", () => {
 					// after reading the http POST body, call the callback function "data()" returned from the request handler
-					this._sendData(data(body, request), request, response, writeCache);
+					server._sendData(data(server.router.getRoute(queryPath).handler, body, request), request, response, writeCache);
 				});
 			} else if (request.method === "GET") {
-				if (!this._sendData(data, request, response, writeCache)) {
+				if (!server._sendData(data, request, response, writeCache)) {
 					return false;
 				}
 			} else {

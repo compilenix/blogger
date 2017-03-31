@@ -1,135 +1,178 @@
-global.cluster = require("cluster");
-var fs = require("fs");
+require("use-strict");
+const cluster = require("cluster");
+const fs = require("fs");
+const logger = require("./lib/Logger.js");
+const Router = require("./lib/Router.js");
+const Server = require("./Server.js");
+const RequestHandler = require("./lib/RequestHandler.js");
+const NullCache = require("./lib/cache/NullCache.js");
+const FsCache = require("./lib/cache/FsCache.js");
+const MemCache = require("./lib/cache/MemCache.js");
 
-var ConfigFile = undefined;
-const ConfigDefaultFile = "./Config.js.example";
-if (fs.existsSync("./Config.js")) {
-	ConfigFile = "./Config.js";
-} else {
-	ConfigFile = ConfigDefaultFile;
-}
+/** @type {Config} */
+let config = require("./Config.js");
 
-global.Config = require(ConfigFile).Config;
-global.ConfigDefault = require(ConfigDefaultFile).Config;
-
-process.argv.forEach(function (val, index, array) {
+process.argv.forEach(function (val, index) {
 	switch (val) {
 		case "config":
-			console.log("Loading config from command line!");
-			console.log(process.argv[index + 1]);
-			Config = JSON.parse(process.argv[index + 1]);
+			logger.info("Loading config from command line!");
+			logger.info(process.argv[index + 1]);
+			config = JSON.parse(process.argv[index + 1]);
 			break;
 	}
 });
 
-if (Config.DevMode) {
-	Config.HeaderExpires = 0;
-	Config.ClearCacheOnStart = true;
+if (config.DevMode) {
+	config.HeaderExpires = 0;
+	config.ClearCacheOnStart = true;
 }
 
-if (!fs.existsSync(Config.post.DirectoryPosts)) {
-	console.error("Posts-Directory is non-existing! creating new empty directory");
+if (!fs.existsSync(config.post.DirectoryPosts)) {
+	logger.error("Posts-Directory is non-existing! creating new empty directory");
 	try {
-		fs.mkdirSync(Config.post.DirectoryPosts);
+		fs.mkdirSync(config.post.DirectoryPosts);
 	} catch (error) {
-		console.error("Posts-Directory couldn't be created, see following error");
-		console.error(error);
+		logger.error("Posts-Directory couldn't be created, see following error", error);
 		process.exit(1);
 	}
 }
 
-global.ResponseWrapper = require("./lib/responseWrapper.js").ResponseWrapper;
-global.ResponseCodeMessage = require("./lib/responseCodeMessage.js");
-global.Helper = require("./lib/helper.js");
-global.router = require("./lib/router.js");
-global.server = require("./server.js");
-global.requestHandlers = require("./lib/requestHandlers.js");
+let server = new Server();
+let cache = new NullCache();
 
-global.handle = [];
-function Init() {
-	handle.push({ match: /(^\/static\/?.+$)|(\/favicon.ico)/, callback: requestHandlers.Static, cache: false });
-	handle.push({ match: /^\/post\/?.+$/, callback: requestHandlers.Post, cache: true });
-	handle.push({ match: /^\/ajax\/?.+$/, callback: requestHandlers.Ajax, cache: false });
-	handle.push({ match: /^\/rss$|^\/rss.xml$/, callback: requestHandlers.RSS, cache: true });
-	handle.push({ match: /^\/edit$|^\/edit\/$/, callback: requestHandlers.Edit, cache: false });
-	handle.push({ match: /^\/code\/?.+$/, callback: requestHandlers.Code, cache: false });
-	handle.push({ match: /^\/page\/?.+$/, callback: requestHandlers.Page, cache: true });
-	handle.push({ match: /^(\/find\/?.+)|(\/search\/?.+)|(\/\?q=)|(\/\?search=)$/, callback: requestHandlers.Find, cache: true });
-	handle.push({ match: /^\/$/, callback: requestHandlers.Index, cache: true });
-
-	server.Start(router.Route);
-}
-
-require("./lib/cache/NullCache.js");
-require("./lib/cache/FsCache.js");
-require("./lib/cache/MemCache.js");
-
-switch (Config.cache) {
+// TODO move cache from each worker to master
+switch (config.cache) {
 	case "FsCache":
 		if (cluster.isMaster) {
-			console.log("using FsCache module for caching");
+			logger.info("using FsCache module for caching");
 		}
-		global.Cache = new FsCache();
+		cache = new FsCache();
 		break;
 	case "MemCache":
 		if (cluster.isMaster) {
-			console.log("using MemCache module for caching");
+			logger.info("using MemCache module for caching");
 		}
-		global.Cache = new MemCache();
+		cache = new MemCache();
 		break;
-	case "none":
 	default:
 		if (cluster.isMaster) {
-			console.log("using no cache");
+			logger.info("using no cache");
 		}
-		global.Cache = new NullCache();
 		break;
 }
 
-if (Config.Version && Config.Version !== ConfigDefault.Version) {
-	console.log("Config version difference detected (reference was \"" + ConfigDefaultFile + "\") -> clearing cache...");
-	Cache.clear();
-	console.log("Please update your Config.js!");
-	process.exit(1);
+let requestHandler = new RequestHandler();
+let handle = [];
+
+function StartServer() {
+	handle.push({
+		match: /(^\/static\/?.+$)|(\/favicon\.ico)|(\/worker-html\.js)/,
+		callback: requestHandler.get("Static"),
+		cache: false
+	});
+	handle.push({
+		match: /^\/post\/?.+$/,
+		callback: requestHandler.get("Post"),
+		cache: true
+	});
+	handle.push({
+		match: /^\/ajax\/?.+$/,
+		callback: requestHandler.get("Ajax"),
+		cache: false
+	});
+	handle.push({
+		match: /^\/rss$|^\/rss.xml$/,
+		callback: requestHandler.get("RSS"),
+		cache: true
+	});
+	handle.push({
+		match: /^\/edit$|^\/edit\/$/,
+		callback: requestHandler.get("Edit"),
+		cache: false
+	});
+	handle.push({
+		match: /^\/code\/?.+$/,
+		callback: requestHandler.get("Code"),
+		cache: false
+	});
+	handle.push({
+		match: /^\/page\/?.+$/,
+		callback: requestHandler.get("Page"),
+		cache: true
+	});
+	handle.push({
+		match: /^(\/find\/?.+)|(\/search\/?.+)|(\/\?q=)|(\/\?search=)$/,
+		callback: requestHandler.get("Find"),
+		cache: true
+	});
+	handle.push({
+		match: /^\/$/,
+		callback: requestHandler.get("Index"),
+		cache: true
+	});
+
+	if (!fs.existsSync(config.templatePath)) {
+		logger.error("template-Directory is non-existing! creating new empty directory");
+
+		try {
+			fs.mkdirSync(config.templatePath);
+		} catch (error) {
+			logger.error("template-Directory couldn't be created, see following error", error);
+			process.exit(1);
+		}
+	}
+
+	server.setCacheModule(cache);
+	server.setRouter(new Router());
+	server.Start();
 }
 
-if (Config.DevMode) {
-	if (Cache && Config.ClearCacheOnStart) {
-		Cache.clear();
+// TODO config.Version !== ConfigDefault.Version
+// if (config.Version && config.Version !== ConfigDefault.Version) {
+// 	logger.info("Config version difference detected (reference was \"" + configDefaultFile + "\") -> clearing cache...");
+// 	Cache.clear();
+// 	logger.info("Please update your Config.js!");
+// 	process.exit(1);
+// }
+
+if (config.DevMode) {
+	if (cache && config.ClearCacheOnStart) {
+		cache.clear();
 	}
-	Init();
+
+	StartServer();
 } else {
 	if (cluster.isMaster) {
-		console.log("platform: " + process.platform);
-		console.log("architecture: " + process.arch);
-		console.log("versions: " + JSON.stringify(process.versions));
-		console.log("command line arguments: " + process.argv);
+		logger.info("platform: " + process.platform);
+		logger.info("architecture: " + process.arch);
+		logger.info("versions: " + JSON.stringify(process.versions));
+		logger.info("command line arguments: " + process.argv);
 
-		if (Cache && Config.ClearCacheOnStart) {
-			Cache.clear();
+		if (cache && config.ClearCacheOnStart) {
+			cache.clear();
 		}
 
-		if (Config.threads <= 1) {
-			Config.threads = 1;
+		if (config.threads <= 1) {
+			config.threads = 1;
 		}
 
-		for (var i = Config.threads; i > 0; i--) {
+		for (let i = config.threads; i > 0; i--) {
 			cluster.fork();
 		}
 
 		cluster.on("fork", function (worker) {
-			console.log("worker #%d forked. (pid %d)", worker.id, worker.process.pid);
+			logger.info("worker #%d forked. (pid %d)", worker.id, worker.process.pid);
 		});
 
 		cluster.on("disconnect", function (worker) {
-			console.log("worker #%d (pid %d) disconnected.", worker.id, worker.process.pid);
+			logger.info("worker #%d (pid %d) disconnected.", worker.id, worker.process.pid);
 		});
 
 		cluster.on("exit", function (worker, code, signal) {
-			console.log("worker #%d (pid %d) died (returned code %s; signal %s). restarting...", worker.id, worker.process.pid, code || "undefined", signal || "undefined");
+			logger.info("worker #%d (pid %d) died (returned code %s; signal %s). restarting...", worker.id, worker.process.pid, code || "undefined", signal || "undefined");
 			cluster.fork();
 		});
 	} else if (cluster.isWorker) {
-		Init();
+		StartServer();
 	}
 }

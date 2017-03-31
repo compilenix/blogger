@@ -1,31 +1,84 @@
 <!DOCTYPE html>
 <head>
 	<meta charset="UTF-8"/>
-	<meta name="author" content="{{Author}}"/>
+	<meta name="author" content="{{{author}}}"/>
 	<meta name="viewport" content="width=device-width, initial-scale=1">
-	<script type="text/javascript" src="{{StaticContent_jquery.js}}"></script>
-	<script type="text/javascript" src="{{StaticContent_ace.js}}"></script>
-	<script type="text/javascript" src="{{StaticContent_worker-html.js}}"></script>
-	<script type="text/javascript" src="{{StaticContent_mode-html.js}}"></script>
-	<script type="text/javascript" src="{{StaticContent_theme-monokai.js}}"></script>
-	<script type="text/javascript" src="{{StaticContent_sweetalert.min.js}}"></script>
-	<link type="text/css" rel="stylesheet" href="{{StaticContent_sweetalert.css}}">
+	<script type="text/javascript" src="{{{path.staticContentUri}}}jquery.js"></script>
+	<script type="text/javascript" src="{{{path.staticContentUri}}}ace.js"></script>
+	<script type="text/javascript" src="{{{path.staticContentUri}}}worker-html.js"></script>
+	<script type="text/javascript" src="{{{path.staticContentUri}}}mode-html.js"></script>
+	<script type="text/javascript" src="{{{path.staticContentUri}}}theme-monokai.js"></script>
+	<script type="text/javascript" src="{{{path.staticContentUri}}}sweetalert.min.js"></script>
+	<link type="text/css" rel="stylesheet" href="{{{path.staticContentUri}}}sweetalert.css">
 
-	<title>{{Title}}</title>
+	<title>{{{title}}}</title>
 
 	<style>
 		@font-face {
 			font-family: Ubuntu;
-			src: url("{{StaticContent_Ubuntu-R}}") format("truetype");
+			src: url("{{{path.staticContentUri}}}Ubuntu-R.ttf") format("truetype");
 		}
 
 		@font-face {
 			font-family: Ubuntu;
 			font-weight: bold;
-			src: url("{{StaticContent_Ubuntu-B}}") format("truetype");
+			src: url("{{{path.staticContentUri}}}Ubuntu-B.ttf") format("truetype");
 		}
 
-		a { text-decoration: none; }
+		@font-face{
+			font-family: 'Source Code Pro';
+			font-weight: 400;
+			font-style: normal;
+			font-stretch: normal;
+			src: url("{{{path.staticContentUri}}}SourceCodePro-Regular.eot") format('embedded-opentype'),
+				url("{{{path.staticContentUri}}}SourceCodePro-Regular.ttf.woff2") format('woff2'),
+				url("{{{path.staticContentUri}}}SourceCodePro-Regular.otf.woff") format('woff'),
+				url("{{{path.staticContentUri}}}SourceCodePro-Regular.otf") format('opentype'),
+				url("{{{path.staticContentUri}}}SourceCodePro-Regular.ttf") format('truetype');
+		}
+
+		@font-face{
+			font-family: 'Source Code Pro';
+			font-weight: 400;
+			font-style: italic;
+			font-stretch: normal;
+			src: url("{{path.staticContentUri}}SourceCodePro-It.eot") format('embedded-opentype'),
+				url("{{{path.staticContentUri}}}SourceCodePro-It.ttf.woff2") format('woff2'),
+				url("{{{path.staticContentUri}}}SourceCodePro-It.otf.woff'") format('woff'),
+				url("{{{path.staticContentUri}}}SourceCodePro-It.otf") format('opentype'),
+				url("{{{path.staticContentUri}}}SourceCodePro-It.ttf") format('truetype');
+		}
+
+		@font-face{
+			font-family: 'Source Code Pro';
+			font-weight: 700;
+			font-style: normal;
+			font-stretch: normal;
+			src: url("{{{path.staticContentUri}}}SourceCodePro-Bold.eot") format('embedded-opentype'),
+				url("{{{path.staticContentUri}}}SourceCodePro-Bold.ttf.woff2") format('woff2'),
+				url("{{{path.staticContentUri}}}SourceCodePro-Bold.otf.woff") format('woff'),
+				url("{{{path.staticContentUri}}}SourceCodePro-Bold.otf") format('opentype'),
+				url("{{{path.staticContentUri}}}SourceCodePro-Bold.ttf") format('truetype');
+		}
+
+		@font-face{
+			font-family: 'Source Code Pro';
+			font-weight: 700;
+			font-style: italic;
+			font-stretch: normal;
+			src: url("{{{path.staticContentUri}}}SourceCodePro-BoldIt.eot") format('embedded-opentype'),
+				url("{{{path.staticContentUri}}}SourceCodePro-BoldIt.ttf.woff2") format('woff2'),
+				url("{{{path.staticContentUri}}}SourceCodePro-BoldIt.otf.woff") format('woff'),
+				url("{{{path.staticContentUri}}}SourceCodePro-BoldIt.otf") format('opentype'),
+				url("{{{path.staticContentUri}}}SourceCodePro-BoldIt.ttf") format('truetype');
+		}
+
+		a {
+			-webkit-transition: 200ms;
+			-o-transition: 200ms;
+			transition: 200ms;
+			text-decoration: none;
+		}
 
 		a:hover, a:focus { color: #0AF; }
 
@@ -44,8 +97,12 @@
 		}
 
 		#menu {
-			font-family: Ubuntu, Tahoma, Verdana, sans-serif, serif;
+			-webkit-transition: 200ms;
+			-o-transition: 200ms;
+			transition: 200ms;
+			font-family: "Ubuntu", "Helvetica", "Helvetica Neue", "Helvetica World", sans-serif;
 			font-size: 1em;
+			font: 1em "Ubuntu", "Helvetica", "Helvetica Neue", "Helvetica World", sans-serif;
 			height: 30px;
 			left: 0;
 			line-height: 1.2em;
@@ -53,10 +110,6 @@
 			position: absolute;
 			right: 0;
 			top: 0;
-		}
-
-		#menu * {
-			cursor: pointer;
 		}
 
 		#menu .button {
@@ -69,9 +122,13 @@
 		}
 
 		#tabs {
-			background-color: #161713;
-			font-family: Ubuntu, Tahoma, Verdana, sans-serif, serif;
+			-webkit-transition: 200ms;
+			-o-transition: 200ms;
+			transition: 200ms;
+			font-family: "Ubuntu", "Helvetica", "Helvetica Neue", "Helvetica World", sans-serif;
 			font-size: 1em;
+			font: 1em "Ubuntu", "Helvetica", "Helvetica Neue", "Helvetica World", sans-serif;
+			background-color: #161713;
 			left: 20%;
 			line-height: 1.2em;
 			position: absolute;
@@ -82,7 +139,7 @@
 		}
 
 		#tabs > div {
-			background-image: url("{{StaticContent_inactivel.png}}"), url("{{StaticContent_inactiver.png}}");
+			background-image: url("{{{path.staticContentUri}}}inactivel.png"), url("{{{path.staticContentUri}}}inactiver.png");
 			background-position: left, right;
 			background-repeat: no-repeat, no-repeat;
 			color: #c1c1bf;
@@ -99,13 +156,13 @@
 		}
 
 		#tabs > div > div {
-			background-image: url("{{StaticContent_inactivec.png}}");
+			background-image: url("{{{path.staticContentUri}}}inactivec.png");
 			background-repeat: repeat-x;
 			height: 31px;
 		}
 
 		#tabs > div.active > div {
-			background-image: url("{{StaticContent_activec.png}}");
+			background-image: url("{{{path.staticContentUri}}}activec.png");
 			background-repeat: repeat-x;
 		}
 
@@ -116,31 +173,34 @@
 		}
 
 		#tabs div.button {
-			background-image: url("{{StaticContent_inactiveclose.png}}");
+			background-image: url("{{{path.staticContentUri}}}inactiveclose.png");
+			background-repeat: no-repeat;
 			height: 13px;
 			position: absolute;
 			right: 0px;
 			top: 8px;
 			width: 13px;
 		}
-		#tabs div.button:hover { background-image: url("{{StaticContent_activeclose.png}}"); }
-		#tabs div.button:focus { background-image: url("{{StaticContent_activeclose.png}}"); }
 
-		#tabs > div.active div.button { background-image: url("{{StaticContent_inactiveclose.png}}"); }
-		#tabs > div.active div.button:hover { background-image: url("{{StaticContent_activeclose.png}}"); }
-		#tabs > div.active div.button:focus { background-image: url("{{StaticContent_activeclose.png}}"); }
+		#tabs div.button:hover { background-image: url("{{{path.staticContentUri}}}activeclose.png"); }
+		#tabs div.button:focus { background-image: url("{{{path.staticContentUri}}}activeclose.png"); }
+
+		#tabs > div.active div.button { background-image: url("{{{path.staticContentUri}}}inactiveclose.png"); }
+		#tabs > div.active div.button:hover { background-image: url("{{{path.staticContentUri}}}activeclose.png"); }
+		#tabs > div.active div.button:focus { background-image: url("{{{path.staticContentUri}}}activeclose.png"); }
 
 		#tabs > div.changed { color: #ffa035; }
 
 		#tabs > div.active {
-			background-image: url("{{StaticContent_activel.png}}"), url("{{StaticContent_activer.png}}");
+			background-image: url("{{{path.staticContentUri}}}activel.png"), url("{{{path.staticContentUri}}}activer.png");
 			z-index: 2;
 		}
 
 		#edit {
-			bottom: 0;
-			font-family: Lucida, Consolas, Courier, Verdana;
+			font-family: "Source Code Pro", Lucida, "Consolas", Courier, Monospace;
 			font-size: 1em;
+			font: 1em "Source Code Pro", Lucida, "Consolas", Courier, Monospace;
+			bottom: 0;
 			left: 20%;
 			line-height: 1.2em;
 			position: absolute;
@@ -149,14 +209,18 @@
 		}
 
 		#postlist {
+			-webkit-transition: 200ms;
+			-o-transition: 200ms;
+			transition: 200ms;
+			font-family: "Ubuntu", "Helvetica", "Helvetica Neue", "Helvetica World", sans-serif;
+			font-size: 1em;
+			font: 1em "Ubuntu", "Helvetica", "Helvetica Neue", "Helvetica World", sans-serif;
 			background-color: #e6e6e6;
 			overflow-x: hidden;
 			overflow-y: overlay;
 			white-space: nowrap;
 			bottom: 0;
 			cursor: default;
-			font-family: Ubuntu, Tahoma, Verdana, sans-serif, serif;
-			font-size: 1em;
 			left: 0;
 			line-height: 1.2em;
 			position: absolute;
@@ -170,7 +234,7 @@
 		}
 
 		#postlist li {
-			background-image: url("{{StaticContent_doc.png}}");
+			background-image: url("{{{path.staticContentUri}}}doc.png");
 			background-position: left center;
 			background-repeat: no-repeat;
 			margin: 4px;
@@ -179,35 +243,28 @@
 
 		#postlist li:hover { background-color: #bfbfbf; }
 		#postlist li:focus { background-color: #bfbfbf; }
+		.btn, .button.responsive { display: none; }
 
-		.btn, .button.posts {
-			display:none;
-		}
-
-		@media  (max-width : 1000px) {
-			#postlist {
-				width: 200px;
-			}
+		@media (max-width: 1000px) {
+			#postlist { width: 200px; }
 
 			#tabs, #edit {
 				left: 200px;
-				min-width:320px;
+				min-width: 320px;
 			}
 		}
 
-		@media  (max-width : 600px) {
-
-			.button.posts {
-				display:initial;
-			}
+		@media (max-width: 600px) {
+			.button.responsive { display: initial; }
 
 			#postlist {
 				width: 200px;
-				left:-200px;
+				left: -200px;
 			}
+
 			#postlist.active {
-				width: 200%;
-				left:0;
+				width: 100%;
+				left: 0;
 				z-index: 5;
 			}
 
@@ -217,17 +274,12 @@
 				padding: 8px 0 0px 20px;
 			}
 
-			#tabs, #edit {
-				left: 0;
-			}
-
-			#edit {
-				top:75px;
-			}
+			#tabs, #edit { left: 0; }
+			#edit { top: 75px; }
 
 			#tabs > div {
 				display: none;
-				width:280px;
+				width: 280px;
 				box-sizing: border-box;
 				margin: auto calc(50% - 140px);
 				background: none;
@@ -235,56 +287,48 @@
 				text-align: center;
 			}
 
-			#tabs > div > div {
-				background: none);
-			}
-
-			#tabs > div.active > div {
-				background: none;
-			}
+			#tabs > div > div { background: none); }
+			#tabs > div.active > div { background: none; }
 
 			#tabs > div.active {
 				background: none;
-				display:block;
+				display: block;
 			}
 
 			#tabs div.button {
-
 				display: inline-block;
 				margin-left: 10px;
 				position: relative;
 
 				width: 24px;
-				height:24px;
+				height: 24px;
 				background-size: 24px;
 			}
 
 			.btn {
-				display:block;
-				position:absolute;
+				display: block;
+				position: absolute;
 				background-color: red;
 				width: 45px;
-				height:45px;
+				height: 45px;
 			}
 
 			.buttonLeft {
-				left:0;
-				background: url("/static/?f=arrow_left.png") no-repeat center center;
+				left: 0;
+				background: url("{{{path.staticContentUri}}}arrow_left.png") no-repeat center center;
 			}
 
 			.buttonRight {
-				right:0;
-				background: url("/static/?f=arrow_right.png") no-repeat center center;
+				right: 0;
+				background: url("{{{path.staticContentUri}}}arrow_right.png") no-repeat center center;
 			}
-
-
-		}
 	</style>
 </head>
 
-<body>
+<body onresize="e.calculateEditorOffsetTop();">
 <div id="menu">
-	<label class="button posts" onclick="jQuery('#postlist').toggleClass('active');">Posts</label>
+	<label class="button responsive" onclick="$('#postlist').toggleClass('active');">Posts</label>
+	<label class="button responsive" onclick="e.closeTab($($('#tabs div.active')[0]).attr('data-postid'));">Close</label>
 	<label class="button" onclick="e.emptyTab();">New</label>
 	<label class="button" onclick="e.remove();">Remove</label>
 	<label class="button" onclick="e.preview();">Preview</label>
@@ -296,8 +340,6 @@
 </div>
 <div id="edit"></div>
 <script type="text/javascript">
-	"use strict";
-
 	var skey = 83;
 	var vkey = 86;
 	var nkey = 78;
@@ -307,6 +349,7 @@
 		this.postlistContainer = document.getElementById('postlist');
 		this.editorContainer = document.getElementById('edit');
 		this.tabsContainer = document.getElementById('tabs');
+		this.menu = document.getElementById('menu');
 		this.ace = ace.edit("edit");
 		this.ace.setTheme("ace/theme/monokai");
 		this.ace.getSession().setMode("ace/mode/html");
@@ -331,6 +374,7 @@
 				e.sessions['default'].setValue('');
 			}
 		});
+
 		document.addEventListener('keydown', function(event) {
 			switch (event.keyCode) {
 				case skey:
@@ -367,7 +411,7 @@
 
 
 	editor.prototype.request = function(post, callback) {
-		jQuery.post('/ajax/', post, function(data) {
+		$.post('/ajax/', post, function(data) {
 			e.handleResponse(data);
 
 			if (typeof callback === "function") {
@@ -381,6 +425,7 @@
 			}
 		});
 	};
+
 	editor.prototype.handleResponse = function(data) {
 		if (data.type) {
 			switch (data.type) {
@@ -404,6 +449,7 @@
 			}
 		}
 	};
+
 	editor.prototype.askForKey = function(callback) {
 		swal(
 			{
@@ -422,43 +468,54 @@
 			}
 		);
 	};
+
 	editor.prototype.loadApiKey = function() {
 		return localStorage.ApiKey;
 	};
+
 	editor.prototype.storeApiKey = function(ApiKey) {
 		localStorage.setItem('ApiKey', ApiKey);
 	};
+
 	editor.prototype.loadPost = function(data) {
 		console.log("show post: " + data.title + " (" + data.id + ")");
 		this.newSession(data.id, data.content.contents, false, data.title);
 	};
+
 	editor.prototype.postSaved = function(id) {
 		$(this.tabsContainer).find('div[data-postid=' + id + ']').removeClass('changed');
 		this.requestPostlist();
 		this.closeTab(id);
 		this.showPost(id);
 	};
+
 	editor.prototype.updatePostList = function(data) {
 		const ul = document.createElement('ul');
+
 		for (let i = 0; i < data.list.length; i++) {
 			const li = document.createElement('li');
 			li.appendChild(document.createTextNode(data.titles[i]));
 			li.setAttribute('data-postid', data.list[i]);
-			jQuery(li).on('click', function(ev) {
+
+			$(li).on('click', function(ev) {
+				$("#postlist").removeClass("active");
 				e.showPost(this.getAttribute('data-postid'));
-				jQuery("#postlist").removeClass("active");
 			});
+
 			ul.appendChild(li);
 		}
+
 		this.postlistContainer.innerHTML = '';
 		this.postlistContainer.appendChild(ul);
 	};
+
 	editor.prototype.requestPostlist = function() {
 		this.request({
 			ApiKey: this.ApiKey,
 			action: 'postlist'
 		});
 	};
+
 	editor.prototype.requestPost = function(id) {
 		this.request({
 			ApiKey: this.ApiKey,
@@ -466,6 +523,7 @@
 			action: 'getpost'
 		});
 	};
+
 	editor.prototype.requestSavePost = function(id, title, content, callback) {
 		this.request({
 			ApiKey: this.ApiKey,
@@ -475,8 +533,8 @@
 			action: 'writepost'
 		}, callback);
 	};
-	editor.prototype.save = function(id) {
 
+	editor.prototype.save = function(id) {
 		if (!id) {
 			swal("Error!", "No tab/file selected for saving", "error");
 			return false;
@@ -519,6 +577,7 @@
 
 		return true;
 	};
+
 	editor.prototype.showPost = function(id) {
 		if (this.hasSession(id)) {
 			this.openSession(id);
@@ -526,10 +585,12 @@
 			this.requestPost(id);
 		}
 	};
+
 	editor.prototype.emptyTab = function() {
 		const name = Math.floor(new Date().getTime() / 1000).toString(16);
 		e.newSession(name, '', true);
 	};
+
 	editor.prototype.remove = function() {
 		let postId = $('#tabs div.active').attr("data-postid");
 		let postTitle = $('#tabs div.active').attr("data-posttitle");
@@ -569,38 +630,46 @@
 				}
 			}
 		);
-	};
+	}
+
 	editor.prototype.postRemoved = function(id) {
 		this.closeTab(id);
 		this.requestPostlist();
 	};
+
 	editor.prototype.addTab = function(id, isnew, title) {
 		const tab = document.createElement('div');
 		const inner = document.createElement('div');
 		const wrapper = document.createElement('div');
 		const closebutton = document.createElement('div');
+
 		closebutton.setAttribute('data-postid', id);
 		$(closebutton).addClass('button');
 		$(wrapper).addClass('wrapper');
 		tab.setAttribute('data-postid', id);
 		tab.setAttribute('data-posttitle', isnew ? id + ' (new Post)' : title);
-		jQuery(tab).on('click', function(ev) {
+
+		$(tab).on('click', function(ev) {
 			ev.preventDefault();
 			e.openSession(this.getAttribute('data-postid'));
 			return false;
 		});
-		jQuery(closebutton).on('click', function(ev) {
+
+		$(closebutton).on('click', function(ev) {
 			ev.preventDefault();
 			e.closeTab(this.getAttribute('data-postid'));
 			return false;
 		});
+
 		wrapper.appendChild(document.createTextNode(isnew ? id + ' (new Post)' : title));
 		wrapper.appendChild(closebutton);
 		inner.appendChild(wrapper);
 		tab.appendChild(inner);
 		this.tabsContainer.appendChild(tab);
+
 		return tab;
 	};
+
 	editor.prototype.closeTab = function(id) {
 		let postTitle = $('#tabs div.active').attr("data-posttitle");
 
@@ -623,9 +692,11 @@
 			this.ace.focus();
 			this.emptyTab();
 		}
+
 		$(this.tabsContainer).find('div[data-postid=' + id + ']').remove();
 		this.sessions[id] = false;
-		this.editorContainer.style.top = this.tabsContainer.offsetHeight + parseInt(window.getComputedStyle(this.tabsContainer).getPropertyValue("top").replace("px", "")) + "px";
+
+		this.calculateEditorOffsetTop();
 	};
 
 	editor.prototype.activeTabId = function() {
@@ -638,6 +709,7 @@
 
 	editor.prototype.prevTabId = function() {
 		var p = $(this.tabsContainer).find('div[data-postid=' + this.activeTabId() + ']')[0].previousSibling;
+
 		if (p && p.getAttribute && p.getAttribute("data-postid")) {
 			return p.getAttribute("data-postid");
 		} else {
@@ -647,6 +719,7 @@
 
 	editor.prototype.nextTabId = function() {
 		var n = $(this.tabsContainer).find('div[data-postid=' + this.activeTabId() + ']')[0].nextSibling;
+
 		if (n && n.getAttribute && n.getAttribute("data-postid")) {
 			return n.getAttribute("data-postid");
 		} else {
@@ -672,25 +745,22 @@
 		return (p && p.getAttribute && p.getAttribute('data-postid'));
 	};
 
-
 	editor.prototype.hasNextTab = function(id) {
 		id = id || this.activeTabId();
 		var n = $(this.tabsContainer).find('div[data-postid=' + id + ']')[0].nextSibling;
 		return (n && n.getAttribute && n.getAttribute('data-postid'));
 	};
 
-
-
 	editor.prototype.updateTabButtons = function() {
 		if (this.hasNextTab()) {
-			jQuery(".buttonRight").show();
+			$(".buttonRight").show();
 		} else {
-			jQuery(".buttonRight").hide();
+			$(".buttonRight").hide();
 		}
 		if (this.hasPrevTab()) {
-			jQuery(".buttonLeft").show();
+			$(".buttonLeft").show();
 		} else {
-			jQuery(".buttonLeft").hide();
+			$(".buttonLeft").hide();
 		}
 	};
 
@@ -698,27 +768,42 @@
 		$('#tabs div').removeClass('active');
 		$(this.tabsContainer).find('div[data-postid=' + id + ']').addClass('active');
 	};
+
 	editor.prototype.hasSession = function(id) {
 		return this.sessions[id];
 	};
+
 	editor.prototype.newSession = function(id, content, isnew, title) {
 		var tab = this.addTab(id, isnew, title);
 		this.sessions[id] = ace.createEditSession(content || '', "ace/mode/html");
+
 		this.sessions[id].on('change', function(e) {
 			$(tab).addClass('changed');
 		});
+
 		if (isnew && content !== "") {
 			$(tab).addClass('changed');
 		}
+
 		this.openSession(id);
+		this.calculateEditorOffsetTop();
+	};
+
+	editor.prototype.calculateEditorOffsetTop = function() {
+		if (window.innerWidth <= 600) {
+			this.editorContainer.style.top = this.tabsContainer.offsetHeight + parseInt(window.getComputedStyle(this.menu).getPropertyValue("height").replace("px", "")) + "px";
+			return
+		}
 		this.editorContainer.style.top = this.tabsContainer.offsetHeight + parseInt(window.getComputedStyle(this.tabsContainer).getPropertyValue("top").replace("px", "")) + "px";
 	};
+
 	editor.prototype.openSession = function(id) {
 		this.activateTab(id);
 		this.ace.setSession(this.sessions[id]);
 		this.ace.focus();
 		this.updateTabButtons();
 	};
+
 	editor.prototype.preview = function() {
 		$.post("/ajax/", { ApiKey: e.ApiKey, action: "previewpost", content: JSON.stringify(this.sessions[$($('#tabs div.active')[0]).attr('data-postid')].getValue()), title: $($('#tabs div.active')[0]).attr('data-posttitle') },
 			function(data) {
@@ -729,6 +814,7 @@
 			}
 		);
 	};
+
 	window.e = new editor();
 	e.emptyTab();
 </script>

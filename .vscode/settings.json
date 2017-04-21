@@ -1,12 +1,10 @@
 // Place your settings in this file to overwrite default and user settings.
 {
-	"editor.fontSize": 16,
 	"editor.tabSize": 4,
 	"editor.useTabStops": true,
 	"editor.insertSpaces": false,
 	"editor.trimAutoWhitespace": true,
-	"editor.formatOnType": false,
-	"editor.folding": false,
+	"editor.formatOnType": true,
 	"files.encoding": "utf8",
 	"files.eol": "\n",
 	"files.trimTrailingWhitespace": true,
@@ -20,5 +18,5 @@
 	// Enable usage data and errors to be sent to Microsoft.
 	"telemetry.enableTelemetry": false,
 	"telemetry.enableCrashReporter": false,
-	"terminal.integrated.fontFamily": "'Source Code Pro', Consolas, \"Droid Sans Mono\", monospace, Menlo, Monaco, \"Courier New\", \"Droid Sans Fallback\""
+	"ecdc.collectTelemetry": false
 }

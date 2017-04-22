@@ -20,7 +20,7 @@ class Config {
 		this.MaxHttpPOSTSize = 5e7; // 50 Megabyte
 		this.HandleClientCacheControl = true;
 		this.DefaultContentType = "text/html";
-		this.ServerVersion = "node.js/" + process.version;
+		this.ServerVersion = `node.js/${process.version}`;
 		this.cache = "FsCache"; // "MemCache" | "FsCache" | "none"
 		this.FileEditor = "editor.html";
 		this.ApiKey = "changeme";

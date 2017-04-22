@@ -142,10 +142,10 @@ if (config.DevMode) {
 	StartServer();
 } else {
 	if (cluster.isMaster) {
-		logger.info("platform: " + process.platform);
-		logger.info("architecture: " + process.arch);
-		logger.info("versions: " + JSON.stringify(process.versions));
-		logger.info("command line arguments: " + process.argv);
+		logger.info(`platform: ${process.platform}`);
+		logger.info(`architecture: ${process.arch}`);
+		logger.info(`versions: ${JSON.stringify(process.versions)}`);
+		logger.info(`command line arguments: ${process.argv}`);
 
 		if (cache && config.ClearCacheOnStart) {
 			cache.clear();

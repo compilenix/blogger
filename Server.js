@@ -160,12 +160,12 @@ class Server {
 		const queryString = url.parse(request.url).query;
 
 		if (config.DevMode) {
-			logger.info("process_request: " + request.url);
+			logger.info(`process_request: ${request.url}`);
 		}
 
 		if (!server.router.routeExists(queryPath)) {
 			if (config.DevMode) {
-				logger.info("404: " + (queryPath === undefined ? "undefined" : queryPath));
+				logger.info(`404: ${(queryPath === undefined ? "undefined" : queryPath)}`);
 			}
 
 			response.setResponseCode(404);
@@ -182,9 +182,9 @@ class Server {
 			let lastModified;
 
 			if (queryPath === "/favicon.ico") {
-				lastModified = new Date(fs.statSync(filePath + Helper.GetFsDelimiter() + "favicon.ico").mtime).toUTCString();
+				lastModified = new Date(fs.statSync(`${filePath}${Helper.GetFsDelimiter()}favicon.ico`).mtime).toUTCString();
 			} else if (queryPath === "/worker-html.js") {
-				lastModified = new Date(fs.statSync(filePath + Helper.GetFsDelimiter() + "worker-html.js").mtime).toUTCString();
+				lastModified = new Date(fs.statSync(`${filePath}${Helper.GetFsDelimiter()}worker-html.js`).mtime).toUTCString();
 			} else {
 				/** @type {string} */
 				const file = filePath + Helper.GetFsDelimiter() + querystring.parse(queryString).f;

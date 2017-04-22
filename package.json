@@ -1,32 +1,34 @@
 {
-  "name": "blogger",
-  "version": "0.2.0",
-  "description": "A simple, minimalistic and high performance blogging web application",
-  "author": "Compilenix <Compilenix@compilenix.org>",
-  "main": "app.js",
-  "scripts": {
-    "start": "node app.js",
-    "test": "node lib/tests/unit_test.js"
-  },
-  "keywords": [
-    "Blog",
-    "minimalistic",
-    "blogging",
-    "performance",
-    "blogger",
-    "compilenix",
-    "simple"
-  ],
-  "dependencies": {
-    "htmlencode": ">= 0.0.4",
-    "http2": "*",
-    "mustache": "*",
-	"use-strict": "*"
-  },
-  "repository": {
-    "type": "git",
-    "url": "https://git.compilenix.org/Compilenix/blogger.git"
-  },
-  "bugs": "https://git.compilenix.org/Compilenix/blogger/issues",
-  "license": "MIT"
+	"name": "blogger",
+	"version": "0.2.0",
+	"description": "A simple, minimalistic and high performance blogging web application",
+	"author": "Compilenix <Compilenix@compilenix.org>",
+	"main": "app.js",
+	"scripts": {
+		"start": "node app.js",
+		"test": "node lib/tests/unit_test.js"
+	},
+	"keywords": [
+		"Blog",
+		"minimalistic",
+		"blogging",
+		"performance",
+		"blogger",
+		"compilenix",
+		"simple"
+	],
+	"dependencies": {
+		"htmlencode": ">= 0.0.4",
+		"http2": "*",
+		"mustache": "*",
+		"use-strict": "*",
+		"html-minifier": "*",
+		"prettify-xml": "*"
+	},
+	"repository": {
+		"type": "git",
+		"url": "https://git.compilenix.org/Compilenix/blogger.git"
+	},
+	"bugs": "https://git.compilenix.org/Compilenix/blogger/issues",
+	"license": "MIT"
 }

@@ -2,7 +2,7 @@ require("use-strict");
 const cluster = require("cluster");
 const fs = require("fs");
 
-const Server = require("./Server.js");
+const Server = require("./lib/Server.js");
 const RequestHandler = require("./lib/RequestHandler.js");
 const NullCache = require("./lib/Cache/NullCache.js");
 const FsCache = require("./lib/Cache/FsCache.js");

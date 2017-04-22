@@ -8,14 +8,14 @@ const NullCache = require("./lib/Cache/NullCache.js");
 const FsCache = require("./lib/Cache/FsCache.js");
 const MemCache = require("./lib/Cache/MemCache.js");
 
-const logger = require("./lib/Logger.js");
+const log = require("./lib/LogHandler.js");
 let config = require("./Config.js");
 
-process.argv.forEach(function (val, index) {
+process.argv.forEach((val, index) => {
 	switch (val) {
 		case "config":
-			logger.info("Loading config from command line!");
-			logger.info(process.argv[index + 1]);
+			log.info("Loading config from command line!");
+			log.info(process.argv[index + 1]);
 			config = JSON.parse(process.argv[index + 1]);
 			break;
 	}
@@ -27,35 +27,36 @@ if (config.DevMode) {
 }
 
 if (!fs.existsSync(config.post.DirectoryPosts)) {
-	logger.error("Posts-Directory is non-existing! creating new empty directory");
+	log.error("Posts-Directory is non-existing! creating new empty directory");
+
 	try {
 		fs.mkdirSync(config.post.DirectoryPosts);
 	} catch (error) {
-		logger.error("Posts-Directory couldn't be created, see following error", error);
+		log.error("Posts-Directory couldn't be created, see following error", error);
 		process.exit(1);
 	}
 }
 
 const server = new Server();
-let cache = new NullCache();
 
 // TODO move cache from each worker to master
+let cache = new NullCache();
 switch (config.cache) {
 	case "FsCache":
 		if (cluster.isMaster) {
-			logger.info("using FsCache module for caching");
+			log.info("using FsCache module for caching");
 		}
 		cache = new FsCache();
 		break;
 	case "MemCache":
 		if (cluster.isMaster) {
-			logger.info("using MemCache module for caching");
+			log.info("using MemCache module for caching");
 		}
 		cache = new MemCache();
 		break;
 	default:
 		if (cluster.isMaster) {
-			logger.info("using no cache");
+			log.info("using no cache");
 		}
 		break;
 }
@@ -111,12 +112,12 @@ function StartServer() {
 	});
 
 	if (!fs.existsSync(config.templatePath)) {
-		logger.error("template-Directory is non-existing! creating new empty directory");
+		log.error("template-Directory is non-existing! creating new empty directory");
 
 		try {
 			fs.mkdirSync(config.templatePath);
 		} catch (error) {
-			logger.error("template-Directory couldn't be created, see following error", error);
+			log.error("template-Directory couldn't be created, see following error", error);
 			process.exit(1);
 		}
 	}
@@ -142,10 +143,10 @@ if (config.DevMode) {
 	StartServer();
 } else {
 	if (cluster.isMaster) {
-		logger.info(`platform: ${process.platform}`);
-		logger.info(`architecture: ${process.arch}`);
-		logger.info(`versions: ${JSON.stringify(process.versions)}`);
-		logger.info(`command line arguments: ${process.argv}`);
+		log.info(`platform: ${process.platform}`);
+		log.info(`architecture: ${process.arch}`);
+		log.info(`versions: ${JSON.stringify(process.versions)}`);
+		log.info(`command line arguments: ${process.argv}`);
 
 		if (cache && config.ClearCacheOnStart) {
 			cache.clear();
@@ -160,15 +161,15 @@ if (config.DevMode) {
 		}
 
 		cluster.on("fork", function (worker) {
-			logger.info("worker #%d forked. (pid %d)", worker.id, worker.process.pid);
+			log.info("worker #%d forked. (pid %d)", worker.id, worker.process.pid);
 		});
 
 		cluster.on("disconnect", function (worker) {
-			logger.info("worker #%d (pid %d) disconnected.", worker.id, worker.process.pid);
+			log.info("worker #%d (pid %d) disconnected.", worker.id, worker.process.pid);
 		});
 
 		cluster.on("exit", function (worker, code, signal) {
-			logger.info("worker #%d (pid %d) died (returned code %s; signal %s). restarting...", worker.id, worker.process.pid, code || "undefined", signal || "undefined");
+			log.info("worker #%d (pid %d) died (returned code %s; signal %s). restarting...", worker.id, worker.process.pid, code || "undefined", signal || "undefined");
 			cluster.fork();
 		});
 	} else if (cluster.isWorker) {

@@ -25,6 +25,17 @@ class Config {
 		this.FileEditor = "editor.html";
 		this.ApiKey = "changeme";
 
+		this.Log = {
+			File: {
+				Enabled: true,
+				Path: "log",
+				FilePerLoglevel: true
+			},
+			Console: {
+				Enabled: true
+			}
+		};
+
 		this.server = {
 			port: 8000
 		};

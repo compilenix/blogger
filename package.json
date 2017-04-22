@@ -5,8 +5,8 @@
 	"author": "Compilenix <Compilenix@compilenix.org>",
 	"main": "app.js",
 	"scripts": {
-		"start": "node app.js",
-		"test": "node lib/tests/unit_test.js"
+		"start": "npm install && node app.js",
+		"test": "npm install && node lib/tests/unit_test.js"
 	},
 	"keywords": [
 		"Blog",
@@ -23,7 +23,8 @@
 		"mustache": "*",
 		"use-strict": "*",
 		"html-minifier": "*",
-		"prettify-xml": "*"
+		"prettify-xml": "*",
+		"manakin": "*"
 	},
 	"repository": {
 		"type": "git",

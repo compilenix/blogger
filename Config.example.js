@@ -26,6 +26,7 @@ class Config {
 		this.ApiKey = "changeme";
 
 		this.Log = {
+			Level: "Info", // "Debug", "Info", "Warn", "Error"
 			File: {
 				Enabled: true,
 				Path: "log",

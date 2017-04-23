@@ -154,7 +154,11 @@
 			for (let i = 0; i < data.list.length; i++) {
 				const li = document.createElement('li');
 				li.appendChild(document.createTextNode(data.titles[i]));
-				li.setAttribute('data-postid', data.list[i]);
+				li.setAttribute('data-postid', data.list[i].id);
+
+				if (data.list[i].isPublished) {
+					li.classList.add("published");;
+				}
 
 				$(li).on('click', (ev) => {
 					$("#postlist").removeClass("active");
@@ -246,6 +250,24 @@
 		emptyTab() {
 			const name = Math.floor(new Date().getTime() / 1000).toString(16);
 			e.newSession(name, '', true);
+		}
+
+		togglePublish() {
+			let postId = $('#tabs div.active').attr("data-postid");
+
+			e.request({
+				ApiKey: e.ApiKey,
+				action: "togglePublish",
+				postid: postId
+			}, (data, status, error) => {
+				e.requestPostlist();
+
+				if (error || !data.OperationSucceded) {
+					swal("Error!", "Action failed :/", "error");
+				} else {
+					swal("Done!", "It worked", "success");
+				}
+			});
 		}
 
 		remove() {

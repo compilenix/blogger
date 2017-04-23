@@ -259,11 +259,14 @@
 	}
 
 	#postlist li {
-		background-image: url("{{{path.staticContentUri}}}doc.png");
 		background-position: left center;
 		background-repeat: no-repeat;
 		margin: 4px;
 		padding-left: 15px;
+	}
+
+	#postlist li.published {
+		background-image: url("{{{path.staticContentUri}}}doc.png");
 	}
 
 	#postlist li:hover {

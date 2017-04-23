@@ -1,7 +1,8 @@
 <!DOCTYPE html>
+
 <head>
-	<meta charset="UTF-8"/>
-	<meta name="author" content="{{{author}}}"/>
+	<meta charset="UTF-8" />
+	<meta name="author" content="{{{author}}}" />
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<script type="text/javascript" src="{{{path.staticContentUri}}}jquery.js"></script>
 	<script type="text/javascript" src="{{{path.staticContentUri}}}ace.js"></script>
@@ -14,7 +15,7 @@
 	<title>{{{title}}}</title>
 
 	<style>
-		@font-face {
+			@font-face {
 			font-family: Ubuntu;
 			src: url("{{{path.staticContentUri}}}{{{File.Fonts.Ubuntu.Regular}}}") format("truetype");
 		}
@@ -80,12 +81,26 @@
 			text-decoration: none;
 		}
 
-		a:hover, a:focus { color: #0AF; }
+		a:hover,
+		a:focus {
+			color: #0AF;
+		}
 
-		a.button { color: black; }
-		a.button:hover { color: black; }
-		a.button:focus { color: black; }
-		a.button:visited { color: black; }
+		a.button {
+			color: black;
+		}
+
+		a.button:hover {
+			color: black;
+		}
+
+		a.button:focus {
+			color: black;
+		}
+
+		a.button:visited {
+			color: black;
+		}
 
 		::-webkit-scrollbar {
 			width: .5em;
@@ -143,8 +158,9 @@
 			overflow-y: hidden;
 		}
 
-		#tabs > div {
-			background-image: url("{{{path.staticContentUri}}}inactivel.png"), url("{{{path.staticContentUri}}}inactiver.png");
+		#tabs>div {
+			background-image: url("{{{path.staticContentUri}}}inactivel.png"),
+			url("{{{path.staticContentUri}}}inactiver.png");
 			background-position: left, right;
 			background-repeat: no-repeat, no-repeat;
 			color: #c1c1bf;
@@ -160,18 +176,18 @@
 			z-index: 1;
 		}
 
-		#tabs > div > div {
+		#tabs>div>div {
 			background-image: url("{{{path.staticContentUri}}}inactivec.png");
 			background-repeat: repeat-x;
 			height: 31px;
 		}
 
-		#tabs > div.active > div {
+		#tabs>div.active>div {
 			background-image: url("{{{path.staticContentUri}}}activec.png");
 			background-repeat: repeat-x;
 		}
 
-		#tabs > div > div > div.wrapper {
+		#tabs>div>div>div.wrapper {
 			padding-right: 20px;
 			padding-top: 5px;
 			position: relative;
@@ -187,17 +203,33 @@
 			width: 13px;
 		}
 
-		#tabs div.button:hover { background-image: url("{{{path.staticContentUri}}}activeclose.png"); }
-		#tabs div.button:focus { background-image: url("{{{path.staticContentUri}}}activeclose.png"); }
+		#tabs div.button:hover {
+			background-image: url("{{{path.staticContentUri}}}activeclose.png");
+		}
 
-		#tabs > div.active div.button { background-image: url("{{{path.staticContentUri}}}inactiveclose.png"); }
-		#tabs > div.active div.button:hover { background-image: url("{{{path.staticContentUri}}}activeclose.png"); }
-		#tabs > div.active div.button:focus { background-image: url("{{{path.staticContentUri}}}activeclose.png"); }
+		#tabs div.button:focus {
+			background-image: url("{{{path.staticContentUri}}}activeclose.png");
+		}
 
-		#tabs > div.changed { color: #ffa035; }
+		#tabs>div.active div.button {
+			background-image: url("{{{path.staticContentUri}}}inactiveclose.png");
+		}
 
-		#tabs > div.active {
-			background-image: url("{{{path.staticContentUri}}}activel.png"), url("{{{path.staticContentUri}}}activer.png");
+		#tabs>div.active div.button:hover {
+			background-image: url("{{{path.staticContentUri}}}activeclose.png");
+		}
+
+		#tabs>div.active div.button:focus {
+			background-image: url("{{{path.staticContentUri}}}activeclose.png");
+		}
+
+		#tabs>div.changed {
+			color: #ffa035;
+		}
+
+		#tabs>div.active {
+			background-image: url("{{{path.staticContentUri}}}activel.png"),
+			url("{{{path.staticContentUri}}}activer.png");
 			z-index: 2;
 		}
 
@@ -246,21 +278,35 @@
 			padding-left: 15px;
 		}
 
-		#postlist li:hover { background-color: #bfbfbf; }
-		#postlist li:focus { background-color: #bfbfbf; }
-		.btn, .button.responsive { display: none; }
+		#postlist li:hover {
+			background-color: #bfbfbf;
+		}
+
+		#postlist li:focus {
+			background-color: #bfbfbf;
+		}
+
+		.btn,
+		.button.responsive {
+			display: none;
+		}
 
 		@media (max-width: 1000px) {
-			#postlist { width: 200px; }
+			#postlist {
+				width: 200px;
+			}
 
-			#tabs, #edit {
+			#tabs,
+			#edit {
 				left: 200px;
 				min-width: 320px;
 			}
 		}
 
 		@media (max-width: 600px) {
-			.button.responsive { display: initial; }
+			.button.responsive {
+				display: initial;
+			}
 
 			#postlist {
 				width: 200px;
@@ -279,10 +325,15 @@
 				padding: 8px 0 0px 20px;
 			}
 
-			#tabs, #edit { left: 0; }
-			#edit { top: 75px; }
+			#tabs,
+			#edit {
+				left: 0;
+			}
+			#edit {
+				top: 75px;
+			}
 
-			#tabs > div {
+			#tabs>div {
 				display: none;
 				width: 280px;
 				box-sizing: border-box;
@@ -292,10 +343,14 @@
 				text-align: center;
 			}
 
-			#tabs > div > div { background: none; }
-			#tabs > div.active > div { background: none; }
+			#tabs>div>div {
+				background: none;
+			}
+			#tabs>div.active>div {
+				background: none;
+			}
 
-			#tabs > div.active {
+			#tabs>div.active {
 				background: none;
 				display: block;
 			}
@@ -327,227 +382,229 @@
 				right: 0;
 				background: url("{{{path.staticContentUri}}}arrow_right.png") no-repeat center center;
 			}
+
 	</style>
 </head>
 
 <body onresize="e.calculateEditorOffsetTop();">
-<div id="menu">
-	<label class="button responsive" onclick="$('#postlist').toggleClass('active');">Posts</label>
-	<label class="button responsive" onclick="e.closeTab($($('#tabs div.active')[0]).attr('data-postid'));">Close</label>
-	<a class="button" href="/" target="_blank">Start Page</a>
-	<a class="button" onclick="e.emptyTab();">New</a>
-	<a class="button" onclick="e.remove();">Remove</a>
-	<a class="button" onclick="e.preview();">Preview</a>
-</div>
-<div id="postlist"></div>
-<div id="tabs">
-	<label class="btn buttonLeft" onclick="e.prevTab();"></label>
-	<label class="btn buttonRight" onclick="e.nextTab();"></label>
-</div>
-<div id="edit"></div>
-<script type="text/javascript">
-	var skey = 83;
-	var vkey = 86;
-	var nkey = 78;
-	var wkey = 87;
+	<div id="menu">
+		<label class="button responsive" onclick="$('#postlist').toggleClass('active');">Posts</label>
+		<label class="button responsive" onclick="e.closeTab($($('#tabs div.active')[0]).attr('data-postid'));">Close</label>
+		<a class="button" href="/" target="_blank">Start Page</a>
+		<a class="button" onclick="e.emptyTab();">New</a>
+		<a class="button" onclick="e.remove();">Remove</a>
+		<a class="button" onclick="e.preview();">Preview</a>
+	</div>
+	<div id="postlist"></div>
+	<div id="tabs">
+		<label class="btn buttonLeft" onclick="e.prevTab();"></label>
+		<label class="btn buttonRight" onclick="e.nextTab();"></label>
+	</div>
+	<div id="edit"></div>
+	<script type="text/javascript">
+		var skey = 83;
+		var vkey = 86;
+		var nkey = 78;
+		var wkey = 87;
 
-	function editor() {
-		this.postlistContainer = document.getElementById('postlist');
-		this.editorContainer = document.getElementById('edit');
-		this.tabsContainer = document.getElementById('tabs');
-		this.menu = document.getElementById('menu');
-		this.ace = ace.edit("edit");
-		this.ace.setTheme("ace/theme/monokai");
-		this.ace.getSession().setMode("ace/mode/html");
+		function editor() {
+			this.postlistContainer = document.getElementById('postlist');
+			this.editorContainer = document.getElementById('edit');
+			this.tabsContainer = document.getElementById('tabs');
+			this.menu = document.getElementById('menu');
+			this.ace = ace.edit("edit");
+			this.ace.setTheme("ace/theme/monokai");
+			this.ace.getSession().setMode("ace/mode/html");
 
-		this.ApiKey = this.loadApiKey();
+			this.ApiKey = this.loadApiKey();
 
-		if (!this.ApiKey) {
-			this.askForKey(function() { e.requestPostlist(); });
-		} else {
-			this.requestPostlist();
-		}
-
-		this.sessions = {};
-
-		this.sessions['default'] = this.ace.getSession();
-
-		this.sessions['default'].on('change', function(ev) {
-			if (ev.data.action === 'insertText') {
-				const name = Math.floor(new Date().getTime() / 1000).toString(16);
-				e.newSession(name, e.sessions['default'].getValue(), true);
-				e.ace.navigateFileEnd();
-				e.sessions['default'].setValue('');
+			if (!this.ApiKey) {
+				this.askForKey(function () {
+					e.requestPostlist();
+				});
+			} else {
+				this.requestPostlist();
 			}
-		});
 
-		document.addEventListener('keydown', function(event) {
-			switch (event.keyCode) {
-				case skey:
-					if (event.ctrlKey || event.altKey) {
-						event.preventDefault();
-						if ($('#tabs div.active')[0]) {
-							e.save($($('#tabs div.active')[0]).attr('data-postid'));
+			this.sessions = {};
+
+			this.sessions['default'] = this.ace.getSession();
+
+			this.sessions['default'].on('change', function (ev) {
+				if (ev.data.action === 'insertText') {
+					const name = Math.floor(new Date().getTime() / 1000).toString(16);
+					e.newSession(name, e.sessions['default'].getValue(), true);
+					e.ace.navigateFileEnd();
+					e.sessions['default'].setValue('');
+				}
+			});
+
+			document.addEventListener('keydown', function (event) {
+				switch (event.keyCode) {
+					case skey:
+						if (event.ctrlKey || event.altKey) {
+							event.preventDefault();
+							if ($('#tabs div.active')[0]) {
+								e.save($($('#tabs div.active')[0]).attr('data-postid'));
+							}
 						}
-					}
-					break;
-				case nkey:
-					if (event.ctrlKey || event.altKey) {
-						event.preventDefault();
-						e.emptyTab();
-					}
-					break;
-				case vkey:
-					if (event.ctrlKey && $('#tabs div.active')[0] === undefined) {
-						e.emptyTab();
-					}
-					break;
-				case wkey:
-					if (event.ctrlKey || event.altKey) {
-						event.preventDefault();
-						e.closeTab($($('#tabs div.active')[0]).attr('data-postid'));
-					}
-			}
+						break;
+					case nkey:
+						if (event.ctrlKey || event.altKey) {
+							event.preventDefault();
+							e.emptyTab();
+						}
+						break;
+					case vkey:
+						if (event.ctrlKey && $('#tabs div.active')[0] === undefined) {
+							e.emptyTab();
+						}
+						break;
+					case wkey:
+						if (event.ctrlKey || event.altKey) {
+							event.preventDefault();
+							e.closeTab($($('#tabs div.active')[0]).attr('data-postid'));
+						}
+				}
 
-			if ($('#tabs div.active')[0] === undefined) {
-				e.emptyTab();
-			}
-		});
-	}
-
-
-	editor.prototype.request = function(post, callback) {
-		$.post('/ajax/', post, function(data) {
-			e.handleResponse(data);
-
-			if (typeof callback === "function") {
-				callback(data);
-			}
-		}, 'json').fail(function(xhr, status) {
-			e.askForKey(function() { e.requestPostlist(); });
-
-			if (typeof callback === "function") {
-				callback(xhr, status);
-			}
-		});
-	};
-
-	editor.prototype.handleResponse = function(data) {
-		if (data.type) {
-			switch (data.type) {
-				case 'postlist':
-					this.updatePostList(data);
-					break;
-				case 'post':
-					this.loadPost(data);
-					break;
-				case 'postsaved':
-					this.postSaved(data.id);
-					break;
-				case 'postremoved':
-				case 'postnotfound':
-					this.postRemoved(data.id);
-					break;
-				default:
-					console.log("handleResponse: unknown response type");
-					swal("Error!", "Got unexpexted response!", "error")
-					break;
-			}
+				if ($('#tabs div.active')[0] === undefined) {
+					e.emptyTab();
+				}
+			});
 		}
-	};
 
-	editor.prototype.askForKey = function(callback) {
-		swal(
-			{
+
+		editor.prototype.request = function (post, callback) {
+			$.post('/ajax/', post, function (data) {
+				e.handleResponse(data);
+
+				if (typeof callback === "function") {
+					callback(data);
+				}
+			}, 'json').fail(function (xhr, status) {
+				e.askForKey(function () {
+					e.requestPostlist();
+				});
+
+				if (typeof callback === "function") {
+					callback(xhr, status);
+				}
+			});
+		};
+
+		editor.prototype.handleResponse = function (data) {
+			if (data.type) {
+				switch (data.type) {
+					case 'postlist':
+						this.updatePostList(data);
+						break;
+					case 'post':
+						this.loadPost(data);
+						break;
+					case 'postsaved':
+						this.postSaved(data.id);
+						break;
+					case 'postremoved':
+					case 'postnotfound':
+						this.postRemoved(data.id);
+						break;
+					default:
+						console.log("handleResponse: unknown response type");
+						swal("Error!", "Got unexpexted response!", "error")
+						break;
+				}
+			}
+		};
+
+		editor.prototype.askForKey = function (callback) {
+			swal({
 				title: "Password needed",
 				type: "input",
 				inputType: "password",
 				showCancelButton: false,
 				showLoaderOnConfirm: true,
 				closeOnConfirm: true
-			}, function(typedPassword) {
+			}, function (typedPassword) {
 				e.ApiKey = typedPassword;
 				e.storeApiKey(typedPassword);
 				if (typeof callback === "function") {
 					callback();
 				}
-			}
-		);
-	};
-
-	editor.prototype.loadApiKey = function() {
-		return localStorage.ApiKey;
-	};
-
-	editor.prototype.storeApiKey = function(ApiKey) {
-		localStorage.setItem('ApiKey', ApiKey);
-	};
-
-	editor.prototype.loadPost = function(data) {
-		console.log("show post: " + data.title + " (" + data.id + ")");
-		this.newSession(data.id, data.content.contents, false, data.title);
-	};
-
-	editor.prototype.postSaved = function(id) {
-		$(this.tabsContainer).find('div[data-postid=' + id + ']').removeClass('changed');
-		this.requestPostlist();
-		this.closeTab(id);
-		this.showPost(id);
-	};
-
-	editor.prototype.updatePostList = function(data) {
-		const ul = document.createElement('ul');
-
-		for (let i = 0; i < data.list.length; i++) {
-			const li = document.createElement('li');
-			li.appendChild(document.createTextNode(data.titles[i]));
-			li.setAttribute('data-postid', data.list[i]);
-
-			$(li).on('click', function(ev) {
-				$("#postlist").removeClass("active");
-				e.showPost(this.getAttribute('data-postid'));
 			});
+		};
 
-			ul.appendChild(li);
-		}
+		editor.prototype.loadApiKey = function () {
+			return localStorage.ApiKey;
+		};
 
-		this.postlistContainer.innerHTML = '';
-		this.postlistContainer.appendChild(ul);
-	};
+		editor.prototype.storeApiKey = function (ApiKey) {
+			localStorage.setItem('ApiKey', ApiKey);
+		};
 
-	editor.prototype.requestPostlist = function() {
-		this.request({
-			ApiKey: this.ApiKey,
-			action: 'postlist'
-		});
-	};
+		editor.prototype.loadPost = function (data) {
+			console.log("show post: " + data.title + " (" + data.id + ")");
+			this.newSession(data.id, data.content.contents, false, data.title);
+		};
 
-	editor.prototype.requestPost = function(id) {
-		this.request({
-			ApiKey: this.ApiKey,
-			postid: id,
-			action: 'getpost'
-		});
-	};
+		editor.prototype.postSaved = function (id) {
+			$(this.tabsContainer).find('div[data-postid=' + id + ']').removeClass('changed');
+			this.requestPostlist();
+			this.closeTab(id);
+			this.showPost(id);
+		};
 
-	editor.prototype.requestSavePost = function(id, title, content, callback) {
-		this.request({
-			ApiKey: this.ApiKey,
-			postid: id,
-			title: title,
-			content: content,
-			action: 'writepost'
-		}, callback);
-	};
+		editor.prototype.updatePostList = function (data) {
+			const ul = document.createElement('ul');
 
-	editor.prototype.save = function(id) {
-		if (!id) {
-			swal("Error!", "No tab/file selected for saving", "error");
-			return false;
-		}
+			for (let i = 0; i < data.list.length; i++) {
+				const li = document.createElement('li');
+				li.appendChild(document.createTextNode(data.titles[i]));
+				li.setAttribute('data-postid', data.list[i]);
 
-		swal(
-			{
+				$(li).on('click', function (ev) {
+					$("#postlist").removeClass("active");
+					e.showPost(this.getAttribute('data-postid'));
+				});
+
+				ul.appendChild(li);
+			}
+
+			this.postlistContainer.innerHTML = '';
+			this.postlistContainer.appendChild(ul);
+		};
+
+		editor.prototype.requestPostlist = function () {
+			this.request({
+				ApiKey: this.ApiKey,
+				action: 'postlist'
+			});
+		};
+
+		editor.prototype.requestPost = function (id) {
+			this.request({
+				ApiKey: this.ApiKey,
+				postid: id,
+				action: 'getpost'
+			});
+		};
+
+		editor.prototype.requestSavePost = function (id, title, content, callback) {
+			this.request({
+				ApiKey: this.ApiKey,
+				postid: id,
+				title: title,
+				content: content,
+				action: 'writepost'
+			}, callback);
+		};
+
+		editor.prototype.save = function (id) {
+			if (!id) {
+				swal("Error!", "No tab/file selected for saving", "error");
+				return false;
+			}
+
+			swal({
 				title: "Enter a nice title",
 				type: "input",
 				showCancelButton: true,
@@ -555,7 +612,7 @@
 				closeOnCancel: false,
 				showLoaderOnConfirm: true,
 				inputValue: $($('#tabs div.active')[0]).attr('data-posttitle')
-			}, function(title) {
+			}, function (title) {
 				if (title === false) {
 					swal("Save canceled", null, "error");
 					return false;
@@ -570,7 +627,7 @@
 					id,
 					title,
 					e.sessions[$($('#tabs div.active')[0]).attr('data-postid')].getValue(),
-					function(data, status) {
+					function (data, status) {
 						if (status == "error") {
 							swal("Error!", "The post can't be saved!", "error");
 						} else {
@@ -578,250 +635,255 @@
 						}
 					}
 				);
+			});
+
+			return true;
+		};
+
+		editor.prototype.showPost = function (id) {
+			if (this.hasSession(id)) {
+				this.openSession(id);
+			} else {
+				this.requestPost(id);
 			}
-		);
+		};
 
-		return true;
-	};
+		editor.prototype.emptyTab = function () {
+			const name = Math.floor(new Date().getTime() / 1000).toString(16);
+			e.newSession(name, '', true);
+		};
 
-	editor.prototype.showPost = function(id) {
-		if (this.hasSession(id)) {
-			this.openSession(id);
-		} else {
-			this.requestPost(id);
-		}
-	};
+		editor.prototype.remove = function () {
+			let postId = $('#tabs div.active').attr("data-postid");
+			let postTitle = $('#tabs div.active').attr("data-posttitle");
 
-	editor.prototype.emptyTab = function() {
-		const name = Math.floor(new Date().getTime() / 1000).toString(16);
-		e.newSession(name, '', true);
-	};
+			swal({
+					title: "Are you sure?",
+					text: "Remove \"" + postTitle + "\" (" + postId + ")?",
+					type: "warning",
+					showCancelButton: true,
+					confirmButtonColor: "#DD6B55",
+					confirmButtonText: "Yes, delete it!",
+					cancelButtonText: "No, cancel please!",
+					showLoaderOnConfirm: true,
+					closeOnConfirm: false,
+					closeOnCancel: false
+				},
+				function (isConfirmed) {
+					if (isConfirmed) {
+						console.log("remove post: \"" + postTitle + "\" (" + postId + ")");
 
-	editor.prototype.remove = function() {
-		let postId = $('#tabs div.active').attr("data-postid");
-		let postTitle = $('#tabs div.active').attr("data-posttitle");
-
-		swal(
-			{
-				title: "Are you sure?",
-				text: "Remove \"" + postTitle + "\" (" + postId + ")?",
-				type: "warning",
-				showCancelButton: true,
-				confirmButtonColor: "#DD6B55",
-				confirmButtonText: "Yes, delete it!",
-				cancelButtonText: "No, cancel please!",
-				showLoaderOnConfirm: true,
-				closeOnConfirm: false,
-				closeOnCancel: false
-			},
-			function(isConfirmed){
-				if (isConfirmed) {
-					console.log("remove post: \"" + postTitle + "\" (" + postId + ")");
-
-					e.request({
-						ApiKey: e.ApiKey,
-						action: "removepost",
-						postid: postId
-						}, function(data, status, error) {
+						e.request({
+							ApiKey: e.ApiKey,
+							action: "removepost",
+							postid: postId
+						}, function (data, status, error) {
 							if (error) {
 								swal("Error!", "The post \"" + postTitle + "\" (" + postId + ") couldn't be deleted.", "error");
 							} else {
 								swal("Deleted!", "The post \"" + postTitle + "\" (" + postId + ") has been deleted.", "success");
 							}
-						}
-					);
-				} else {
-					swal("Cancelled", "\"" + postTitle + "\" (" + postId + ") is safe :)", "error");
+						});
+					} else {
+						swal("Cancelled", "\"" + postTitle + "\" (" + postId + ") is safe :)", "error");
+						return false;
+					}
+				}
+			);
+		}
+
+		editor.prototype.postRemoved = function (id) {
+			this.closeTab(id);
+			this.requestPostlist();
+		};
+
+		editor.prototype.addTab = function (id, isnew, title) {
+			const tab = document.createElement('div');
+			const inner = document.createElement('div');
+			const wrapper = document.createElement('div');
+			const closebutton = document.createElement('div');
+
+			closebutton.setAttribute('data-postid', id);
+			$(closebutton).addClass('button');
+			$(wrapper).addClass('wrapper');
+			tab.setAttribute('data-postid', id);
+			tab.setAttribute('data-posttitle', isnew ? id + ' (new Post)' : title);
+
+			$(tab).on('click', function (ev) {
+				ev.preventDefault();
+				e.openSession(this.getAttribute('data-postid'));
+				return false;
+			});
+
+			$(closebutton).on('click', function (ev) {
+				ev.preventDefault();
+				e.closeTab(this.getAttribute('data-postid'));
+				return false;
+			});
+
+			wrapper.appendChild(document.createTextNode(isnew ? id + ' (new Post)' : title));
+			wrapper.appendChild(closebutton);
+			inner.appendChild(wrapper);
+			tab.appendChild(inner);
+			this.tabsContainer.appendChild(tab);
+
+			return tab;
+		};
+
+		editor.prototype.closeTab = function (id) {
+			let postTitle = $('#tabs div.active').attr("data-posttitle");
+
+			if ($(this.tabsContainer).find('div[data-postid=' + id + ']').hasClass('changed')) {
+				if (!confirm('are you sure?')) {
 					return false;
 				}
+				console.log("close tab and discard changes of: \"" + postTitle + "\" (" + id + ")");
 			}
-		);
-	}
 
-	editor.prototype.postRemoved = function(id) {
-		this.closeTab(id);
-		this.requestPostlist();
-	};
+			var p = $(this.tabsContainer).find('div[data-postid=' + id + ']')[0].previousSibling;
+			var n = $(this.tabsContainer).find('div[data-postid=' + id + ']')[0].nextSibling;
 
-	editor.prototype.addTab = function(id, isnew, title) {
-		const tab = document.createElement('div');
-		const inner = document.createElement('div');
-		const wrapper = document.createElement('div');
-		const closebutton = document.createElement('div');
+			if (p && p.getAttribute && p.getAttribute('data-postid')) {
+				this.openSession(p.getAttribute('data-postid'));
+			} else if (n && n.getAttribute && n.getAttribute('data-postid')) {
+				this.openSession(n.getAttribute('data-postid'));
+			} else {
+				this.ace.setSession(this.sessions['default']);
+				this.ace.focus();
+				this.emptyTab();
+			}
 
-		closebutton.setAttribute('data-postid', id);
-		$(closebutton).addClass('button');
-		$(wrapper).addClass('wrapper');
-		tab.setAttribute('data-postid', id);
-		tab.setAttribute('data-posttitle', isnew ? id + ' (new Post)' : title);
+			$(this.tabsContainer).find('div[data-postid=' + id + ']').remove();
+			this.sessions[id] = false;
 
-		$(tab).on('click', function(ev) {
-			ev.preventDefault();
-			e.openSession(this.getAttribute('data-postid'));
-			return false;
-		});
+			this.calculateEditorOffsetTop();
+		};
 
-		$(closebutton).on('click', function(ev) {
-			ev.preventDefault();
-			e.closeTab(this.getAttribute('data-postid'));
-			return false;
-		});
+		editor.prototype.activeTabId = function () {
+			if ($('#tabs div.active')[0] === undefined) {
+				return false;
+			} else {
+				return $('#tabs div.active')[0].getAttribute('data-postid');
+			}
+		}
 
-		wrapper.appendChild(document.createTextNode(isnew ? id + ' (new Post)' : title));
-		wrapper.appendChild(closebutton);
-		inner.appendChild(wrapper);
-		tab.appendChild(inner);
-		this.tabsContainer.appendChild(tab);
+		editor.prototype.prevTabId = function () {
+			var p = $(this.tabsContainer).find('div[data-postid=' + this.activeTabId() + ']')[0].previousSibling;
 
-		return tab;
-	};
-
-	editor.prototype.closeTab = function(id) {
-		let postTitle = $('#tabs div.active').attr("data-posttitle");
-
-		if ($(this.tabsContainer).find('div[data-postid=' + id + ']').hasClass('changed')) {
-			if (!confirm('are you sure?')) {
+			if (p && p.getAttribute && p.getAttribute("data-postid")) {
+				return p.getAttribute("data-postid");
+			} else {
 				return false;
 			}
-			console.log("close tab and discard changes of: \"" + postTitle + "\" (" + id + ")");
 		}
 
-		var p = $(this.tabsContainer).find('div[data-postid=' + id + ']')[0].previousSibling;
-		var n = $(this.tabsContainer).find('div[data-postid=' + id + ']')[0].nextSibling;
+		editor.prototype.nextTabId = function () {
+			var n = $(this.tabsContainer).find('div[data-postid=' + this.activeTabId() + ']')[0].nextSibling;
 
-		if (p && p.getAttribute && p.getAttribute('data-postid')) {
-			this.openSession(p.getAttribute('data-postid'));
-		} else if (n && n.getAttribute && n.getAttribute('data-postid')) {
-			this.openSession(n.getAttribute('data-postid'));
-		} else {
-			this.ace.setSession(this.sessions['default']);
-			this.ace.focus();
-			this.emptyTab();
-		}
-
-		$(this.tabsContainer).find('div[data-postid=' + id + ']').remove();
-		this.sessions[id] = false;
-
-		this.calculateEditorOffsetTop();
-	};
-
-	editor.prototype.activeTabId = function() {
-		if ($('#tabs div.active')[0] === undefined) {
-			return false;
-		} else {
-			return $('#tabs div.active')[0].getAttribute('data-postid');
-		}
-	}
-
-	editor.prototype.prevTabId = function() {
-		var p = $(this.tabsContainer).find('div[data-postid=' + this.activeTabId() + ']')[0].previousSibling;
-
-		if (p && p.getAttribute && p.getAttribute("data-postid")) {
-			return p.getAttribute("data-postid");
-		} else {
-			return false;
-		}
-	}
-
-	editor.prototype.nextTabId = function() {
-		var n = $(this.tabsContainer).find('div[data-postid=' + this.activeTabId() + ']')[0].nextSibling;
-
-		if (n && n.getAttribute && n.getAttribute("data-postid")) {
-			return n.getAttribute("data-postid");
-		} else {
-			return false;
-		}
-	}
-
-	editor.prototype.prevTab = function() {
-		if (this.hasPrevTab()) {
-			this.openSession(this.prevTabId());
-		}
-	};
-
-	editor.prototype.nextTab = function() {
-		if (this.hasNextTab()) {
-			this.openSession(this.nextTabId());
-		}
-	};
-
-	editor.prototype.hasPrevTab = function(id) {
-		id = id || this.activeTabId();
-		var p = $(this.tabsContainer).find('div[data-postid=' + id + ']')[0].previousSibling;
-		return (p && p.getAttribute && p.getAttribute('data-postid'));
-	};
-
-	editor.prototype.hasNextTab = function(id) {
-		id = id || this.activeTabId();
-		var n = $(this.tabsContainer).find('div[data-postid=' + id + ']')[0].nextSibling;
-		return (n && n.getAttribute && n.getAttribute('data-postid'));
-	};
-
-	editor.prototype.updateTabButtons = function() {
-		if (this.hasNextTab()) {
-			$(".buttonRight").show();
-		} else {
-			$(".buttonRight").hide();
-		}
-		if (this.hasPrevTab()) {
-			$(".buttonLeft").show();
-		} else {
-			$(".buttonLeft").hide();
-		}
-	};
-
-	editor.prototype.activateTab = function(id) {
-		$('#tabs div').removeClass('active');
-		$(this.tabsContainer).find('div[data-postid=' + id + ']').addClass('active');
-	};
-
-	editor.prototype.hasSession = function(id) {
-		return this.sessions[id];
-	};
-
-	editor.prototype.newSession = function(id, content, isnew, title) {
-		var tab = this.addTab(id, isnew, title);
-		this.sessions[id] = ace.createEditSession(content || '', "ace/mode/html");
-
-		this.sessions[id].on('change', function(e) {
-			$(tab).addClass('changed');
-		});
-
-		if (isnew && content !== "") {
-			$(tab).addClass('changed');
-		}
-
-		this.openSession(id);
-		this.calculateEditorOffsetTop();
-	};
-
-	editor.prototype.calculateEditorOffsetTop = function() {
-		if (window.innerWidth <= 600) {
-			this.editorContainer.style.top = this.tabsContainer.offsetHeight + parseInt(window.getComputedStyle(this.menu).getPropertyValue("height").replace("px", "")) + "px";
-			return
-		}
-		this.editorContainer.style.top = this.tabsContainer.offsetHeight + parseInt(window.getComputedStyle(this.tabsContainer).getPropertyValue("top").replace("px", "")) + "px";
-	};
-
-	editor.prototype.openSession = function(id) {
-		this.activateTab(id);
-		this.ace.setSession(this.sessions[id]);
-		this.ace.focus();
-		this.updateTabButtons();
-	};
-
-	editor.prototype.preview = function() {
-		$.post("/ajax/", { ApiKey: e.ApiKey, action: "previewpost", content: JSON.stringify(this.sessions[$($('#tabs div.active')[0]).attr('data-postid')].getValue()), title: $($('#tabs div.active')[0]).attr('data-posttitle') },
-			function(data) {
-				const win = window.open('about:blank');
-				win.document.open();
-				win.document.write(data);
-				win.document.close();
+			if (n && n.getAttribute && n.getAttribute("data-postid")) {
+				return n.getAttribute("data-postid");
+			} else {
+				return false;
 			}
-		);
-	};
+		}
 
-	window.e = new editor();
-	e.emptyTab();
-</script>
+		editor.prototype.prevTab = function () {
+			if (this.hasPrevTab()) {
+				this.openSession(this.prevTabId());
+			}
+		};
+
+		editor.prototype.nextTab = function () {
+			if (this.hasNextTab()) {
+				this.openSession(this.nextTabId());
+			}
+		};
+
+		editor.prototype.hasPrevTab = function (id) {
+			id = id || this.activeTabId();
+			var p = $(this.tabsContainer).find('div[data-postid=' + id + ']')[0].previousSibling;
+			return (p && p.getAttribute && p.getAttribute('data-postid'));
+		};
+
+		editor.prototype.hasNextTab = function (id) {
+			id = id || this.activeTabId();
+			var n = $(this.tabsContainer).find('div[data-postid=' + id + ']')[0].nextSibling;
+			return (n && n.getAttribute && n.getAttribute('data-postid'));
+		};
+
+		editor.prototype.updateTabButtons = function () {
+			if (this.hasNextTab()) {
+				$(".buttonRight").show();
+			} else {
+				$(".buttonRight").hide();
+			}
+			if (this.hasPrevTab()) {
+				$(".buttonLeft").show();
+			} else {
+				$(".buttonLeft").hide();
+			}
+		};
+
+		editor.prototype.activateTab = function (id) {
+			$('#tabs div').removeClass('active');
+			$(this.tabsContainer).find('div[data-postid=' + id + ']').addClass('active');
+		};
+
+		editor.prototype.hasSession = function (id) {
+			return this.sessions[id];
+		};
+
+		editor.prototype.newSession = function (id, content, isnew, title) {
+			var tab = this.addTab(id, isnew, title);
+			this.sessions[id] = ace.createEditSession(content || '', "ace/mode/html");
+
+			this.sessions[id].on('change', function (e) {
+				$(tab).addClass('changed');
+			});
+
+			if (isnew && content !== "") {
+				$(tab).addClass('changed');
+			}
+
+			this.openSession(id);
+			this.calculateEditorOffsetTop();
+		};
+
+		editor.prototype.calculateEditorOffsetTop = function () {
+			if (window.innerWidth <= 600) {
+				this.editorContainer.style.top = this.tabsContainer.offsetHeight + parseInt(window.getComputedStyle(this.menu).getPropertyValue(
+					"height").replace("px", "")) + "px";
+				return
+			}
+			this.editorContainer.style.top = this.tabsContainer.offsetHeight + parseInt(window.getComputedStyle(this.tabsContainer)
+				.getPropertyValue("top").replace("px", "")) + "px";
+		};
+
+		editor.prototype.openSession = function (id) {
+			this.activateTab(id);
+			this.ace.setSession(this.sessions[id]);
+			this.ace.focus();
+			this.updateTabButtons();
+		};
+
+		editor.prototype.preview = function () {
+			$.post("/ajax/", {
+					ApiKey: e.ApiKey,
+					action: "previewpost",
+					content: JSON.stringify(this.sessions[$($('#tabs div.active')[0]).attr('data-postid')].getValue()),
+					title: $($('#tabs div.active')[0]).attr('data-posttitle')
+				},
+				function (data) {
+					const win = window.open('about:blank');
+					win.document.open();
+					win.document.write(data);
+					win.document.close();
+				}
+			);
+		};
+
+		window.e = new editor();
+		e.emptyTab();
+
+	</script>
 </body>

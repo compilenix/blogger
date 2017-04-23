@@ -15,17 +15,7 @@
 			this.ace.getSession().setMode("ace/mode/html");
 
 			this.ApiKey = this.loadApiKey();
-
-			if (!this.ApiKey) {
-				this.askForKey(() => {
-					e.requestPostlist();
-				});
-			} else {
-				this.requestPostlist();
-			}
-
 			this.sessions = {};
-
 			this.sessions['default'] = this.ace.getSession();
 
 			this.sessions['default'].on('change', (event) => {
@@ -69,6 +59,14 @@
 					e.emptyTab();
 				}
 			});
+
+			if (!this.ApiKey) {
+				this.askForKey(() => {
+					e.requestPostlist();
+				});
+			} else {
+				this.requestPostlist();
+			}
 		}
 
 		request(post, callback) {
@@ -148,7 +146,7 @@
 			this.requestPostlist();
 			this.closeTab(id);
 			this.showPost(id);
-		};
+		}
 
 		updatePostList(data) {
 			const ul = document.createElement('ul');
@@ -168,14 +166,14 @@
 
 			this.postlistContainer.innerHTML = '';
 			this.postlistContainer.appendChild(ul);
-		};
+		}
 
 		requestPostlist() {
 			this.request({
 				ApiKey: this.ApiKey,
 				action: 'postlist'
 			});
-		};
+		}
 
 		requestPost(id) {
 			this.request({
@@ -183,7 +181,7 @@
 				postid: id,
 				action: 'getpost'
 			});
-		};
+		}
 
 		requestSavePost(id, title, content, callback) {
 			this.request({
@@ -193,7 +191,7 @@
 				content: content,
 				action: 'writepost'
 			}, callback);
-		};
+		}
 
 		save(id) {
 			if (!id) {
@@ -235,7 +233,7 @@
 			});
 
 			return true;
-		};
+		}
 
 		showPost(id) {
 			if (this.hasSession(id)) {
@@ -243,12 +241,12 @@
 			} else {
 				this.requestPost(id);
 			}
-		};
+		}
 
 		emptyTab() {
 			const name = Math.floor(new Date().getTime() / 1000).toString(16);
 			e.newSession(name, '', true);
-		};
+		}
 
 		remove() {
 			let postId = $('#tabs div.active').attr("data-postid");
@@ -274,7 +272,7 @@
 							ApiKey: e.ApiKey,
 							action: "removepost",
 							postid: postId
-						}, function (data, status, error) {
+						}, (data, status, error) => {
 							if (error) {
 								swal("Error!", "The post \"" + postTitle + "\" (" + postId + ") couldn't be deleted.", "error");
 							} else {
@@ -292,7 +290,7 @@
 		postRemoved(id) {
 			this.closeTab(id);
 			this.requestPostlist();
-		};
+		}
 
 		addTab(id, isnew, title) {
 			const tab = document.createElement('div');
@@ -325,7 +323,7 @@
 			this.tabsContainer.appendChild(tab);
 
 			return tab;
-		};
+		}
 
 		closeTab(id) {
 			let postTitle = $('#tabs div.active').attr("data-posttitle");
@@ -354,7 +352,7 @@
 			this.sessions[id] = false;
 
 			this.calculateEditorOffsetTop();
-		};
+		}
 
 		activeTabId() {
 			if ($('#tabs div.active')[0] === undefined) {
@@ -388,25 +386,25 @@
 			if (this.hasPrevTab()) {
 				this.openSession(this.prevTabId());
 			}
-		};
+		}
 
 		nextTab() {
 			if (this.hasNextTab()) {
 				this.openSession(this.nextTabId());
 			}
-		};
+		}
 
 		hasPrevTab(id) {
 			id = id || this.activeTabId();
 			var p = $(this.tabsContainer).find('div[data-postid=' + id + ']')[0].previousSibling;
 			return (p && p.getAttribute && p.getAttribute('data-postid'));
-		};
+		}
 
 		hasNextTab(id) {
 			id = id || this.activeTabId();
 			var n = $(this.tabsContainer).find('div[data-postid=' + id + ']')[0].nextSibling;
 			return (n && n.getAttribute && n.getAttribute('data-postid'));
-		};
+		}
 
 		updateTabButtons() {
 			if (this.hasNextTab()) {
@@ -419,16 +417,16 @@
 			} else {
 				$(".buttonLeft").hide();
 			}
-		};
+		}
 
 		activateTab(id) {
 			$('#tabs div').removeClass('active');
 			$(this.tabsContainer).find('div[data-postid=' + id + ']').addClass('active');
-		};
+		}
 
 		hasSession(id) {
 			return this.sessions[id];
-		};
+		}
 
 		newSession(id, content, isnew, title) {
 			var tab = this.addTab(id, isnew, title);
@@ -444,7 +442,7 @@
 
 			this.openSession(id);
 			this.calculateEditorOffsetTop();
-		};
+		}
 
 		calculateEditorOffsetTop() {
 			if (window.innerWidth <= 600) {
@@ -454,14 +452,14 @@
 			}
 			this.editorContainer.style.top = this.tabsContainer.offsetHeight + parseInt(window.getComputedStyle(this.tabsContainer)
 				.getPropertyValue("top").replace("px", "")) + "px";
-		};
+		}
 
 		openSession(id) {
 			this.activateTab(id);
 			this.ace.setSession(this.sessions[id]);
 			this.ace.focus();
 			this.updateTabButtons();
-		};
+		}
 
 		preview() {
 			$.post("/ajax/", {
@@ -477,7 +475,7 @@
 					win.document.close();
 				}
 			);
-		};
+		}
 	}
 
 	window.e = new Editor();

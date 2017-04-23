@@ -279,6 +279,29 @@
 		display: none;
 	}
 
+	.dropdown {
+		position: relative;
+		display: inline-block;
+	}
+
+	.dropdown:hover .dropdown-content {
+		display: block;
+		z-index: 9999;
+	}
+
+	.dropdown-content {
+		display: none;
+		position: absolute;
+		background-color: white;
+		min-width: 160px;
+		box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+	}
+
+	.dropdown-content a {
+		padding: 12px 16px;
+		display: block;
+	}
+
 	@media (max-width: 1000px) {
 		#postlist {
 			width: 200px;

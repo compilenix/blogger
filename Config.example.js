@@ -69,7 +69,44 @@ class Config {
 			webMasterMail: "admin@domain.tld"
 		};
 
-		this.staticContentPath = "static/";
+		this.Fonts = {
+				Ubuntu: {
+					Regular: "Ubuntu-R.ttf",
+					Bold: "Ubuntu-B.ttf"
+				},
+				SourceCodePro: {
+					Regular: {
+						EmbeddedOpentype: "SourceCodePro-Regular.eot",
+						Woff2: "SourceCodePro-Regular.ttf.woff2",
+						Woff: "SourceCodePro-Regular.otf.woff",
+						Opentype: "SourceCodePro-Regular.otf",
+						Truetype: "SourceCodePro-Regular.ttf"
+					},
+					Bold: {
+						EmbeddedOpentype: "SourceCodePro-Bold.eot",
+						Woff2: "SourceCodePro-Bold.ttf.woff2",
+						Woff: "SourceCodePro-Bold.otf.woff",
+						Opentype: "SourceCodePro-Bold.otf",
+						Truetype: "SourceCodePro-Bold.ttf"
+					},
+					Italic: {
+						EmbeddedOpentype: "SourceCodePro-It.eot",
+						Woff2: "SourceCodePro-It.ttf.woff2",
+						Woff: "SourceCodePro-It.otf.woff",
+						Opentype: "SourceCodePro-It.otf",
+						Truetype: "SourceCodePro-It.ttf"
+					},
+					BoldItalic: {
+						EmbeddedOpentype: "SourceCodePro-BoldIt.eot",
+						Woff2: "SourceCodePro-BoldIt.ttf.woff2",
+						Woff: "SourceCodePro-BoldIt.otf.woff",
+						Opentype: "SourceCodePro-BoldIt.otf",
+						Truetype: "SourceCodePro-BoldIt.ttf"
+					}
+				}
+			},
+
+			this.staticContentPath = "static/";
 		this.staticContentUri = "/static/?f=";
 		this.threads = os.cpus().length;
 		this.templatePath = "templates/";

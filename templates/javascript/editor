@@ -262,7 +262,7 @@
 					cancelButtonText: "No, cancel please!",
 					showLoaderOnConfirm: true,
 					closeOnConfirm: false,
-					closeOnCancel: false
+					closeOnCancel: true
 				},
 				(isConfirmed) => {
 					if (isConfirmed) {

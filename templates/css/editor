@@ -1,5 +1,5 @@
 <style>
-		@font-face {
+	@font-face {
 		font-family: Ubuntu;
 		src: url("{{{path.staticContentUri}}}{{{File.Fonts.Ubuntu.Regular}}}") format("truetype");
 	}
@@ -175,6 +175,10 @@
 		padding-right: 20px;
 		padding-top: 5px;
 		position: relative;
+		overflow: hidden;
+		-o-text-overflow: ellipsis;
+		text-overflow: ellipsis;
+		white-space: nowrap;
 	}
 
 	#tabs div.button {
@@ -353,5 +357,6 @@
 			right: 0;
 			background: url("{{{path.staticContentUri}}}arrow_right.png") no-repeat center center;
 		}
+	}
 
 </style>

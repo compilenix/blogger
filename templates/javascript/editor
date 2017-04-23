@@ -351,29 +351,42 @@
 			let postTitle = $('#tabs div.active').attr("data-posttitle");
 
 			if ($(this.tabsContainer).find('div[data-postid=' + id + ']').hasClass('changed')) {
-				if (!confirm('are you sure?')) {
-					return false;
-				}
-				console.log("close tab and discard changes of: \"" + postTitle + "\" (" + id + ")");
+				swal({
+						title: "Are you sure?",
+						text: `Discard any changes of ${postTitle}?`,
+						type: "warning",
+						showCancelButton: true,
+						confirmButtonColor: "#DD6B55",
+						confirmButtonText: "Yes, discard it!",
+						cancelButtonText: "No, cancel please!",
+						showLoaderOnConfirm: true,
+						closeOnConfirm: true,
+						closeOnCancel: true
+					},
+					(isConfirmed) => {
+						if (isConfirmed) {
+							console.log("close tab and discard changes of: \"" + postTitle + "\" (" + id + ")");
+							var p = $(e.tabsContainer).find('div[data-postid=' + id + ']')[0].previousSibling;
+							var n = $(e.tabsContainer).find('div[data-postid=' + id + ']')[0].nextSibling;
+
+							if (p && p.getAttribute && p.getAttribute('data-postid')) {
+								e.openSession(p.getAttribute('data-postid'));
+							} else if (n && n.getAttribute && n.getAttribute('data-postid')) {
+								e.openSession(n.getAttribute('data-postid'));
+							} else {
+								e.ace.setSession(e.sessions['default']);
+								e.ace.focus();
+								e.emptyTab();
+							}
+
+							$(e.tabsContainer).find('div[data-postid=' + id + ']').remove();
+							e.sessions[id] = false;
+
+							e.calculateEditorOffsetTop();
+						}
+					}
+				);
 			}
-
-			var p = $(this.tabsContainer).find('div[data-postid=' + id + ']')[0].previousSibling;
-			var n = $(this.tabsContainer).find('div[data-postid=' + id + ']')[0].nextSibling;
-
-			if (p && p.getAttribute && p.getAttribute('data-postid')) {
-				this.openSession(p.getAttribute('data-postid'));
-			} else if (n && n.getAttribute && n.getAttribute('data-postid')) {
-				this.openSession(n.getAttribute('data-postid'));
-			} else {
-				this.ace.setSession(this.sessions['default']);
-				this.ace.focus();
-				this.emptyTab();
-			}
-
-			$(this.tabsContainer).find('div[data-postid=' + id + ']').remove();
-			this.sessions[id] = false;
-
-			this.calculateEditorOffsetTop();
 		}
 
 		activeTabId() {

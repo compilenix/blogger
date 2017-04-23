@@ -1,9 +1,6 @@
 const os = require("os");
 const fs = require("fs");
 
-/** @type {Config} */
-let instance;
-
 class Config {
 	constructor() {
 		this.Version = "1";
@@ -113,15 +110,5 @@ class Config {
 	}
 }
 
-/**
- * @returns {Config}
- */
-function getConfig() {
-	if (!instance) {
-		instance = new Config();
-	}
 
-	return instance;
-}
-
-module.exports = getConfig();
+module.exports = new Config();

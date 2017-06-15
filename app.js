@@ -1,6 +1,10 @@
 require("use-strict");
 const cluster = require("cluster");
-const fs = require("fs");
+const fs = require("fs-extra");
+
+if (!fs.existsSync("./Config.js")) {
+	fs.copySync("./Config.example.js", "./Config.js");
+}
 
 const Server = require("./lib/Server.js");
 const RequestHandler = require("./lib/RequestHandler.js");
@@ -135,11 +139,13 @@ function StartServer() {
 // 	process.exit(1);
 // }
 
-if (config.DevMode) {
+if (config.DevMode || process.env.NODE_ENV === "development") {
 	if (cache && config.ClearCacheOnStart) {
 		cache.clear();
 	}
 
+	StartServer();
+} else if (!config.Server.UseMultipleProcessingCores) {
 	StartServer();
 } else {
 	if (cluster.isMaster) {

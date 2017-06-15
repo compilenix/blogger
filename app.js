@@ -25,6 +25,10 @@ process.argv.forEach((val, index) => {
 	}
 });
 
+if (process.env.NODE_ENV === "development") {
+	config.DevMode = true;
+}
+
 if (config.DevMode) {
 	config.HeaderExpires = 0;
 	config.ClearCacheOnStart = true;
@@ -139,7 +143,7 @@ function StartServer() {
 // 	process.exit(1);
 // }
 
-if (config.DevMode || process.env.NODE_ENV === "development") {
+if (config.DevMode) {
 	if (cache && config.ClearCacheOnStart) {
 		cache.clear();
 	}
@@ -158,11 +162,11 @@ if (config.DevMode || process.env.NODE_ENV === "development") {
 			cache.clear();
 		}
 
-		if (config.threads <= 1) {
-			config.threads = 1;
+		if (config.Server.Threads <= 1) {
+			config.Server.Threads = 1;
 		}
 
-		for (let i = config.threads; i > 0; i--) {
+		for (let i = config.Server.Threads; i > 0; i--) {
 			cluster.fork();
 		}
 

@@ -1,4 +1,5 @@
 require("use-strict");
+const util = require("util");
 const cluster = require("cluster");
 const fs = require("fs-extra");
 
@@ -171,15 +172,15 @@ if (config.DevMode) {
 		}
 
 		cluster.on("fork", function (worker) {
-			log.info("worker #%d forked. (pid %d)", worker.id, worker.process.pid);
+			log.info(util.format("worker #%d forked. (pid %d)", worker.id, worker.process.pid));
 		});
 
 		cluster.on("disconnect", function (worker) {
-			log.info("worker #%d (pid %d) disconnected.", worker.id, worker.process.pid);
+			log.info(util.format("worker #%d (pid %d) disconnected.", worker.id, worker.process.pid));
 		});
 
 		cluster.on("exit", function (worker, code, signal) {
-			log.info("worker #%d (pid %d) died (returned code %s; signal %s). restarting...", worker.id, worker.process.pid, code || "undefined", signal || "undefined");
+			log.info(util.format("worker #%d (pid %d) died (returned code %s; signal %s). restarting...", worker.id, worker.process.pid, code || "undefined", signal || "undefined"));
 			cluster.fork();
 		});
 	} else if (cluster.isWorker) {

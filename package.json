@@ -3,9 +3,9 @@
 	"version": "0.2.0",
 	"description": "A simple, minimalistic and high performance blogging web application",
 	"author": "Compilenix <Compilenix@compilenix.org>",
-	"main": "app.js",
+	"main": "index.js",
 	"scripts": {
-		"start": "npm install && node app.js",
+		"start": "npm install && node index.js",
 		"test": "npm install && node lib/tests/unit_test.js"
 	},
 	"keywords": [

@@ -7,7 +7,14 @@
 	"extends": "eslint:recommended",
 	"parserOptions": {
 		"sourceType": "module",
-		"ecmaVersion": 6
+		"ecmaVersion": 6,
+		"ecmaFeatures": {
+			"classes": true,
+			"defaultParams": true,
+			"arrowFunctions": true,
+			"superInFunctions": true,
+			"impliedStrict": true
+		}
 	},
 	"rules": {
 		"strict": "error",
@@ -16,13 +23,11 @@
 			"unix"
 		],
 		"quotes": [
-			"error",
-			"double"
+			"off"
 		],
 		"semi": [
 			"error",
 			"always"
 		]
-	},
-	"eqeqeq": 2
+	}
 }

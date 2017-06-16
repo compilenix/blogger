@@ -1,0 +1,388 @@
+<style>
+	@font-face {
+		font-family: Ubuntu;
+		src: url("{{{path.staticContentUri}}}{{{File.Fonts.Ubuntu.Regular}}}") format("truetype");
+	}
+
+	@font-face {
+		font-family: Ubuntu;
+		font-weight: bold;
+		src: url("{{{path.staticContentUri}}}{{{File.Fonts.Ubuntu.Bold}}}") format("truetype");
+	}
+
+	@font-face {
+		font-family: 'Source Code Pro';
+		font-weight: 400;
+		font-style: normal;
+		font-stretch: normal;
+		src: url("{{{path.staticContentUri}}}{{{File.Fonts.SourceCodePro.Regular.EmbeddedOpentype}}}") format('embedded-opentype'),
+		url("{{{path.staticContentUri}}}{{{File.Fonts.SourceCodePro.Regular.Woff2}}}") format('woff2'),
+		url("{{{path.staticContentUri}}}{{{File.Fonts.SourceCodePro.Regular.Woff}}}") format('woff'),
+		url("{{{path.staticContentUri}}}{{{File.Fonts.SourceCodePro.Regular.Opentype}}}") format('opentype'),
+		url("{{{path.staticContentUri}}}{{{File.Fonts.SourceCodePro.Regular.Truetype}}}") format('truetype');
+	}
+
+	@font-face {
+		font-family: 'Source Code Pro';
+		font-weight: 700;
+		font-style: normal;
+		font-stretch: normal;
+		src: url("{{{path.staticContentUri}}}{{{File.Fonts.SourceCodePro.Bold.EmbeddedOpentype}}}") format('embedded-opentype'),
+		url("{{{path.staticContentUri}}}{{{File.Fonts.SourceCodePro.Bold.Woff2}}}") format('woff2'),
+		url("{{{path.staticContentUri}}}{{{File.Fonts.SourceCodePro.Bold.Woff}}}") format('woff'),
+		url("{{{path.staticContentUri}}}{{{File.Fonts.SourceCodePro.Bold.Opentype}}}") format('opentype'),
+		url("{{{path.staticContentUri}}}{{{File.Fonts.SourceCodePro.Bold.Truetype}}}") format('truetype');
+	}
+
+	@font-face {
+		font-family: 'Source Code Pro';
+		font-weight: 400;
+		font-style: italic;
+		font-stretch: normal;
+		src: url("{{{path.staticContentUri}}}{{{File.Fonts.SourceCodePro.Italic.EmbeddedOpentype}}}") format('embedded-opentype'),
+		url("{{{path.staticContentUri}}}{{{File.Fonts.SourceCodePro.Italic.Woff2}}}") format('woff2'),
+		url("{{{path.staticContentUri}}}{{{File.Fonts.SourceCodePro.Italic.Woff}}}") format('woff'),
+		url("{{{path.staticContentUri}}}{{{File.Fonts.SourceCodePro.Italic.Opentype}}}") format('opentype'),
+		url("{{{path.staticContentUri}}}{{{File.Fonts.SourceCodePro.Italic.Truetype}}}") format('truetype');
+	}
+
+	@font-face {
+		font-family: 'Source Code Pro';
+		font-weight: 700;
+		font-style: italic;
+		font-stretch: normal;
+		src: url("{{{path.staticContentUri}}}{{{File.Fonts.SourceCodePro.BoldItalic.EmbeddedOpentype}}}") format('embedded-opentype'),
+		url("{{{path.staticContentUri}}}{{{File.Fonts.SourceCodePro.BoldItalic.Woff2}}}") format('woff2'),
+		url("{{{path.staticContentUri}}}{{{File.Fonts.SourceCodePro.BoldItalic.Woff}}}") format('woff'),
+		url("{{{path.staticContentUri}}}{{{File.Fonts.SourceCodePro.BoldItalic.Opentype}}}") format('opentype'),
+		url("{{{path.staticContentUri}}}{{{File.Fonts.SourceCodePro.BoldItalic.Truetype}}}") format('truetype');
+	}
+
+	a {
+		-webkit-transition: 200ms;
+		-o-transition: 200ms;
+		transition: 200ms;
+		text-decoration: none;
+	}
+
+	a:hover,
+	a:focus {
+		color: #0AF;
+	}
+
+	a.button {
+		color: black;
+	}
+
+	a.button:hover {
+		color: black;
+	}
+
+	a.button:focus {
+		color: black;
+	}
+
+	a.button:visited {
+		color: black;
+	}
+
+	::-webkit-scrollbar {
+		width: .5em;
+		height: .5em;
+	}
+
+	::-webkit-scrollbar-thumb {
+		background: grey;
+		border-radius: .125em;
+	}
+
+	::-webkit-scrollbar-thumb:hover {
+		background: #bfbfbf;
+	}
+
+	#menu {
+		-webkit-transition: 200ms;
+		-o-transition: 200ms;
+		transition: 200ms;
+		font-family: "Ubuntu", "Helvetica", "Helvetica Neue", "Helvetica World", sans-serif;
+		font-size: 1em;
+		font: 1em "Ubuntu", "Helvetica", "Helvetica Neue", "Helvetica World", sans-serif;
+		height: 30px;
+		left: 0;
+		line-height: 1.2em;
+		padding-top: 5px;
+		position: absolute;
+		right: 0;
+		top: 0;
+	}
+
+	#menu .button {
+		padding: .2em;
+	}
+
+	#menu .button:hover {
+		background-color: #bdbdbd;
+		border-radius: .125em;
+	}
+
+	#tabs {
+		-webkit-transition: 200ms;
+		-o-transition: 200ms;
+		transition: 200ms;
+		font-family: "Ubuntu", "Helvetica", "Helvetica Neue", "Helvetica World", sans-serif;
+		font-size: 1em;
+		font: 1em "Ubuntu", "Helvetica", "Helvetica Neue", "Helvetica World", sans-serif;
+		background-color: #161713;
+		left: 20%;
+		line-height: 1.2em;
+		position: absolute;
+		right: 0px;
+		top: 30px;
+		overflow-x: hidden;
+		overflow-y: hidden;
+	}
+
+	#tabs>div {
+		background-image: url("{{{path.staticContentUri}}}inactivel.png"),
+		url("{{{path.staticContentUri}}}inactiver.png");
+		background-position: left, right;
+		background-repeat: no-repeat, no-repeat;
+		color: #c1c1bf;
+		cursor: default;
+		display: inline;
+		float: left;
+		height: 31px;
+		margin-right: -12px;
+		padding-left: 19px;
+		padding-right: 19px;
+		padding-top: 3px;
+		position: relative;
+		z-index: 1;
+	}
+
+	#tabs>div>div {
+		background-image: url("{{{path.staticContentUri}}}inactivec.png");
+		background-repeat: repeat-x;
+		height: 31px;
+	}
+
+	#tabs>div.active>div {
+		background-image: url("{{{path.staticContentUri}}}activec.png");
+		background-repeat: repeat-x;
+	}
+
+	#tabs>div>div>div.wrapper {
+		padding-right: 20px;
+		padding-top: 5px;
+		position: relative;
+		overflow: hidden;
+		-o-text-overflow: ellipsis;
+		text-overflow: ellipsis;
+		white-space: nowrap;
+	}
+
+	#tabs div.button {
+		background-image: url("{{{path.staticContentUri}}}inactiveclose.png");
+		background-repeat: no-repeat;
+		height: 13px;
+		position: absolute;
+		right: 0px;
+		top: 8px;
+		width: 13px;
+	}
+
+	#tabs div.button:hover {
+		background-image: url("{{{path.staticContentUri}}}activeclose.png");
+	}
+
+	#tabs div.button:focus {
+		background-image: url("{{{path.staticContentUri}}}activeclose.png");
+	}
+
+	#tabs>div.active div.button {
+		background-image: url("{{{path.staticContentUri}}}inactiveclose.png");
+	}
+
+	#tabs>div.active div.button:hover {
+		background-image: url("{{{path.staticContentUri}}}activeclose.png");
+	}
+
+	#tabs>div.active div.button:focus {
+		background-image: url("{{{path.staticContentUri}}}activeclose.png");
+	}
+
+	#tabs>div.changed {
+		color: #ffa035;
+	}
+
+	#tabs>div.active {
+		background-image: url("{{{path.staticContentUri}}}activel.png"),
+		url("{{{path.staticContentUri}}}activer.png");
+		z-index: 2;
+	}
+
+	#edit {
+		font-family: "Source Code Pro", Lucida, "Consolas", Courier, Monospace;
+		font-size: 1em;
+		font: 1em "Source Code Pro", Lucida, "Consolas", Courier, Monospace;
+		bottom: 0;
+		left: 20%;
+		line-height: 1.2em;
+		position: absolute;
+		right: 0;
+		top: 60px;
+	}
+
+	#postlist {
+		-webkit-transition: 200ms;
+		-o-transition: 200ms;
+		transition: 200ms;
+		font-family: "Ubuntu", "Helvetica", "Helvetica Neue", "Helvetica World", sans-serif;
+		font-size: 1em;
+		font: 1em "Ubuntu", "Helvetica", "Helvetica Neue", "Helvetica World", sans-serif;
+		background-color: #e6e6e6;
+		overflow-x: hidden;
+		overflow-y: overlay;
+		white-space: nowrap;
+		bottom: 0;
+		cursor: default;
+		left: 0;
+		line-height: 1.2em;
+		position: absolute;
+		right: 80%;
+		top: 30px;
+	}
+
+	#postlist ul {
+		list-style-type: none;
+		padding-left: 16px;
+	}
+
+	#postlist li {
+		background-position: left center;
+		background-repeat: no-repeat;
+		margin: 4px;
+		padding-left: 15px;
+	}
+
+	#postlist li.published {
+		background-image: url("{{{path.staticContentUri}}}doc.png");
+	}
+
+	#postlist li:hover {
+		background-color: #bfbfbf;
+	}
+
+	#postlist li:focus {
+		background-color: #bfbfbf;
+	}
+
+	.btn,
+	.button.responsive {
+		display: none;
+	}
+
+	.dropdown {
+		position: relative;
+		display: inline-block;
+	}
+
+	.dropdown:hover .dropdown-content {
+		display: block;
+		z-index: 9999;
+	}
+
+	.dropdown-content {
+		display: none;
+		position: absolute;
+		background-color: white;
+		min-width: 160px;
+		box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+	}
+
+	.dropdown-content a {
+		padding: 12px 16px;
+		display: block;
+	}
+
+	@media (max-width: 1000px) {
+		#postlist {
+			width: 200px;
+		}
+		#tabs,
+		#edit {
+			left: 200px;
+			min-width: 320px;
+		}
+	}
+
+	@media (max-width: 600px) {
+		.button.responsive {
+			display: initial;
+		}
+		#postlist {
+			width: 200px;
+			left: -200px;
+		}
+		#postlist.active {
+			width: 100%;
+			left: 0;
+			z-index: 5;
+		}
+		#postlist li {
+			background-position: 4px 12px;
+			height: 30px;
+			padding: 8px 0 0px 20px;
+		}
+		#tabs,
+		#edit {
+			left: 0;
+		}
+		#edit {
+			top: 75px;
+		}
+		#tabs>div {
+			display: none;
+			width: 280px;
+			box-sizing: border-box;
+			margin: auto calc(50% - 140px);
+			background: none;
+			height: 45px;
+			text-align: center;
+		}
+		#tabs>div>div {
+			background: none;
+		}
+		#tabs>div.active>div {
+			background: none;
+		}
+		#tabs>div.active {
+			background: none;
+			display: block;
+		}
+		#tabs div.button {
+			display: inline-block;
+			margin-left: 10px;
+			position: relative;
+			width: 24px;
+			height: 24px;
+			background-size: 24px;
+		}
+		.btn {
+			display: block;
+			position: absolute;
+			background-color: red;
+			width: 45px;
+			height: 45px;
+		}
+		.buttonLeft {
+			left: 0;
+			background: url("{{{path.staticContentUri}}}arrow_left.png") no-repeat center center;
+		}
+		.buttonRight {
+			right: 0;
+			background: url("{{{path.staticContentUri}}}arrow_right.png") no-repeat center center;
+		}
+	}
+
+</style>

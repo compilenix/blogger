@@ -1,36 +1,36 @@
 {
-	"name": "blogger",
-	"version": "0.2.0",
-	"description": "A simple, minimalistic and high performance blogging web application",
-	"author": "Compilenix <Compilenix@compilenix.org>",
-	"main": "index.js",
-	"scripts": {
-		"start": "npm install && node index.js",
-		"test": "npm install && node lib/tests/unit_test.js"
-	},
-	"keywords": [
-		"Blog",
-		"minimalistic",
-		"blogging",
-		"performance",
-		"blogger",
-		"compilenix",
-		"simple"
-	],
-	"dependencies": {
-		"fs-extra": "3.0.1",
-		"html-minifier": "3.5.2",
-		"htmlencode": "0.0.4",
-		"http2": "3.3.6",
-		"manakin": "0.4.7",
-		"mustache": "2.3.0",
-		"prettify-xml": "1.0.1",
-		"use-strict": "1.0.1"
-	},
-	"repository": {
-		"type": "git",
-		"url": "https://git.compilenix.org/Compilenix/blogger.git"
-	},
-	"bugs": "https://git.compilenix.org/Compilenix/blogger/issues",
-	"license": "MIT"
+    "name": "blogger",
+    "version": "0.2.0",
+    "description": "A simple, minimalistic and high performance blogging web application",
+    "author": "Compilenix <Compilenix@compilenix.org>",
+    "main": "index.js",
+    "scripts": {
+        "start": "npm install && node index.js",
+        "test": "npm install && node lib/tests/unit_test.js"
+    },
+    "keywords": [
+        "Blog",
+        "minimalistic",
+        "blogging",
+        "performance",
+        "blogger",
+        "compilenix",
+        "simple"
+    ],
+    "dependencies": {
+        "fs-extra": "3.0.1",
+        "html-minifier": "3.5.2",
+        "htmlencode": "0.0.4",
+        "http2": "3.3.6",
+        "manakin": "0.4.7",
+        "mustache": "2.3.0",
+        "prettify-xml": "1.0.1",
+        "use-strict": "1.0.1"
+    },
+    "repository": {
+        "type": "git",
+        "url": "https://git.compilenix.org/Compilenix/blogger.git"
+    },
+    "bugs": "https://git.compilenix.org/Compilenix/blogger/issues",
+    "license": "MIT"
 }

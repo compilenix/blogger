@@ -54,3 +54,5 @@ bin/
 /obj/
 /posts
 /log/
+/typings
+/typings.json

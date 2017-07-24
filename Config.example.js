@@ -8,7 +8,7 @@ class Config {
 		this.language = "en";
 		this.author = "user";
 		this.authorMail = "user@domain.tld";
-		this.Link = "http://127.0.0.1";
+		this.Link = "http://127.0.0.1"; // no trailing slash!
 		this.Title = "My Blog";
 		this.DirectoryCache = "cache";
 		this.HeaderExpires = 60000 * 60; // 60 Minutes
@@ -18,7 +18,7 @@ class Config {
 		this.HandleClientCacheControl = true;
 		this.DefaultContentType = "text/html";
 		this.ServerVersion = `node.js/${process.version}`;
-		this.cache = "FsCache"; // "MemCache" | "FsCache" | "none"
+		this.Cache = "FsCache"; // "MemCache" | "FsCache" | "none"
 		this.FileEditor = "editor.html";
 		this.ApiKey = "changeme";
 

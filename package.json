@@ -1,6 +1,6 @@
 {
     "name": "blogger",
-    "version": "0.2.0",
+    "version": "0.3.0",
     "description": "A simple, minimalistic and high performance blogging web application",
     "author": "Compilenix <Compilenix@compilenix.org>",
     "main": "index.js",

@@ -18,7 +18,8 @@ class Config {
 		this.HandleClientCacheControl = true;
 		this.DefaultContentType = "text/html";
 		this.ServerVersion = `node.js/${process.version}`;
-		this.Cache = "FsCache"; // "MemCache" | "FsCache" | "none"
+        this.SendServerVersionInHeader = false;
+        this.Cache = "FsCache"; // "MemCache" | "FsCache" | "none"
 		this.FileEditor = "editor.html";
 		this.ApiKey = "changeme";
 

@@ -1,16 +1,14 @@
 // Place your settings in this file to overwrite default and user settings.
 {
 	"editor.tabSize": 4,
-	"editor.useTabStops": true,
-	"editor.insertSpaces": false,
+	"editor.useTabStops": false,
+	"editor.insertSpaces": true,
 	"editor.trimAutoWhitespace": true,
 	"editor.formatOnType": true,
 	"files.encoding": "utf8",
 	"files.eol": "\n",
 	"files.trimTrailingWhitespace": true,
 	"files.autoSave": "off",
-	"trailing-spaces.logLevel": "error",
-	"trailing-spaces.trimOnSave": true,
 	"minify.minifyExistingOnSave": true,
 	"editor.detectIndentation": true,
 	"eslint.enable": true,
@@ -18,5 +16,5 @@
 	// Enable usage data and errors to be sent to Microsoft.
 	"telemetry.enableTelemetry": false,
 	"telemetry.enableCrashReporter": false,
-	"ecdc.collectTelemetry": false
+    "ecdc.collectTelemetry": false
 }

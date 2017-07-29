@@ -1,4 +1,3 @@
-
 var skey = 83;
 var vkey = 86;
 var nkey = 78;

@@ -18,8 +18,8 @@
         "simple"
     ],
     "dependencies": {
-        "fs-extra": "3.0.1",
-        "html-minifier": "3.5.2",
+        "fs-extra": "^4.0.0",
+        "html-minifier": "^3.5.3",
         "htmlencode": "0.0.4",
         "http2": "3.3.6",
         "manakin": "0.4.7",

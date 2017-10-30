@@ -121,7 +121,7 @@ function StartServer() {
     });
 
     if (!fs.existsSync(config.templatePath)) {
-        log.error("template-Directory is non-existing! creating new empty directory");
+        log.info("template-Directory is non-existing! creating new empty directory");
 
         try {
             fs.mkdirSync(config.templatePath);

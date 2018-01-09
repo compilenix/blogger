@@ -1,3 +1,5 @@
+[![Known Vulnerabilities](https://snyk.io/test/github/compilenix/blogger/badge.svg?targetFile=package.json)](https://snyk.io/test/github/compilenix/blogger?targetFile=package.json)
+
 # blogger
 A simple, minimalistic and high performance blogging web application
 

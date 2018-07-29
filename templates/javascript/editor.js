@@ -333,7 +333,7 @@ class Editor {
 
         $(closebutton).on('click', (ev) => {
             ev.preventDefault();
-            e.closeTab(tab.getAttribute('data-postid'));
+            e.closeTab(tab.getAttribute('data-postid'), ev.target.parentElement.parentElement.parentElement);
             return false;
         });
 
@@ -346,8 +346,41 @@ class Editor {
         return tab;
     }
 
-    closeTab(id) {
-        let postTitle = $('#tabs div.active').attr("data-posttitle");
+    /**
+     * @param {string} id
+     * @param {HTMLElement | null} tabElement
+     */
+    closeTabForce(id, tabElement) {
+        let postTitle = $(this.tabsContainer).find('div[data-postid=' + id + ']').attr("data-posttitle");
+        console.log("close tab and discard changes of: \"" + postTitle + "\" (" + id + ")");
+
+        if (id === $('#tabs div.active').attr('data-postid')) {
+            var p = $(e.tabsContainer).find('div[data-postid=' + id + ']')[0].previousSibling;
+            var n = $(e.tabsContainer).find('div[data-postid=' + id + ']')[0].nextSibling;
+
+            if (n && n.getAttribute && n.getAttribute('data-postid')) {
+                e.openSession(n.getAttribute('data-postid'));
+            } else if (p && p.getAttribute && p.getAttribute('data-postid')) {
+                e.openSession(p.getAttribute('data-postid'));
+            } else {
+                e.ace.setSession(e.sessions['default']);
+                e.ace.focus();
+                e.emptyTab();
+            }
+        }
+
+        $(e.tabsContainer).find('div[data-postid=' + id + ']').remove();
+        e.sessions[id] = false;
+
+        e.calculateEditorOffsetTop();
+    }
+
+    /**
+     * @param {string} id
+     * @param {HTMLElement | null} tabElement
+     */
+    closeTab(id, tabElement = null) {
+        let postTitle = $(this.tabsContainer).find('div[data-postid=' + id + ']').attr("data-posttitle");
 
         if ($(this.tabsContainer).find('div[data-postid=' + id + ']').hasClass('changed')) {
             swal({
@@ -364,27 +397,12 @@ class Editor {
                 },
                 (isConfirmed) => {
                     if (isConfirmed) {
-                        console.log("close tab and discard changes of: \"" + postTitle + "\" (" + id + ")");
-                        var p = $(e.tabsContainer).find('div[data-postid=' + id + ']')[0].previousSibling;
-                        var n = $(e.tabsContainer).find('div[data-postid=' + id + ']')[0].nextSibling;
-
-                        if (p && p.getAttribute && p.getAttribute('data-postid')) {
-                            e.openSession(p.getAttribute('data-postid'));
-                        } else if (n && n.getAttribute && n.getAttribute('data-postid')) {
-                            e.openSession(n.getAttribute('data-postid'));
-                        } else {
-                            e.ace.setSession(e.sessions['default']);
-                            e.ace.focus();
-                            e.emptyTab();
-                        }
-
-                        $(e.tabsContainer).find('div[data-postid=' + id + ']').remove();
-                        e.sessions[id] = false;
-
-                        e.calculateEditorOffsetTop();
+                        this.closeTabForce(id, tabElement);
                     }
                 }
             );
+        } else {
+            this.closeTabForce(id, tabElement);
         }
     }
 

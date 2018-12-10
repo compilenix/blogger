@@ -1,3 +1,6 @@
+# Donate if you want
+https://www.paypal.me/compilenix
+
 [![Known Vulnerabilities](https://snyk.io/test/github/compilenix/blogger/badge.svg?targetFile=package.json)](https://snyk.io/test/github/compilenix/blogger?targetFile=package.json)
 
 # blogger

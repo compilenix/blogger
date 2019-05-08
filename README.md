@@ -1,7 +1,7 @@
 # Donate if you want
 https://www.paypal.me/compilenix
 
-[![Known Vulnerabilities](https://snyk.io/test/github/compilenix/blogger/badge.svg?targetFile=package.json)](https://snyk.io/test/github/compilenix/blogger?targetFile=package.json)
+[![Known Vulnerabilities](https://snyk.io/test/github/compilenix/blogger/badge.svg?targetFile=package.json)](https://snyk.io/test/github/compilenix/blogger?targetFile=package.json) [![Greenkeeper badge](https://badges.greenkeeper.io/compilenix/blogger.svg)](https://greenkeeper.io/)
 
 # blogger
 A simple, minimalistic and high performance blogging web application

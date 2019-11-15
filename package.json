@@ -5,8 +5,8 @@
     "author": "Compilenix <Compilenix@compilenix.org>",
     "main": "index.js",
     "scripts": {
-        "start": "npm install && node index.js",
-        "test": "npm install && node lib/tests/unit_test.js"
+        "start": "npm ci && node index.js",
+        "test": "npm ci && standard '*.js' 'lib/**/*.js' && node lib/tests/unit_test.js"
     },
     "keywords": [
         "Blog",
@@ -24,13 +24,15 @@
         "http2": "3.3.7",
         "manakin": "0.5.1",
         "mustache": "2.3.0",
-        "prettify-xml": "1.2.0",
-        "use-strict": "1.0.1"
+        "prettify-xml": "1.2.0"
     },
     "repository": {
         "type": "git",
         "url": "https://git.compilenix.org/Compilenix/blogger.git"
     },
     "bugs": "https://git.compilenix.org/Compilenix/blogger/issues",
-    "license": "MIT"
+    "license": "MIT",
+    "devDependencies": {
+        "standard": "^14.3.1"
+    }
 }

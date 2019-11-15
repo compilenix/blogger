@@ -1,45 +1,48 @@
 <!DOCTYPE html>
 
 <head>
-    <meta charset="UTF-8" />
-    <meta name="author" content="{{{author}}}" />
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="mobile-web-app-capable" content="yes">
-    <script type="text/javascript" src="{{{path.staticContentUri}}}jquery.js"></script>
-    <script type="text/javascript" src="{{{path.staticContentUri}}}ace.js"></script>
-    <script type="text/javascript" src="{{{path.staticContentUri}}}worker-html.js"></script>
-    <script type="text/javascript" src="{{{path.staticContentUri}}}mode-html.js"></script>
-    <script type="text/javascript" src="{{{path.staticContentUri}}}theme-monokai.js"></script>
-    <script type="text/javascript" src="{{{path.staticContentUri}}}sweetalert.min.js"></script>
-    <link type="text/css" rel="stylesheet" href="{{{path.staticContentUri}}}sweetalert.css">
+  <meta charset="UTF-8" />
+  <meta name="author" content="{{{author}}}" />
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="mobile-web-app-capable" content="yes">
+  <script type="text/javascript" src="{{{path.staticContentUri}}}jquery.js"></script>
+  <script type="text/javascript" src="{{{path.staticContentUri}}}ace.js"></script>
+  <script type="text/javascript" src="{{{path.staticContentUri}}}worker-html.js"></script>
+  <script type="text/javascript" src="{{{path.staticContentUri}}}mode-html.js"></script>
+  <script type="text/javascript" src="{{{path.staticContentUri}}}theme-monokai.js"></script>
+  <script type="text/javascript" src="{{{path.staticContentUri}}}sweetalert.min.js"></script>
+  <link type="text/css" rel="stylesheet" href="{{{path.staticContentUri}}}sweetalert.css">
 
-    <title>{{{title}}}</title>
+  <title>{{{title}}}</title>
 
-    <style>/*///css:editor.css///*/</style>
+  <style>
+    /*///css:editor.css///*/
+  </style>
 </head>
 
 <body onresize="e.calculateEditorOffsetTop();">
-    <div id="menu">
-        <label class="button responsive" onclick="$('#postlist').toggleClass('active');">Posts</label>
-        <div class="dropdown">
-            <label class="button">Edit</label>
-            <div class="dropdown-content">
-                <a class="button" onclick="e.emptyTab();">New</a>
-                <a class="button" onclick="e.remove();">Remove</a>
-                <a class="button" onclick="e.preview();">Preview</a>
-                <a class="button" onclick="e.togglePublish();">De-/ Publish</a>
-            </div>
-        </div>
-        <label class="button responsive" onclick="e.closeTab($($('#tabs div.active')[0]).attr('data-postid'));">Close</label>
-        <a class="button" href="/" target="_blank">Start Page</a>
+  <div id="menu">
+    <label class="button responsive" onclick="$('#postlist').toggleClass('active');">Posts</label>
+    <div class="dropdown">
+      <label class="button">Edit</label>
+      <div class="dropdown-content">
+        <a class="button" onclick="e.emptyTab();">New</a>
+        <a class="button" onclick="e.remove();">Remove</a>
+        <a class="button" onclick="e.preview();">Preview</a>
+        <a class="button" onclick="e.togglePublish();">De-/ Publish</a>
+      </div>
     </div>
-    <div id="postlist"></div>
-    <div id="tabs">
-        <label class="btn buttonLeft" onclick="e.prevTab();"></label>
-        <label class="btn buttonRight" onclick="e.nextTab();"></label>
-    </div>
-    <div id="edit"></div>
+    <label class="button responsive"
+      onclick="e.closeTab($($('#tabs div.active')[0]).attr('data-postid'));">Close</label>
+    <a class="button" href="/" target="_blank">Start Page</a>
+  </div>
+  <div id="postlist"></div>
+  <div id="tabs">
+    <label class="btn buttonLeft" onclick="e.prevTab();"></label>
+    <label class="btn buttonRight" onclick="e.nextTab();"></label>
+  </div>
+  <div id="edit"></div>
 
-    <script type="text/javascript">/*///javascript:editor.js///*/</script>
+  <script type="text/javascript">/*///javascript:editor.js///*/</script>
 </body>

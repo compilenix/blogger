@@ -12,4 +12,4 @@ curly_bracket_next_line = false
 spaces_around_brackets = true
 charset = utf-8
 indent_style = space
-indent_size = 4
+indent_size = 2

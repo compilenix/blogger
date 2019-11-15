@@ -14,7 +14,7 @@
 
 		::-webkit-scrollbar {
 			width: .5em;
-			height: .5em;
+			height: 1em;
 		}
 
 		::-webkit-scrollbar-thumb {
@@ -33,6 +33,12 @@
 			line-height: 1.2em;
 		}
 
+        ul,
+        article {
+            max-width: 50em;
+            margin: auto;
+        }
+
 		div,
 		pre,
 		code,
@@ -50,6 +56,23 @@
 			font-family: "Source Code Pro", Consolas, Lucida, Monospace;
 		}
 
+        pre {
+            max-width: 50em;
+            padding-left: 1em;
+            padding-top: 0.5em;
+            padding-bottom: 0.5em;
+        }
+
+        pre, code {
+            background-color: #eeeeee;
+            word-break: normal;
+            word-wrap: normal;
+            white-space: pre;
+            overflow-x: auto;
+            border-color: black;
+            border-radius: 0.3em;
+        }
+
 		a {
 			text-decoration: none;
 			font-size: 1.15em;
@@ -60,10 +83,11 @@
 		a:focus {
 			color: #0AF;
 		}
-
 	</style>
 </head>
 
 <body>
-	<h1><a href="/" style="color: black;" title="{{{title}}}">{{{title}}}</a></h1>
-	<a href="/rss.xml">RSS Feed</a> | <a href="/find/Stuff">Find Stuff</a>
+    <header>
+        <h1><a href="/" style="color: black;" title="{{{title}}}">{{{title}}}</a></h1>
+        <a href="/rss.xml">RSS Feed</a> | <a href="/find/Stuff">Find Stuff</a>
+    </header>
